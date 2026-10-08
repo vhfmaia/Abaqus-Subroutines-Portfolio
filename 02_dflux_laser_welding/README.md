@@ -17,7 +17,7 @@ The project implements a **sequentially coupled thermo-mechanical analysis**:
 
 ## 1. Physics & Mathematical Formulation
 
-### 1.1 Conical Gaussian Heat Source ($q(r, z)$)
+### 1.1 Conical Gaussian Heat Source (*q*(*r*, *z*))
 
 The laser volumetric heat flux is formulated in a local cylindrical frame tracking the instantaneous position of the beam axis:
 
@@ -110,14 +110,14 @@ Rather than relying on external user subroutines (`HETVAL` or `USDFLD`), the the
 +-----------------------------------------------------------------------------------------+
 ```
 
-#### Diffusional Phase Transformations (Austenite $\to$ Ferrite, Austenite $\to$ Bainite)
+#### Diffusional Phase Transformations (Austenite → Ferrite, Austenite → Bainite)
 Governed by Johnson-Mehl-Avrami (JMA) isothermal transformation kinetics adapted to continuous cooling via the Scheil additivity rule:
 
 $$f(t, T) = 1 - \exp\left( -k(T) \cdot t^{n(T)} \right)$$
 
 where kinetic coefficients $k(T)$ and $n(T)$ are derived from the alloy's Time-Temperature-Transformation (TTT) diagrams between $Ac_1 = 734^\circ\text{C}$ and $Bs = 617^\circ\text{C}$ for ferrite, and between $Bs = 617^\circ\text{C}$ and $Ms = 425^\circ\text{C}$ for bainite.
 
-#### Displacive Martensitic Transformation (Austenite $\to$ Martensite)
+#### Displacive Martensitic Transformation (Austenite → Martensite)
 Below the martensite start temperature ($M_s = 425^\circ\text{C}$), diffusionless shear transformation is calculated via the Koistinen-Marburger (K-M) equation:
 
 $$f_M = f_A \cdot \left[ 1 - \exp\left( -\gamma \cdot (M_s - T) \right) \right]$$
