@@ -4,9 +4,14 @@
 !  Model: Circumferential Laser Welding - Moving Conical Gaussian Heat Source
 !  Author: Victor Maia (vhfm08@gmail.com)
 !
-!  References:
-!    - Goldak et al. (1984): A new finite element model for welding heat sources
-!    - ISO/TR 17671-4: Welding - Recommendations for welding of metallic materials
+!  References (Conical Gaussian / TDC Model):
+!    - Farrokhi, F., Endelt, B., Kristiansen, M. (2019): A numerical model
+!      for full and partial penetration hybrid laser welding of thick-section
+!      steels, Optics and Laser Technology, 109, 629-642.
+!    - Wu, C.S., Wang, H.G., Zhang, Y.M. (2006): A new heat source model for
+!      keyhole plasma arc welding in FEM analysis, Welding Journal, 85(12), 284-291.
+!    - Liu, M., Kouadri-Henni, A., Malard, B. (2022): Simulation of low-cycle
+!      fatigue residual stress in laser-welded structures, ICRS11.
 !
 !  Conventions & Units:
 !    - Global coordinates: mm, s, tonne, mJ, C
@@ -88,13 +93,15 @@ contains
             return
         end if
 
-        ! 3. Analytical Peak Flux Prefactor Q0 (Volume conservation: Integral = eta * Qtot)
-        ! Volume integral denominator: (pi/3) * zi * (re^2 + re*ri + ri^2)
-        q0_peak = (3.0d0 * eta_absorb * qtot_nominal) / &
-                  (pi_const * (depth_zi / 3.0d0) * &
+        ! 3. Analytical Peak Flux Prefactor Q0 (Farrokhi et al. 2019 / Wu et al. 2006)
+        ! Volume conservation: integral over r <= r0(z) strictly equals eta * Qtot
+        ! q0 = [9 * eta * Qtot * e^3] / [pi * (e^3 - 1) * depth_zi * (rt^2 + rt*ri + ri^2)]
+        real(real64), parameter :: e3_ratio = 20.085536923187668d0 / (20.085536923187668d0 - 1.0d0)
+        q0_peak = (9.0d0 * eta_absorb * qtot_nominal * e3_ratio) / &
+                  (pi_const * depth_zi * &
                    (r_top**2 + r_top * r_bottom + r_bottom**2))
 
-        ! Local cone radius at current depth z
+        ! Local cone radius at current depth z (Wu et al. Eq. 6 / Farrokhi et al. Eq. 6)
         r0_z = r_top + (r_bottom - r_top) * (z_local / depth_zi)
         if (r0_z <= 0.0d0) then
             q_vol = 0.0d0
@@ -109,9 +116,8 @@ contains
         dy = coords(2) - yc
         r_dist_sq = dx**2 + dy**2
 
-        ! Numerical cutoff envelope: exp(-3 * r^2 / R0^2) >= TOL
-        r_cutoff_sq = -(r0_z**2 / 3.0d0) * log(cutoff_tol)
-        if (r_dist_sq > r_cutoff_sq) then
+        ! Conical boundary envelope: r <= r0(z) (Farrokhi et al. 2019 / Wu et al. 2006)
+        if (r_dist_sq > (r0_z**2)) then
             q_vol = 0.0d0
             return
         end if

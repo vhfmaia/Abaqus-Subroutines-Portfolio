@@ -61,8 +61,10 @@ def read_dflux_parameters(path=None):
                 p[var_name] = val
 
     p["OMEGA"] = (p["VBEAM"] / 60.0) / p["RADIUS"]
-    p["DENOM"] = (p["ZI"] / 3.0) * (p["R_I"]**2 + p["R_E"] * p["R_I"] + p["R_E"]**2)
-    p["PREFAC"] = p["ETA"] * p["QTOT"] * 3.0 / (math.pi * p["DENOM"])
+    e3 = math.exp(3.0)
+    p["E3_RATIO"] = e3 / (e3 - 1.0)
+    p["DENOM"] = p["ZI"] * (p["R_I"]**2 + p["R_E"] * p["R_I"] + p["R_E"]**2)
+    p["PREFAC"] = (9.0 * p["ETA"] * p["QTOT"] * p["E3_RATIO"]) / (math.pi * p["DENOM"])
     p["TOTDEG"] = p["RAMP_U_DEG"] + p["WELD_DEG"] + p["RAMP_D_DEG"]
     return p
 
@@ -85,7 +87,7 @@ def flux(P, xyz, t):
     r0 = P["R_E"] + (P["R_I"] - P["R_E"]) * zr / P["ZI"]
     rl = np.hypot(xyz[..., 0] - P["RADIUS"] * math.cos(th),
                   xyz[..., 1] - P["RADIUS"] * math.sin(th))
-    rcut = math.sqrt(-math.log(P["TOL"]) / 3.0) * r0
+    rcut = r0
     q = P["PREFAC"] * np.exp(-3.0 * rl**2 / r0**2) * amp
     q[(zr > P["ZI"]) | (rl > rcut)] = 0.0
     return q

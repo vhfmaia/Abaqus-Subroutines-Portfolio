@@ -41,23 +41,25 @@ $$R_0(z) = r_e + (r_i - r_e) \frac{z}{z_i}$$
                    Bottom Root (z = z_i)
 ```
 
-### 1.2 Analytical Volume Energy Conservation
+### 1.2 Analytical Volume Energy Conservation (Farrokhi et al. / Wu et al. TDC Model)
 
-To guarantee that the integrated thermal power equals the net absorbed beam power ($P_{\text{abs}} = \eta \cdot Q_{\text{tot}}$), the peak flux $Q_0$ is derived analytically by integrating over the conical envelope:
+To guarantee that the integrated thermal power inside the conical envelope ($r \le R_0(z)$, $0 \le z \le z_i$) strictly equals the absorbed laser power ($P_{\text{abs}} = \eta \cdot Q_{\text{tot}}$), the peak flux $Q_0$ is derived analytically by integrating the Three-Dimensional Conical (TDC) Gaussian distribution:
 
-$$\int_V q(r, z) \, dV = \int_0^{z_i} \left[ \int_0^\infty Q_0 \exp\left( -3 \frac{r^2}{R_0(z)^2} \right) 2\pi r \, dr \right] dz$$
+$$\int_V q(r, z) \, dV = \int_0^{z_i} \left[ \int_0^{R_0(z)} Q_0 \exp\left( -3 \frac{r^2}{R_0(z)^2} \right) 2\pi r \, dr \right] dz$$
 
-Evaluating the radial Gaussian integral:
+Evaluating the radial Gaussian integral up to the cone boundary $r = R_0(z)$:
 
-$$\int_0^\infty \exp\left( -3 \frac{r^2}{R_0(z)^2} \right) 2\pi r \, dr = \frac{\pi R_0(z)^2}{3}$$
+$$\int_0^{R_0(z)} \exp\left( -3 \frac{r^2}{R_0(z)^2} \right) 2\pi r \, dr = \frac{\pi R_0(z)^2}{3} \left( 1 - e^{-3} \right) = \frac{\pi R_0(z)^2}{3} \cdot \frac{e^3 - 1}{e^3}$$
 
-Integrating along the penetration depth $z$:
+Integrating along the conical penetration depth $z \in [0, z_i]$:
 
-$$\int_0^{z_i} \frac{\pi R_0(z)^2}{3} \, dz = \frac{\pi}{3} \int_0^{z_i} \left[ r_e + (r_i - r_e) \frac{z}{z_i} \right]^2 dz = \frac{\pi z_i}{9} \left( r_e^2 + r_e r_i + r_i^2 \right)$$
+$$\int_0^{z_i} R_0(z)^2 \, dz = \int_0^{z_i} \left[ r_e + (r_i - r_e) \frac{z}{z_i} \right]^2 dz = \frac{z_i}{3} \left( r_e^2 + r_e r_i + r_i^2 \right)$$
 
-Equating to $\eta \cdot Q_{\text{tot}}$ yields the exact normalisation prefactor implemented in `DFLUX.f`:
+Combining terms and equating to the absorbed beam power $\eta \cdot Q_{\text{tot}}$ yields the exact analytical prefactor (Farrokhi et al. 2019, Wu et al. 2006, Liu et al. 2022):
 
-$$Q_0 = \frac{9 \, \eta Q_{\text{tot}}}{\pi z_i \left( r_e^2 + r_e r_i + r_i^2 \right)}$$
+$$Q_0 = \frac{9 \, \eta Q_{\text{tot}} \, e^3}{\pi (e^3 - 1) z_i \left( r_e^2 + r_e r_i + r_i^2 \right)}$$
+
+For $P_{\text{abs}} = 1080\text{ W}$, $r_e = 1.0\text{ mm}$, $r_i = 0.75\text{ mm}$, and $z_i = 3.0\text{ mm}$, the analytical peak core flux is $Q_0 = 469.35\text{ W/mm}^3$ ($4.6935 \times 10^5\text{ mW/mm}^3$).
 
 ![3D Conical Heat Source & Schedule](docs/heat_source_3d.png)
 
@@ -263,11 +265,13 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ## 7. Standards & References
 
-1. **EN 1993-1-2:2005:** *Eurocode 3: Design of steel structures — Part 1-2: General rules — Structural fire design* (temperature-dependent thermal properties).
-2. **EN 10084:** *Case hardening steels — Technical delivery conditions* (chemical composition of 16MnCr5).
-3. **Andrews, K. W. (1965):** *Empirical formulae for the calculation of critical temperatures in steels*, Journal of the Iron and Steel Institute (JISI), 203, 721–727.
-4. **Goldak, J., Chakravarti, A., & Bibby, M. (1984):** *A new finite element model for welding heat sources*, Metallurgical Transactions B, 15(2), 299–305.
-5. **Koistinen, D. P., & Marburger, R. E. (1959):** *A general equation prescribing the extent of the austenite-martensite transformation in pure iron-carbon alloys and plain carbon steels*, Acta Metallurgica, 7(1), 59–60.
+1. **Farrokhi, F., Endelt, B., & Kristiansen, M. (2019):** *A numerical model for full and partial penetration hybrid laser welding of thick-section steels*, Optics & Laser Technology, 109, 629–642.
+2. **Wu, C. S., Wang, H. G., & Zhang, Y. M. (2006):** *A new heat source model for keyhole plasma arc welding in FEM analysis of the temperature profile*, Welding Journal, 85(12), 284–291.
+3. **Liu, M., Kouadri-Henni, A., & Malard, B. (2022):** *Simulation of low-cycle fatigue residual stress in DP600 steel laser-welded structure*, 11th International Conference on Residual Stresses (ICRS11), Nancy, France.
+4. **EN 1993-1-2:2005:** *Eurocode 3: Design of steel structures — Part 1-2: General rules — Structural fire design* (temperature-dependent thermal properties).
+5. **EN 10084:** *Case hardening steels — Technical delivery conditions* (chemical composition of 16MnCr5).
+6. **Andrews, K. W. (1965):** *Empirical formulae for the calculation of critical temperatures in steels*, Journal of the Iron and Steel Institute (JISI), 203, 721–727.
+7. **Koistinen, D. P., & Marburger, R. E. (1959):** *A general equation prescribing the extent of the austenite-martensite transformation in pure iron-carbon alloys and plain carbon steels*, Acta Metallurgica, 7(1), 59–60.
 
 ---
 
