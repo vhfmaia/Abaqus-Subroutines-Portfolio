@@ -1,16 +1,35 @@
 #!/bin/bash
 # ==============================================================================
 # Circumferential Laser Welding Simulation Pipeline
-# Sequentially Coupled Thermo-Mechanical FEA (Abaqus / SIMULIA)
+# Sequentially Coupled Thermo-Mechanical FEA (Abaqus / SIMULIA / 3DEXPERIENCE)
 # Author: Victor Maia (vhfm08@gmail.com)
 #
 # Usage:
-#   ./run_pipeline.sh [all | therm | mech | vtk_therm | vtk_mech]
+#   ./run_pipeline.sh [all | therm | mech | vtk_therm | vtk_mech | auto]
 # ==============================================================================
 set -euo pipefail
 
-TARGET="${1:-all}"
 CPUS="${CPUS:-4}"
+
+# Intelligent Auto-Detection of execution target
+if [ -z "${1:-}" ] || [ "${1:-}" = "auto" ]; then
+    if [ -f "Disk_heatsource_TH.odb" ] && [ ! -f "Disk_heatsource_ME.inp" ]; then
+        echo "[AUTO-DETECT] Detected completed thermal run (Disk_heatsource_TH.odb) in standalone thermal folder."
+        echo "[AUTO-DETECT] Executing post-processing VTK extraction for thermal results..."
+        TARGET="vtk_therm"
+    elif [ -f "Disk_heatsource_ME.odb" ]; then
+        echo "[AUTO-DETECT] Detected completed mechanical run (Disk_heatsource_ME.odb)."
+        echo "[AUTO-DETECT] Executing post-processing VTK extraction for mechanical results..."
+        TARGET="vtk_mech"
+    elif [ -f "Disk_heatsource_TH.inp" ] && [ ! -f "Disk_heatsource_ME.inp" ]; then
+        echo "[AUTO-DETECT] Standalone thermal simulation deck detected. Running thermal FEA + VTK..."
+        TARGET="therm_pipeline"
+    else
+        TARGET="all"
+    fi
+else
+    TARGET="$1"
+fi
 
 echo "=================================================================="
 echo "  Circumferential Laser Welding Simulation Pipeline"
@@ -41,7 +60,7 @@ fi
 # Function: Run Thermal Simulation
 run_thermal_fea() {
     echo ""
-    echo ">>> [STAGE 1/4] Running Thermal FEA Analysis (Disk_heatsource_TH.inp + dflux_disk_conical_gaussian.f)..."
+    echo ">>> Running Thermal FEA Analysis (Disk_heatsource_TH.inp + dflux_disk_conical_gaussian.f)..."
     USER_SUB="dflux_disk_conical_gaussian.f"
     ${RUN_ABQ} job=Disk_heatsource_TH input=Disk_heatsource_TH.inp user="${USER_SUB}" cpus="${CPUS}" interactive
     echo "[SUCCESS] Thermal analysis completed: Disk_heatsource_TH.odb generated."
@@ -50,7 +69,7 @@ run_thermal_fea() {
 # Function: Extract Thermal VTK
 run_thermal_vtk() {
     echo ""
-    echo ">>> [STAGE 2/4] Extracting Thermal Results to VTK (Disk_heatsource_TH.odb)..."
+    echo ">>> Extracting Thermal Results to VTK (Disk_heatsource_TH.odb)..."
     if [ ! -f "Disk_heatsource_TH.odb" ]; then
         echo "[ERROR] Disk_heatsource_TH.odb not found!"
         exit 1
@@ -62,7 +81,7 @@ run_thermal_vtk() {
 # Function: Run Mechanical Simulation
 run_mechanical_fea() {
     echo ""
-    echo ">>> [STAGE 3/4] Running Mechanical FEA Analysis (Disk_heatsource_ME.inp)..."
+    echo ">>> Running Mechanical FEA Analysis (Disk_heatsource_ME.inp)..."
     if [ ! -f "Disk_heatsource_TH.odb" ] && [ ! -f "Disk_heatsource_TH.fil" ]; then
         echo "[ERROR] Cannot run mechanical step without thermal results (Disk_heatsource_TH.odb or .fil)!"
         exit 1
@@ -74,7 +93,7 @@ run_mechanical_fea() {
 # Function: Extract Mechanical VTK
 run_mechanical_vtk() {
     echo ""
-    echo ">>> [STAGE 4/4] Extracting Mechanical Results to VTK (Disk_heatsource_ME.odb)..."
+    echo ">>> Extracting Mechanical Results to VTK (Disk_heatsource_ME.odb)..."
     if [ ! -f "Disk_heatsource_ME.odb" ]; then
         echo "[ERROR] Disk_heatsource_ME.odb not found!"
         exit 1
@@ -91,10 +110,18 @@ case "${TARGET}" in
     vtk_therm)
         run_thermal_vtk
         ;;
+    therm_pipeline)
+        run_thermal_fea
+        run_thermal_vtk
+        ;;
     mech)
         run_mechanical_fea
         ;;
     vtk_mech)
+        run_mechanical_vtk
+        ;;
+    mech_pipeline)
+        run_mechanical_fea
         run_mechanical_vtk
         ;;
     all)
@@ -104,7 +131,7 @@ case "${TARGET}" in
         run_mechanical_vtk
         ;;
     *)
-        echo "[ERROR] Unknown mode '${TARGET}'. Valid modes: all, therm, vtk_therm, mech, vtk_mech"
+        echo "[ERROR] Unknown mode '${TARGET}'. Valid modes: all, therm, vtk_therm, therm_pipeline, mech, vtk_mech, auto"
         exit 1
         ;;
 esac
