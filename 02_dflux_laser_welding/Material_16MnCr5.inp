@@ -75,8 +75,6 @@
    7.0, 0.050,  1400.0
   10.0, 0.150,  1400.0
    1.5, 0.000,  1500.0
-   2.5, 0.050,  1500.0
-   4.0, 0.150,  1500.0
 **
 ** ----------------------------------------------------------------------
 ** ANNEALING TEMPERATURE
@@ -229,9 +227,6 @@
 1490, 1515,
 *LATENT HEAT
 2.700E+11, 1490, 1515, 1.0
-** Anneal temperature: only used by a sequential mechanical analysis
-*ANNEAL TEMPERATURE
-1515,
 *PARAMETER TABLE, TYPE="ABQ_PHASE_TRANS_SolidPhases"
 "Ferrite", 0.,
 "Austenite", 1.,

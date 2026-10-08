@@ -27,7 +27,10 @@ Units: mm, s, tonne, mJ, C
 ** - Initial temperature: 25.0 C uniform
 ** ------------------------------------------------------------------
 *INITIAL CONDITIONS, TYPE=SOLUTION
-ELSET_ALL, 1., , , 1., 0., 0., 0.,
+ELSET_ALL, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+0.0, 0.0
 **
 *INITIAL CONDITION, TYPE=FIELD, VARIABLE=3
 NSET_ALL, 0., 0., 0.,
