@@ -30,16 +30,9 @@ where:
 
 $$R_0(z) = r_e + (r_i - r_e) \frac{z}{z_i}$$
 
-```
-                Top Irradiated Surface (z = 0)
-         |---------------- 2 * r_e ----------------|
-         \                                         /
-          \                                       /  |
-           \                                     /   | Penetration Depth z_i
-            \                                   /    |
-             |---------------- 2 * r_i ----------|   v
-                   Bottom Root (z = z_i)
-```
+<p align="center">
+  <img src="conical_heat_source_schematic.svg" alt="Analytical Conical Gaussian Heat Source Model and Geometry Parameters" width="85%" />
+</p>
 
 ### 1.2 Analytical Volume Energy Conservation (Farrokhi et al. / Wu et al. TDC Model)
 
@@ -61,7 +54,9 @@ $$Q_0 = \frac{9 \, \eta Q_{\text{tot}} \, e^3}{\pi (e^3 - 1) z_i \left( r_e^2 + 
 
 For nominal parameters ($P_l = 1800\text{ W}$, $\eta = 0.60 \implies P_{\text{abs}} = 1080\text{ W}$, $r_e = 1.0\text{ mm}$, $r_i = 0.75\text{ mm}$, and $z_i = 3.0\text{ mm}$), the analytical peak core flux is $Q_0 = 4.6935 \times 10^5\text{ mW/mm}^3$ ($469.35\text{ W/mm}^3$).
 
-![Single-Conical Gaussian Heat Source](conical_gaussian_3d.png)
+<p align="center">
+  <img src="conical_heat_source_improved_plot.svg" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source Model, Cross-Section, Joint Trajectory and Power Schedule" width="100%" />
+</p>
 
 ### 1.3 Kinematics & Angular Power Schedule
 
@@ -225,18 +220,18 @@ At temperatures near melting ($T > 1200^\circ\text{C}$) and in the plastic regim
 
 ```text
 02_dflux_laser_welding/
-├── Disk_heatsource_TH.inp        # Thermal master input deck (DC3D8, 2-step welding & cooling)
-├── Disk_heatsource_ME.inp        # Mechanical master input deck (C3D8H, sequentially coupled)
-├── Geometry_TH.inp               # Thermal mesh deck (DC3D8 heat transfer solid bricks)
-├── Geometry_ME.inp               # Mechanical mesh deck (C3D8H hybrid elements, NSET_BASE)
-├── Material_16MnCr5.inp          # Unified thermo-elasto-plastic & phase transformation deck
-├── dflux_disk_conical_gaussian.f # User subroutine (Modern Fortran 2008/90, TDC model)
-├── compile_vtk_to_gif.py         # Multi-viewport 3DEXPERIENCE simulation report compiler
-├── compile_vtk_to_gid.py         # Pipeline alias script
-├── odb_to_vtk.py                 # Abaqus Python ODB to VTK ASCII exporter & ZIP packager
-├── run_pipeline.sh               # HPC / batch automated execution pipeline
-├── conical_gaussian_3d.png       # 3D conical heat flux point-cloud & core contour plot
-└── README.md                     # Technical report & documentation
+├── Disk_heatsource_TH.inp                 # Thermal master input deck (DC3D8, 2-step welding & cooling)
+├── Disk_heatsource_ME.inp                 # Mechanical master input deck (C3D8H, sequentially coupled)
+├── Geometry_TH.inp                        # Thermal mesh deck (DC3D8 heat transfer solid bricks)
+├── Geometry_ME.inp                        # Mechanical mesh deck (C3D8H hybrid elements, NSET_BASE)
+├── Material_16MnCr5.inp                   # Unified thermo-elasto-plastic & phase transformation deck
+├── dflux_disk_conical_gaussian.f          # User subroutine (Modern Fortran 2008/90, TDC model)
+├── compile_vtk_to_gif.py                  # Multi-viewport 3DEXPERIENCE simulation report compiler
+├── compile_vtk_to_gid.py                  # Pipeline alias script
+├── odb_to_vtk.py                          # Abaqus Python ODB to VTK ASCII exporter & ZIP packager
+├── run_pipeline.sh                        # HPC / batch automated execution pipeline
+├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
+└── README.md                              # Technical report & documentation
 ```
 
 ---
