@@ -1,0 +1,59 @@
+# ==============================================================================
+# Abaqus Specific Output & Scratch Files
+# ==============================================================================
+# Output Databases (ficheiros binários muito pesados)
+*.odb
+*.odb_F
+*.odb_f
+*.sim
+*.prt
+
+# Diagnostics, Status and Message Files
+*.msg
+*.sta
+*.dat
+*.log
+*.lck
+
+# Scratch, Restart and Temporary Solver Files
+*.abq
+*.pac
+*.res
+*.sel
+*.023
+*.fil
+*.ipm
+*.mdl
+*.stt
+*.pes
+*.pmx
+
+# Abaqus Make / Compilation Artefacts
+abaqus.rpt
+abaqus_v6.env
+*.fin
+
+# CAE / Viewer GUI state files
+*.jnl
+*.rpy
+*.rpy.*
+*.rec
+
+# ==============================================================================
+# Python Post-processing & Virtual Envs
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# ==============================================================================
+# OS & Editor Specifics
+# ==============================================================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

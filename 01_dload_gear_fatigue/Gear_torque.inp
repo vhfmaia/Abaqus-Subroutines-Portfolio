@@ -1,0 +1,66 @@
+*HEADING
+Helical Crown Gear Rolling Contact Simulation - Analytical DLOAD
+Abaqus/Standard Finite Element Analysis with Custom Subroutine
+**
+** ----------------------------------------------------------------
+** 1. MESH & TOPOLOGY DEFINITION
+** Contains 3D solid elements (C3D4), kinematic coupling, and SURF_TOOTH
+** ----------------------------------------------------------------
+*INCLUDE, INPUT=GEOMETRY_GEAR.inp
+**
+** ----------------------------------------------------------------
+** 2. MATERIAL DEFINITION
+** Referenced by *SOLID SECTION, ELSET=GearRing_Volume in GEOMETRY_GEAR.inp
+** Structural gear steel properties (Elastic-Plastic)
+** ----------------------------------------------------------------
+*MATERIAL, NAME=PLASTIC_STEEL
+*ELASTIC
+210000.0, 0.3
+*DENSITY
+7.85E-09
+*PLASTIC
+600.0, 0.0
+850.0, 0.05
+**
+** ----------------------------------------------------------------
+** 3. BOUNDARY CONDITIONS (INITIAL STEP)
+** ROTATE_NODE (Node 1) is kinematically coupled to INTERNAL_DIAMETER (bore).
+** Constrains translations (1-3) and rotations (4-6) to react the applied torque.
+** ----------------------------------------------------------------
+*BOUNDARY
+ROTATE_NODE, 1, 6
+**
+** ----------------------------------------------------------------
+** 4. ANALYSIS STEP: QUASI-STATIC ROLLING CONTACT (FULL 360 DEG REVOLUTION)
+** Total time: 1.20 s (0.20 s smooth ramp + 1.00 s rolling across all 60 teeth)
+** High-fidelity time step: dt = 0.002 s (600 increments)
+** Output frequency: every 10 increments -> Exactly 61 frames (0 to 60)
+** ----------------------------------------------------------------
+*STEP, NAME=GEAR_TORQUE_ROLLING, NLGEOM=NO, INC=1000
+*STATIC
+0.002, 1.20, 1.0E-05, 0.002
+**
+** ----------------------------------------------------------------
+** 5. DISTRIBUTED SURFACE LOAD VIA USER SUBROUTINE DLOAD
+** Non-uniform pressure (PNU) applied on active flank surface SURF_TOOTH
+** ----------------------------------------------------------------
+*DSLOAD
+SURF_TOOTH, PNU
+**
+** ----------------------------------------------------------------
+** 6. OUTPUT REQUESTS FOR VTK EXPORT & POST-PROCESSING
+** Extracted frame-by-frame by odb_to_vtk.py for ParaView / PyVista animation
+** ----------------------------------------------------------------
+*OUTPUT, FIELD, FREQUENCY=10
+*NODE OUTPUT
+U
+*ELEMENT OUTPUT
+S
+**
+** ----------------------------------------------------------------
+** 7. REACTION FORCES & MOMENTS MONITORING (TORQUE VERIFICATION)
+** Prints RF and RM (torque RM2) at reference node to the .dat file
+** ----------------------------------------------------------------
+*NODE PRINT, FREQUENCY=1, SUMMARY=NO, NSET=ROTATE_NODE
+RF,
+*END STEP
