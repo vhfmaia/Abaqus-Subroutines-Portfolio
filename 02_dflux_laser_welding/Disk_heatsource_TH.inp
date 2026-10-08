@@ -1,3 +1,8 @@
+*HEADING
+Circumferential Laser Welding - Transient Thermal Heat Transfer Analysis
+Axisymmetric Joint with Moving Conical Gaussian Heat Source & Phase Transformations
+Units: mm, s, tonne, mJ, C
+**
 *PHYSICAL CONSTANTS, ABSOLUTE ZERO=-273.15, STEFAN BOLTZMANN=5.67E-11
 **
 ** ==================================================================
@@ -6,14 +11,14 @@
 ** Units: mm, s, tonne, mJ, C
 ** ==================================================================
 **
-*INCLUDE, INPUT=MATERIAL_16MnCr5.inp
-*INCLUDE, INPUT=GEOMETRY_THERM.inp
+*INCLUDE, INPUT=Material_16MnCr5.inp
+*INCLUDE, INPUT=Geometry_TH.inp
 **
 ** ------------------------------------------------------------------
 ** SECTION ASSIGNMENTS
 ** ------------------------------------------------------------------
-*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
-*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="16MnCr5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="16MnCr5"
 **
 ** ------------------------------------------------------------------
 ** INITIAL CONDITIONS
@@ -38,7 +43,7 @@ SURF_HUB_JOINT, SURF_SHAFT_JOINT
 **
 ** ==================================================================
 ** STEP 1: WELDING & IMMEDIATE POST-WELD SOLIDIFICATION
-** Beam active for 380 deg (360 deg full weld + 20 deg ramp-down):
+** Beam active for 380 deg (10 deg ramp-up + 360 deg weld + 10 deg ramp-down):
 ** t_beam = (380 * pi / 180) / omega = 4.974 s.
 ** The step duration is extended to 6.00 s with a fixed time increment
 ** (dt = 0.012 s) to resolve the thermal cycle during solidification

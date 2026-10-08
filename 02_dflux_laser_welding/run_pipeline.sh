@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # Circumferential Laser Welding Simulation Pipeline
-# Sequentially Coupled Thermo-Mechanical FEA (Abaqus / 3DEXPERIENCE)
+# Sequentially Coupled Thermo-Mechanical FEA (Abaqus / SIMULIA)
 # Author: Victor Maia (vhfm08@gmail.com)
 #
 # Usage:
@@ -41,48 +41,45 @@ fi
 # Function: Run Thermal Simulation
 run_thermal_fea() {
     echo ""
-    echo ">>> [STAGE 1/4] Running Thermal FEA Analysis (GLOBAL_THERM.inp + DFLUX.f)..."
-    USER_SUB="DFLUX.f"
-    if [ ! -f "${USER_SUB}" ] && [ -f "DFLUX.for" ]; then
-        USER_SUB="DFLUX.for"
-    fi
-    ${RUN_ABQ} job=GLOBAL_THERM input=GLOBAL_THERM.inp user="${USER_SUB}" cpus="${CPUS}" interactive
-    echo "[SUCCESS] Thermal analysis completed: GLOBAL_THERM.odb generated."
+    echo ">>> [STAGE 1/4] Running Thermal FEA Analysis (Disk_heatsource_TH.inp + dflux_disk_conical_gaussian.f)..."
+    USER_SUB="dflux_disk_conical_gaussian.f"
+    ${RUN_ABQ} job=Disk_heatsource_TH input=Disk_heatsource_TH.inp user="${USER_SUB}" cpus="${CPUS}" interactive
+    echo "[SUCCESS] Thermal analysis completed: Disk_heatsource_TH.odb generated."
 }
 
 # Function: Extract Thermal VTK
 run_thermal_vtk() {
     echo ""
-    echo ">>> [STAGE 2/4] Extracting Thermal Results to VTK (GLOBAL_THERM.odb)..."
-    if [ ! -f "GLOBAL_THERM.odb" ]; then
-        echo "[ERROR] GLOBAL_THERM.odb not found!"
+    echo ">>> [STAGE 2/4] Extracting Thermal Results to VTK (Disk_heatsource_TH.odb)..."
+    if [ ! -f "Disk_heatsource_TH.odb" ]; then
+        echo "[ERROR] Disk_heatsource_TH.odb not found!"
         exit 1
     fi
-    ${RUN_PY} odb_to_vtk.py GLOBAL_THERM.odb --prefix=laser_therm
+    ${RUN_PY} odb_to_vtk.py Disk_heatsource_TH.odb --prefix=laser_therm
     echo "[SUCCESS] Thermal VTK archive ready: laser_therm_vtk.zip"
 }
 
 # Function: Run Mechanical Simulation
 run_mechanical_fea() {
     echo ""
-    echo ">>> [STAGE 3/4] Running Mechanical FEA Analysis (GLOBAL_MECH.inp)..."
-    if [ ! -f "GLOBAL_THERM.odb" ] && [ ! -f "GLOBAL_THERM.fil" ]; then
-        echo "[ERROR] Cannot run mechanical step without thermal results (GLOBAL_THERM.odb or .fil)!"
+    echo ">>> [STAGE 3/4] Running Mechanical FEA Analysis (Disk_heatsource_ME.inp)..."
+    if [ ! -f "Disk_heatsource_TH.odb" ] && [ ! -f "Disk_heatsource_TH.fil" ]; then
+        echo "[ERROR] Cannot run mechanical step without thermal results (Disk_heatsource_TH.odb or .fil)!"
         exit 1
     fi
-    ${RUN_ABQ} job=GLOBAL_MECH input=GLOBAL_MECH.inp cpus="${CPUS}" interactive
-    echo "[SUCCESS] Mechanical analysis completed: GLOBAL_MECH.odb generated."
+    ${RUN_ABQ} job=Disk_heatsource_ME input=Disk_heatsource_ME.inp cpus="${CPUS}" interactive
+    echo "[SUCCESS] Mechanical analysis completed: Disk_heatsource_ME.odb generated."
 }
 
 # Function: Extract Mechanical VTK
 run_mechanical_vtk() {
     echo ""
-    echo ">>> [STAGE 4/4] Extracting Mechanical Results to VTK (GLOBAL_MECH.odb)..."
-    if [ ! -f "GLOBAL_MECH.odb" ]; then
-        echo "[ERROR] GLOBAL_MECH.odb not found!"
+    echo ">>> [STAGE 4/4] Extracting Mechanical Results to VTK (Disk_heatsource_ME.odb)..."
+    if [ ! -f "Disk_heatsource_ME.odb" ]; then
+        echo "[ERROR] Disk_heatsource_ME.odb not found!"
         exit 1
     fi
-    ${RUN_PY} odb_to_vtk.py GLOBAL_MECH.odb --prefix=laser_mech
+    ${RUN_PY} odb_to_vtk.py Disk_heatsource_ME.odb --prefix=laser_mech
     echo "[SUCCESS] Mechanical VTK archive ready: laser_mech_vtk.zip"
 }
 

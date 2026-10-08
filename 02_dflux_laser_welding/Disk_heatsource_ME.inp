@@ -9,14 +9,14 @@ Units: mm, s, tonne, N, MPa (N/mm2), mJ, C
 ** Material: 16MnCr5 Case Hardening Gear Steel
 ** ==================================================================
 **
-*INCLUDE, INPUT=MATERIAL_16MnCr5_MECH.inp
-*INCLUDE, INPUT=GEOMETRY_MECH.inp
+*INCLUDE, INPUT=Material_16MnCr5.inp
+*INCLUDE, INPUT=Geometry_ME.inp
 **
 ** ------------------------------------------------------------------
 ** SECTION ASSIGNMENTS (Hybrid formulation C3D8H elements)
 ** ------------------------------------------------------------------
-*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_MECH_16MNCR5"
-*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_MECH_16MNCR5"
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="16MnCr5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="16MnCr5"
 **
 ** ------------------------------------------------------------------
 ** STRUCTURAL TIES - Weld joint interface
@@ -60,8 +60,8 @@ NSET_BASE, 3, 3, 0.0
 *DLOAD
 , GRAV, 9810.0, 0.0, 0.0, -1.0
 **
-** Sequentially coupled thermal load (read from GLOBAL_THERM.odb / .fil)
-*TEMPERATURE, FILE=GLOBAL_THERM, BSTEP=1, ESTEP=1
+** Sequentially coupled thermal load (read from Disk_heatsource_TH.odb / .fil)
+*TEMPERATURE, FILE=Disk_heatsource_TH, BSTEP=1, ESTEP=1
 **
 ** Field output requests for distortion and stress evaluation
 *OUTPUT, FIELD, TIME INTERVAL=0.06, TIME MARKS=YES
@@ -89,7 +89,7 @@ S, PEEQ, LE
 *DLOAD
 , GRAV, 9810.0, 0.0, 0.0, -1.0
 **
-*TEMPERATURE, FILE=GLOBAL_THERM, BSTEP=2, ESTEP=2
+*TEMPERATURE, FILE=Disk_heatsource_TH, BSTEP=2, ESTEP=2
 **
 *OUTPUT, FIELD, TIME INTERVAL=5.0
 *NODE OUTPUT

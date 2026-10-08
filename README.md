@@ -45,15 +45,15 @@ Detailed formulation, kinematic equations, FEA verification, and post-processing
 
 <p align="center">
   <a href="02_dflux_laser_welding/README.md">
-    <img src="02_dflux_laser_welding/docs/heat_source_3d.png" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source and Welding Power Schedule" width="100%" />
+    <img src="02_dflux_laser_welding/conical_gaussian_3d.png" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source and Welding Power Schedule" width="100%" />
   </a>
 </p>
 
 *Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (`ABQ_PHASE_TRANS`), hybrid elements (`C3D8H`), continuous annealing at $1500^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.*
 
 #### Key Thermal, Metallurgical & Mechanical Highlights:
-- **3D Conical Gaussian Heat Source:** Analytically normalized peak flux $Q_0 = 405.5\text{ W/mm}^3$ with $10^\circ$ linear power ramp-up, $360^\circ$ steady weld, and $10^\circ$ crater-filling ramp-down overlap.
-- **Pre-Solver Numerical Verification:** $2 \times 2 \times 2$ Gauss quadrature integration across the 67,392 elements of the irradiated domain confirms $98.12\%$ energy conservation on the discrete mesh.
+- **3D Conical Gaussian Heat Source:** Analytically normalized peak flux $Q_0 = 4.6935 \times 10^5\text{ mW/mm}^3$ with $10^\circ$ linear power ramp-up, $360^\circ$ steady weld, and $10^\circ$ crater-filling ramp-down overlap.
+- **Unified Material Architecture:** Single `Material_16MnCr5.inp` shared by both thermal and mechanical simulations, ensuring seamless data consistency.
 - **Metallurgical Kinetics & Solidification (BTR):** Tracks liquidus/solidus melt pool kinetics and solid-state phase decomposition (Ferrite-Pearlite, Austenite, Bainite, Martensite via JMA and Koistinen-Marburger kinetics).
 - **Sequentially Coupled Structural Analysis:** Mitigates high-temperature volumetric locking via hybrid formulation elements (`C3D8H`), hydrostatic gravity stabilization, and line search non-linear controls.
 
@@ -75,20 +75,17 @@ Detailed formulation, verification routines, simulation input decks, and automat
 │   ├── run_pipeline.sh            # Headless Linux / HPC batch execution script
 │   └── README.md                  # Comprehensive Technical Report
 ├── 02_dflux_laser_welding/
-│   ├── DFLUX.f                    # User Subroutine (Modern Fortran Conical Heat Source)
-│   ├── DFLUX.for                  # User Subroutine Fallback (Fixed-Form Fortran 77)
-│   ├── GLOBAL_THERM.inp           # Master Thermal Analysis Deck (DC3D8)
-│   ├── GEOMETRY_THERM.inp         # High-Density Thermal Mesh Deck (DC3D8)
-│   ├── MATERIAL_16MnCr5.inp       # Phase Transformation Material Properties (ABQ_PHASE_TRANS)
-│   ├── GLOBAL_MECH.inp            # Master Mechanical Analysis Deck (C3D8H)
-│   ├── GEOMETRY_MECH.inp          # Structural Hybrid Mesh Deck (C3D8H, NSET_BASE)
-│   ├── MATERIAL_16MnCr5_MECH.inp  # Temperature-Dependent Elasto-Plastic & Annealing Properties
-│   ├── odb_to_vtk.py              # Abaqus Python ODB to VTK Extractor & ZIP Bundler
-│   ├── compile_vtk_to_gif.py      # Multi-Viewport Animated Report Compiler
-│   ├── run_pipeline.sh            # Headless Linux / HPC Batch Execution Script
-│   ├── verify_model.py            # Standalone Gauss Energy Conservation Verifier
-│   ├── docs/                      # 3D Heat Source Verification Figures
-│   └── README.md                  # Comprehensive Technical Report
+│   ├── Disk_heatsource_TH.inp        # Master Thermal Analysis Deck (DC3D8)
+│   ├── Disk_heatsource_ME.inp        # Master Mechanical Analysis Deck (C3D8H, Sequentially Coupled)
+│   ├── Geometry_TH.inp               # Thermal Mesh Deck (DC3D8 Solid Bricks)
+│   ├── Geometry_ME.inp               # Mechanical Hybrid Mesh Deck (C3D8H, NSET_BASE)
+│   ├── Material_16MnCr5.inp          # Unified Thermo-Elasto-Plastic & Phase Transformation Deck
+│   ├── dflux_disk_conical_gaussian.f # User Subroutine (Modern Fortran TDC Conical Model)
+│   ├── conical_gaussian_3d.png       # 3D Conical Gaussian Heat Flux Point-Cloud
+│   ├── odb_to_vtk.py                 # Abaqus Python ODB to VTK Extractor & ZIP Packager
+│   ├── compile_vtk_to_gif.py         # Multi-Viewport Animated Report Compiler
+│   ├── run_pipeline.sh               # Headless Linux / HPC Batch Execution Pipeline
+│   └── README.md                     # Comprehensive Technical Report
 ├── LICENSE
 └── README.md
 ```

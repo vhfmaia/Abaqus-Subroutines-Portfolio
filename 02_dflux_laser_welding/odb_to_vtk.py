@@ -2,8 +2,8 @@
 """
 Abaqus ODB to VTK ASCII Exporter for Laser Welding Simulation
 ============================================================
-Exports sequentially coupled thermal (GLOBAL_THERM.odb) and mechanical
-(GLOBAL_MECH.odb) simulation results into legacy VTK ASCII unstructured grids.
+Exports sequentially coupled thermal (Disk_heatsource_TH.odb) and mechanical
+(Disk_heatsource_ME.odb) simulation results into legacy VTK ASCII unstructured grids.
 Compatible with Python 2.7 (Abaqus/Standard native) and Python 3.x.
 
 Features:
@@ -286,7 +286,7 @@ if __name__ == "__main__":
 
     if target_odb is None:
         # Auto-detect in current directory
-        candidates = ["GLOBAL_THERM.odb", "GLOBAL_MECH.odb"] + glob.glob("*.odb")
+        candidates = ["Disk_heatsource_TH.odb", "Disk_heatsource_ME.odb"] + glob.glob("*.odb")
         for cand in candidates:
             if os.path.exists(cand):
                 target_odb = cand
