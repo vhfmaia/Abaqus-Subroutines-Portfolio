@@ -44,7 +44,16 @@ module laser_dflux_mod
     real(real64), parameter :: deg_weld      = 360.00d0     ! Full nominal power weld segment [deg]
     real(real64), parameter :: deg_ramp_down = 10.00d0      ! Power ramp-down overlap segment [deg]
 
-    real(real64), parameter :: pi_const = 3.14159265358979323846d0
+    ! Mathematical & analytical normalization constants (Wu et al. 2006 / Farrokhi et al. 2019)
+    real(real64), parameter :: pi_const   = 3.14159265358979323846d0
+    real(real64), parameter :: e3_ratio   = 20.085536923187668d0 / (20.085536923187668d0 - 1.0d0)
+    real(real64), parameter :: q0_peak    = (9.0d0 * eta_absorb * qtot_nominal * e3_ratio) / &
+                                            (pi_const * depth_zi * &
+                                             (r_top**2 + r_top * r_bottom + r_bottom**2))
+
+    real(real64), parameter :: v_sec      = travel_speed / 60.0d0
+    real(real64), parameter :: omega      = v_sec / weld_radius
+    real(real64), parameter :: rad_to_deg = 180.0d0 / pi_const
 
 contains
 
@@ -54,17 +63,13 @@ contains
         real(real64), intent(in)  :: coords(3)
         real(real64), intent(out) :: q_vol
 
-        real(real64) :: v_sec, omega, theta_rad, theta_deg
-        real(real64) :: amp_factor, q0_peak, z_local, r0_z
-        real(real64) :: xc, yc, dx, dy, r_dist_sq, r_cutoff_sq
-
-        ! Linear speed in mm/s and angular velocity in rad/s
-        v_sec = travel_speed / 60.0d0
-        omega = v_sec / weld_radius
+        real(real64) :: theta_rad, theta_deg
+        real(real64) :: amp_factor, z_local, r0_z
+        real(real64) :: xc, yc, dx, dy, r_dist_sq
 
         ! Current angular position along the joint
         theta_rad = omega * time_val
-        theta_deg = theta_rad * (180.0d0 / pi_const)
+        theta_deg = theta_rad * rad_to_deg
 
         ! 1. Angular Power Schedule Evaluation
         if (theta_deg < deg_ramp_up) then
@@ -93,15 +98,7 @@ contains
             return
         end if
 
-        ! 3. Analytical Peak Flux Prefactor Q0 (Farrokhi et al. 2019 / Wu et al. 2006)
-        ! Volume conservation: integral over r <= r0(z) strictly equals eta * Qtot
-        ! q0 = [9 * eta * Qtot * e^3] / [pi * (e^3 - 1) * depth_zi * (rt^2 + rt*ri + ri^2)]
-        real(real64), parameter :: e3_ratio = 20.085536923187668d0 / (20.085536923187668d0 - 1.0d0)
-        q0_peak = (9.0d0 * eta_absorb * qtot_nominal * e3_ratio) / &
-                  (pi_const * depth_zi * &
-                   (r_top**2 + r_top * r_bottom + r_bottom**2))
-
-        ! Local cone radius at current depth z (Wu et al. Eq. 6 / Farrokhi et al. Eq. 6)
+        ! 3. Local cone radius at current depth z (Wu et al. Eq. 6 / Farrokhi et al. Eq. 6)
         r0_z = r_top + (r_bottom - r_top) * (z_local / depth_zi)
         if (r0_z <= 0.0d0) then
             q_vol = 0.0d0
@@ -139,17 +136,17 @@ subroutine dflux(flux, sol, kstep, kinc, time, noel, npt, coords, &
     implicit none
 
     ! Abaqus interface arguments
-    real(real64), intent(out)   :: flux(2)
-    real(real64), intent(in)    :: sol
-    integer(int32), intent(in)  :: kstep
-    integer(int32), intent(in)  :: kinc
-    real(real64), intent(in)    :: time(2)
-    integer(int32), intent(in)  :: noel
-    integer(int32), intent(in)  :: npt
-    real(real64), intent(in)    :: coords(3)
-    integer(int32), intent(in)  :: jltyp
-    real(real64), intent(in)    :: temp
-    real(real64), intent(in)    :: press
+    real(real64), intent(out)     :: flux(2)
+    real(real64), intent(in)      :: sol
+    integer(int32), intent(in)    :: kstep
+    integer(int32), intent(in)    :: kinc
+    real(real64), intent(in)      :: time(2)
+    integer(int32), intent(in)    :: noel
+    integer(int32), intent(in)    :: npt
+    real(real64), intent(in)      :: coords(3)
+    integer(int32), intent(in)    :: jltyp
+    real(real64), intent(in)      :: temp
+    real(real64), intent(in)      :: press
     character(len=80), intent(in) :: sname
 
     real(real64) :: q_val
