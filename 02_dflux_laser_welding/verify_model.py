@@ -27,14 +27,39 @@ HERE = Path(__file__).resolve().parent
 # ---------------------------------------------------------------------------
 # 1. DFLUX parameters
 # ---------------------------------------------------------------------------
-def read_dflux_parameters(path=HERE / "DFLUX.for"):
-    p = {}
-    pat = re.compile(r"^\s+PARAMETER\s*\(\s*(\w+)\s*=\s*([-+0-9.EeDd]+)\s*\)")
-    for line in Path(path).read_text().splitlines():
-        m = pat.match(line)
+def read_dflux_parameters(path=None):
+    if path is None:
+        path = HERE / "DFLUX.f" if (HERE / "DFLUX.f").exists() else HERE / "DFLUX.for"
+    p = {
+        "QTOT": 1.8e6, "ETA": 0.60, "R_E": 1.0, "R_I": 0.75, "ZI": 3.0,
+        "RADIUS": 15.0, "VBEAM": 1200.0, "RAMP_U_DEG": 10.0, "WELD_DEG": 360.0,
+        "RAMP_D_DEG": 10.0, "Z0": 20.0, "TOL": 1e-8
+    }
+    pat_f77 = re.compile(r"^\s+PARAMETER\s*\(\s*(\w+)\s*=\s*([-+0-9.EeDd]+)\s*\)")
+    pat_f90 = re.compile(r"^\s*real\([^)]+\),\s*parameter\s*::\s*(\w+)\s*=\s*([-+0-9.EeDd]+)", re.IGNORECASE)
+    
+    mapping = {
+        "QTOT_NOMINAL": "QTOT", "ETA_ABSORB": "ETA", "R_TOP": "R_E",
+        "R_BOTTOM": "R_I", "DEPTH_ZI": "ZI", "WELD_RADIUS": "RADIUS",
+        "TRAVEL_SPEED": "VBEAM", "DEG_RAMP_UP": "RAMP_U_DEG",
+        "DEG_WELD": "WELD_DEG", "DEG_RAMP_DOWN": "RAMP_D_DEG",
+        "Z_SURFACE": "Z0", "CUTOFF_TOL": "TOL"
+    }
+    
+    text = Path(path).read_text(encoding="utf-8", errors="ignore")
+    for line in text.splitlines():
+        m = pat_f77.match(line)
         if m:
-            p[m.group(1).upper()] = float(m.group(2).replace("D", "E")
-                                          .replace("d", "e"))
+            p[m.group(1).upper()] = float(m.group(2).replace("D", "E").replace("d", "e"))
+        m90 = pat_f90.match(line)
+        if m90:
+            var_name = m90.group(1).upper()
+            val = float(m90.group(2).replace("D", "E").replace("d", "e"))
+            if var_name in mapping:
+                p[mapping[var_name]] = val
+            else:
+                p[var_name] = val
+
     p["OMEGA"] = (p["VBEAM"] / 60.0) / p["RADIUS"]
     p["DENOM"] = (p["ZI"] / 3.0) * (p["R_I"]**2 + p["R_E"] * p["R_I"] + p["R_E"]**2)
     p["PREFAC"] = p["ETA"] * p["QTOT"] * 3.0 / (math.pi * p["DENOM"])

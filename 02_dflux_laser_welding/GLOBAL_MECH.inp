@@ -1,0 +1,100 @@
+*HEADING
+Circumferential Laser Welding - Sequentially Coupled Mechanical Analysis
+Residual Stresses, Distortions, and Solidification Hot Cracking Tracking
+Units: mm, s, tonne, N, MPa (N/mm2), mJ, C
+**
+** ==================================================================
+** ABAQUS/STANDARD MECHANICAL MODEL: CIRCUMFERENTIAL LASER WELDING
+** Sequentially Coupled Thermo-Mechanical Simulation
+** Material: 16MnCr5 Case Hardening Gear Steel
+** ==================================================================
+**
+*INCLUDE, INPUT=MATERIAL_16MnCr5_MECH.inp
+*INCLUDE, INPUT=GEOMETRY_MECH.inp
+**
+** ------------------------------------------------------------------
+** SECTION ASSIGNMENTS (Hybrid formulation C3D8H elements)
+** ------------------------------------------------------------------
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_MECH_16MNCR5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_MECH_16MNCR5"
+**
+** ------------------------------------------------------------------
+** STRUCTURAL TIES - Weld joint interface
+** ------------------------------------------------------------------
+*TIE, NAME=TIE_JOINT, TYPE=SURFACE TO SURFACE, ADJUST=YES, POSITION TOLERANCE=0.05
+SURF_HUB_JOINT, SURF_SHAFT_JOINT
+**
+** ------------------------------------------------------------------
+** INITIAL CONDITIONS
+** Uniform room temperature (25.0 C)
+** ------------------------------------------------------------------
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+NSET_ALL, 25.0
+**
+** ------------------------------------------------------------------
+** BOUNDARY CONDITIONS (INITIAL STEP)
+** Base plate support (Z = 0) with kinematic stabilization against
+** rigid body modes while allowing free radial thermal expansion.
+** ------------------------------------------------------------------
+*BOUNDARY
+NSET_BASE, 3, 3, 0.0
+1, 1, 2, 0.0
+**
+** ==================================================================
+** STEP 1: WELDING MECHANICAL STEP (TRANSIENT THERMAL-STRESS EVOLUTION)
+** Duration: 6.00 s (synchronous with thermal analysis Step 1)
+** Non-linear geometry (NLGEOM=YES) for finite strain & thermal distortions
+** Hybrid element formulation (C3D8H) eliminates volumetric locking
+** ==================================================================
+*STEP, NAME=WELDING_STEP_MECH, NLGEOM=YES, INC=10000
+*STATIC
+0.012, 6.00, 1.0E-08, 0.024
+**
+** Convergence stabilization controls (Line search + adaptive increments)
+*CONTROLS, PARAMETERS=LINE SEARCH
+10, 1, 0.001, 0.25, 0.01
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+20, 30, 10, 50, 20, 10, , 5
+**
+** Body force stabilization (gravity)
+*DLOAD
+, GRAV, 9810.0, 0.0, 0.0, -1.0
+**
+** Sequentially coupled thermal load (read from GLOBAL_THERM.odb / .fil)
+*TEMPERATURE, FILE=GLOBAL_THERM, BSTEP=1, ESTEP=1
+**
+** Field output requests for distortion and stress evaluation
+*OUTPUT, FIELD, TIME INTERVAL=0.06, TIME MARKS=YES
+*NODE OUTPUT
+U, RF, NT
+*ELEMENT OUTPUT
+S, PEEQ, LE
+*OUTPUT, HISTORY, FREQUENCY=0
+*END STEP
+**
+** ==================================================================
+** STEP 2: COOLING DOWN TO ROOM TEMPERATURE (RESIDUAL STRESS LOCK-IN)
+** Duration: 300.0 s (synchronous with thermal analysis Step 2)
+** Evaluates final post-weld distortion and residual stress distribution
+** ==================================================================
+*STEP, NAME=COOLING_STEP_MECH, NLGEOM=YES, INC=2000
+*STATIC
+0.1, 300.0, 1.0E-05, 10.0
+**
+*CONTROLS, PARAMETERS=LINE SEARCH
+10, 1, 0.001, 0.25, 0.01
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+20, 30, 10, 50, 20, 10, , 5
+**
+*DLOAD
+, GRAV, 9810.0, 0.0, 0.0, -1.0
+**
+*TEMPERATURE, FILE=GLOBAL_THERM, BSTEP=2, ESTEP=2
+**
+*OUTPUT, FIELD, TIME INTERVAL=5.0
+*NODE OUTPUT
+U, RF, NT
+*ELEMENT OUTPUT
+S, PEEQ, LE
+*OUTPUT, HISTORY, FREQUENCY=0
+*END STEP
