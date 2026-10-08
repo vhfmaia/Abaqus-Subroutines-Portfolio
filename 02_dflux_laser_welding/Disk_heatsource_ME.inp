@@ -15,8 +15,8 @@ Units: mm, s, tonne, N, MPa (N/mm2), mJ, C
 ** ------------------------------------------------------------------
 ** SECTION ASSIGNMENTS (Hybrid formulation C3D8H elements)
 ** ------------------------------------------------------------------
-*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="16MnCr5"
-*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="16MnCr5"
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
 **
 ** ------------------------------------------------------------------
 ** STRUCTURAL TIES - Weld joint interface

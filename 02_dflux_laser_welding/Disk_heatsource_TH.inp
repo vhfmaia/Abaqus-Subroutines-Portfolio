@@ -17,8 +17,8 @@ Units: mm, s, tonne, mJ, C
 ** ------------------------------------------------------------------
 ** SECTION ASSIGNMENTS
 ** ------------------------------------------------------------------
-*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="16MnCr5"
-*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="16MnCr5"
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
 **
 ** ------------------------------------------------------------------
 ** INITIAL CONDITIONS

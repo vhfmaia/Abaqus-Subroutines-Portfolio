@@ -7,7 +7,7 @@
 ** Transformation temperatures: Ac1=734 C, Ac3=840 C, Bs=617 C, Ms=425 C
 ** Solidus = 1490 C, Liquidus = 1515 C, Latent Heat = 2.70E+11 mJ/tonne
 ** ======================================================================
-*MATERIAL, NAME="16MnCr5"
+*MATERIAL, NAME="ABQ_PHASE_TRANS_16MNCR5"
 *DENSITY
  7.8500E-09,
 **

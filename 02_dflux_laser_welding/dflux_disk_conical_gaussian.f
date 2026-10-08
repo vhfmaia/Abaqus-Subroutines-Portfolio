@@ -158,3 +158,31 @@ subroutine dflux(flux, sol, kstep, kinc, time, noel, npt, coords, &
     flux(2) = 0.0d0    ! df/dtheta (zero for purely prescribed thermal load)
 
 end subroutine dflux
+
+!=======================================================================
+!  Abaqus/Standard User Subroutine: USDFLD
+!  Standard interface satisfying *USER DEFINED FIELD requests.
+!=======================================================================
+subroutine usdfld(field, statev, pnewdt, direct, t, celent, &
+                  time, dtime, cmname, orname, nfield, nstatv, &
+                  noel, npt, layer, kspt, kstep, kinc, ndi, nshr, coord, &
+                  jmac, jmatyp, matlayo, laccflg)
+    use, intrinsic :: iso_fortran_env, only: real64, int32
+    implicit none
+
+    ! Abaqus interface arguments
+    real(real64), intent(inout)     :: field(nfield)
+    real(real64), intent(inout)     :: statev(nstatv)
+    real(real64), intent(inout)     :: pnewdt
+    real(real64), intent(in)        :: direct(3,3), t(3,3)
+    real(real64), intent(in)        :: celent
+    real(real64), intent(in)        :: time(2), dtime
+    character(len=80), intent(in)   :: cmname, orname
+    integer(int32), intent(in)      :: nfield, nstatv
+    integer(int32), intent(in)      :: noel, npt, layer, kspt, kstep, kinc, ndi, nshr
+    real(real64), intent(in)        :: coord(3)
+    integer(int32), intent(in)      :: jmac, jmatyp, matlayo, laccflg
+
+    return
+end subroutine usdfld
+
