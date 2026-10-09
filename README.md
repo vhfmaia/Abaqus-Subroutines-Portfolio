@@ -2,7 +2,6 @@
 
 [![Status](https://img.shields.io/badge/Status-Portfolio%20Verified%20%26%20In%20Work-blue.svg)](#)
 [![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-005691.svg)](https://www.3ds.com/)
-[![Subroutine](https://img.shields.io/badge/Subroutine-DLOAD%20%7C%20DFLUX%20%7C%20UINTER%20%7C%20UMAT-blue.svg)](#)
 [![Language](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
