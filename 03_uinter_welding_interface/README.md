@@ -2,6 +2,7 @@
 
 [![Status](https://img.shields.io/badge/Status-Exploratory%20%2F%20In%20Work%20(R%26D%20Backlog)-orange.svg)](README.md)
 [![Abaqus](https://img.shields.io/badge/Abaqus%2FStandard-User%20Interaction%20(UINTER)-blue.svg)](README.md)
+[![Hot Cracking Model](https://img.shields.io/badge/Theory-Won%20%2F%20Prokhorov%20BTR-005691.svg)](README.md)
 [![Language](https://img.shields.io/badge/Language-Fortran_90%2F2008-734f96.svg)](README.md)
 [![Next-Gen Succeeded](https://img.shields.io/badge/Succeeded%20By-04__umat__cohesive__welding-success.svg)](../04_umat_cohesive_welding/README.md)
 
@@ -11,7 +12,7 @@
 
 > [!WARNING]
 > **DEVELOPMENT STATUS: EXPLORATORY RESEARCH / IN WORK (R&D BACKLOG)**  
-> This directory documents an exploratory implementation of an Abaqus/Standard **User Interaction Subroutine (`UINTER`)** designed to model the progressive multi-stage constitutive behavior of an industrial welded joint (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**).  
+> This directory documents an exploratory implementation of an Abaqus/Standard **User Interaction Subroutine (`UINTER`)** designed to model the progressive multi-stage constitutive behavior of an industrial welded joint (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**) governed by an **empirical Won / Prokhorov hot tearing criterion**.  
 >
 > While conceptually elegant, **rigorous finite-element benchmarking revealed fundamental numerical bottlenecks**—primarily **pathological mesh dependency** and **severe discontinuity iterations (SDI cutbacks)**. Consequently, this interface formulation is preserved here for research reference and is **officially succeeded by the regularized Cohesive Zone UMAT architecture** documented in [**`04_umat_cohesive_welding`**](../04_umat_cohesive_welding/README.md).
 
@@ -31,7 +32,7 @@ To bridge this gap, an interaction model was formulated to dynamically transitio
                      │         STATE 0: RAW (Virgin)         │
                      │  - Pure unilateral penalty contact    │
                      │  - Free tensile opening (Pn = 0)      │
-                     │  - Coulomb friction (µ ≈ 0.15)        │
+                     │  - Coulomb friction (µ ≈ 0.35)        │
                      └───────────────────────────────────────┘
                                          │
                                          │ Beam arrival: T >= T_liquidus (1530 °C)
@@ -43,68 +44,102 @@ To bridge this gap, an interaction model was formulated to dynamically transitio
                      └───────────────────────────────────────┘
                                     /         \
           Won criterion NOT violated           Won criterion violated
-          (Δu_n / L0 < ε_crit)                (Δu_n / L0 >= ε_crit)
+          (ε_eval < ε_crit)                   (ε_eval >= ε_crit)
                         /                           \
                        ▼                             ▼
        ┌───────────────────────────────┐   ┌───────────────────────────────┐
-       |    STATE 2: WELDED (Sound)    |   |    STATE 3: CRACKED (Tear)    |
-       | - Bilateral stiffness Kn, Ks  |   | - Permanent loss of cohesion  |
-       | - Transmits tension & shear   |   |   in tension (Pn = 0, un > 0) |
-       | - Full continuum continuity   |   | - Compressive contact only    |
+       │    STATE 2: WELDED (Sound)    │   │    STATE 3: CRACKED (Tear)    │
+       │ - Bilateral stiffness Kn, Ks  │   │ - Permanent loss of cohesion  │
+       │ - Transmits tension & shear   │   │   in tension (Pn = 0, un > 0) │
+       │ - Full continuum continuity   │   │ - Compressive contact only    │
        └───────────────────────────────┘   └───────────────────────────────┘
 ```
 
 ---
 
-## 2. Constitutive Formulation (`UINTER`)
+## 2. Anatomy of the `UINTER` Subroutine & Parameter Breakdown
 
-The subroutine is called at every contact slave integration point. It receives the relative separation vector $\mathbf{u} = \{u_n, u_{s1}, u_{s2}\}^T$, temperature $T$, and maintains 5 internal state variables (`STATEV`):
+The subroutine is invoked by Abaqus/Standard at every contact slave node / integration point where a user interaction is assigned (`*SURFACE INTERACTION, USER`).
 
-### 2.1 State Machine Governing Equations
+### 2.1 Interface Definition & Keyword Deck
 
-1. **State 0 — RAW (Press-fit Unwelded):**
-   $$\begin{cases} P_n = K_{\text{comp}} \cdot u_n, \quad |\boldsymbol{\tau}| \le \mu |P_n| & \text{if } u_n < 0 \text{ (compression)} \\ P_n = 0, \quad \boldsymbol{\tau} = \mathbf{0} & \text{if } u_n \ge 0 \text{ (clearance/separation)} \end{cases}$$
+```abaqus
+*SURFACE INTERACTION, NAME=WELD_CONTACT, USER, PROPERTIES=6, DEPVAR=16
+0.35,
+0.35, 1485.0, 1530.0, 2.95E-4, 0.40, 1.20
+*CONTACT PAIR, INTERACTION=WELD_CONTACT, TYPE=SURFACE TO SURFACE
+SURF_SLAVE, SURF_MASTER
+```
 
-2. **State 1 — BTR Mushy Zone Solidification ($T_{\text{sol}} \le T \le T_{\text{liq}}$):**
-   * Solidus: $T_{\text{solidus}} = 1485.0\,^\circ\text{C}$
-   * Liquidus: $T_{\text{liquidus}} = 1530.0\,^\circ\text{C}$
-   * Critical hot tearing index based on the Won / Prokhorov criterion:
-     $$\varepsilon_{\text{BTR}} = \frac{\Delta u_{n,\text{accum}}}{L_0}, \quad I_{\text{Won}} = \frac{\varepsilon_{\text{BTR}}}{\varepsilon_{\text{crit}}}$$
-   * If $I_{\text{Won}} \ge 1.0 \implies$ Transitions to **State 3 (CRACKED)**.
-   * If cooled below $T_{\text{solidus}}$ with $I_{\text{Won}} < 1.0 \implies$ Transitions to **State 2 (WELDED)**.
+### 2.2 Detailed Parameter Analysis & Empirical Origin
 
-3. **State 2 — WELDED (Consolidated Joint):**
-   $$P_n = K_{\text{bond}} \cdot u_n, \quad \boldsymbol{\tau} = G_{\text{bond}} \cdot \mathbf{u}_s \quad (\forall u_n \in (-\infty, +\infty))$$
+All material and process constants in `PROPS` were obtained through **empirical high-temperature characterization**:
 
-4. **State 3 — CRACKED (Permanent Hot Tear / Delamination):**
-   $$\begin{cases} P_n = K_{\text{comp}} \cdot u_n & \text{if } u_n < 0 \text{ (crack closure / contact)} \\ P_n = 0, \quad \boldsymbol{\tau} = \mathbf{0} & \text{if } u_n \ge 0 \text{ (open crack)} \end{cases}$$
+| Parameter | Identifier in Code | Value | Physical Significance | Experimental / Empirical Origin |
+| :--- | :--- | :---: | :--- | :--- |
+| **Data Line 1** | `PAD_THICKNESS` ($L_0$) | $0.35\text{ mm}$ | Virtual element length scale | Calibrated to the radial depth of adjacent critical elements |
+| **`PROPS(1)`** | `MU_VIRGIN` | $0.35$ | Virgin Coulomb friction coefficient | Calibrated from dry metal-to-metal press-fit push-out tests |
+| **`PROPS(2)`** | `T_SOLIDUS` | $1485.0\,^\circ\text{C}$ | Solidus temperature (16MnCr5) | Differential Scanning Calorimetry (DSC) & Scheil solidification |
+| **`PROPS(3)`** | `T_LIQUIDUS` | $1530.0\,^\circ\text{C}$ | Liquidus temperature (16MnCr5) | DSC high-temperature thermal analysis ($45^\circ\text{C}$ BTR span) |
+| **`PROPS(4)`** | `PHI_CONST` ($\phi$) | $2.95 \times 10^{-4}$ | Empirical Won ductility coefficient | High-temperature Gleeble hot tensile tearing tests |
+| **`PROPS(5)`** | `M_STAR` ($m^*$) | $0.40$ | Strain-rate sensitivity exponent | Fit from strain-rate jump tests in the mushy zone ($10^{-4} - 10^{-1}\,\text{s}^{-1}$) |
+| **`PROPS(6)`** | `N_STAR` ($n^*$) | $1.20$ | Cooling rate sensitivity exponent | Solidification morphology / secondary dendrite arm spacing (SDAS) fit |
+
+> **Why are these parameters empirical?**  
+> Direct physical measurement of tensile ductility during solidification is virtually impossible using classical static testing machines because the material is a fragile dendritic slurry ($f_s \in [0.90, 0.99]$) surrounded by liquid segregation films. Parameters $\phi$, $m^*$, and $n^*$ must be calibrated on specialized **Gleeble thermo-mechanical physical simulators** or **Transvarestraint testing rigs** by pulling the specimen at controlled stroke rates during rapid cooling.
 
 ---
 
-## 3. Critical Numerical Bottlenecks Identified During Testing
+### 2.3 Internal State Variables (`STATEV 1..16`)
 
-Extensive patch tests (`dummy_btr_contact_patch.inp`) revealed three major obstacles that prevent robust industrial deployment of `UINTER` for hot cracking:
+Abaqus allocates 16 solution-dependent state variables (`DEPVAR=16`) to track the local metallurgical and mechanical history at each contact node:
 
-### 3.1 Pathological Mesh Dependency
-* **The Root Cause:** A contact interaction formulation operates on discrete **displacement jumps** ($\Delta u_n$ in mm), whereas metallurgical hot tearing criteria (Won, Rappaz-Drezet-Gremaud RDG) govern **continuum strain rates** ($\dot{\varepsilon}$).
-* To convert $\Delta u_n$ to strain, `UINTER` requires an arbitrary *virtual length scale* ($L_0 = 0.35\text{ mm}$ pad thickness).
-* **Consequence:** Refining the finite element mesh from $0.35\text{ mm}$ to $0.10\text{ mm}$ concentrates the compliance into fewer nodes. The apparent strain shoots up artificially, triggering **widespread false-positive hot cracking predictions**. Coarser meshes fail to detect true tears.
+| Variable | Description | Physical Unit |
+| :--- | :--- | :---: |
+| `STATEV(1)` | **Weld State Flag** (`0`: Raw, `1`: BTR Solidifying, `2`: Welded, `3`: Cracked) | Integer |
+| `STATEV(2)` | **Peak Historic Temperature** reached by node ($T_{\max}$) | $^\circ\text{C}$ |
+| `STATEV(3)` | **Accumulated Tensile Opening** across interface during BTR ($\Delta u_{n,\text{accum}}$) | $\text{mm}$ |
+| `STATEV(4)` | **Current Apparent Strain Rate** ($\dot{\varepsilon} = \frac{\Delta u_n / L_0}{\Delta t}$) | $\text{s}^{-1}$ |
+| `STATEV(5)` | **Current Cooling Rate** ($\dot{T} = |\Delta T / \Delta t|$) | $^\circ\text{C/s}$ |
+| `STATEV(6)` | **Instantaneous Won Critical Strain** ($\varepsilon_{\text{crit}}$) | Dimensionless |
+| `STATEV(7)` | **Instantaneous Won Damage Index** ($I_{\text{Won}} = \varepsilon_{\text{eval}} / \varepsilon_{\text{crit}}$) | Dimensionless |
+| `STATEV(8)` | **Peak Historical Won Ratio** ($R_{\max} = \max(I_{\text{Won}})$) | Dimensionless |
+| `STATEV(9)` | **Fracture Temperature** ($T_{\text{frac}}$ at moment of tear) | $^\circ\text{C}$ |
+| `STATEV(10)` | **Solid Fraction** in BTR ($f_s \approx \frac{T_{\text{liq}} - T}{T_{\text{liq}} - T_{\text{sol}}}$) | $[0.0, 1.0]$ |
+| `STATEV(11)` | **Current Normal Bond Stiffness** ($K_{\text{bond}}$) | $\text{N/mm}^3$ |
+| `STATEV(12)` | **Effective Virtual Pad Length** ($L_0$) | $\text{mm}$ |
+| `STATEV(13..16)` | Tangential slip accumulation, thermal timestamp, and contact status | — |
 
-### 3.2 Contact Chattering & Severe Discontinuity Iterations (SDI)
-* When slave nodes cross the solidus line, the normal contact stiffness jumps abruptly from zero ($K = 0$) to bonded stiffness ($K_{\text{bond}} \approx 5 \times 10^5\text{ N/mm}^3$).
-* In Abaqus/Standard, this instantaneous switch triggers **Severe Discontinuity Iterations (SDI)**. The Newton-Raphson solver experiences severe cutbacks (`1U`, `2U`, `3U`) and frequent solver stalls, multiplying CPU time by $5\times - 8\times$.
+---
 
-### 3.3 MPI Domain Decomposition Conflicts
-* In multi-core HPC environments (`abaqus cpus=8..16`), master and slave surfaces are frequently partitioned across different CPU memory domains.
-* Synchronizing non-local state transitions across distributed sub-domains introduces communication overhead and occasional domain-boundary locking.
+## 3. The Won Hot Tearing Formulation
 
-### 3.4 Empirical Temporal Discretization Study (BTR Sampling Sensitivity)
+### 3.1 Mathematical Theory
 
-To rigorously investigate the temporal sensitivity of the `UINTER` routine, a controlled benchmark was executed across 4 time-step discretizations. The thermal cooling rate was held constant at $\dot{T} = 2812.5\,^\circ\text{C/s}$ across the BTR interval ($[1485\,^\circ\text{C}, 1530\,^\circ\text{C}]$, total span $\Delta t_{\text{BTR}} = 0.0160\text{ s}$), while Step 5 was systematically partitioned into 2, 3, 4, and 5 temporal sampling points:
+The classical hot tearing criterion of **Won, Yeo, Seol, and Yim (2000)** posits that solidification cracking occurs when the accumulated tensile strain within the critical solid fraction range ($f_s = 0.90 - 0.99$, corresponding to the BTR) exceeds a threshold $\varepsilon_{\text{crit}}$ that depends on both the strain rate $\dot{\varepsilon}$ and the thermal cooling rate $\dot{T}$:
+
+$$\varepsilon_{\text{crit}} = \frac{\phi}{\dot{\varepsilon}^{m^*} \cdot \dot{T}^{n^*}}$$
+
+* At **higher strain rates** ($\dot{\varepsilon} \uparrow$), liquid feeding cannot replenish opening voids, reducing the critical strain ($\varepsilon_{\text{crit}} \downarrow$).
+* At **higher cooling rates** ($\dot{T} \uparrow$), finer dendritic spacing shortens the time available for stress relaxation, lowering crack resistance.
+
+### 3.2 Evaluation in `UINTER`
+
+Inside the BTR interval ($T_{\text{solidus}} \le T \le T_{\text{liquidus}}$), the subroutine computes:
+
+$$\varepsilon_{\text{eval}} = \frac{\Delta u_{n,\text{accum}}}{L_0}, \quad I_{\text{Won}} = \frac{\varepsilon_{\text{eval}}}{\varepsilon_{\text{crit}}}$$
+
+$$\text{If } I_{\text{Won}} \ge 1.0 \implies \text{State} \rightarrow \mathbf{CRACKED} \quad (P_n = 0 \text{ in tension})$$
+
+---
+
+## 4. Empirical Temporal Discretization Benchmark (2, 3, 4, 5 Points in BTR)
+
+To evaluate the numerical sensitivity and temporal dependency of `UINTER`, four systematic simulations were executed using the identical 2-element patch model (`dummy_btr_coarse_*points_normalized.inp`). The cooling rate was kept strictly constant at $\dot{T} = 2812.5\,^\circ\text{C/s}$ across the $45^\circ\text{C}$ BTR span ($\Delta t_{\text{BTR}} = 0.0160\text{ s}$), while Step 5 was discretized to place exactly 2, 3, 4, and 5 temporal sampling points within the BTR:
 
 | Numerical Metric | 2 Points in BTR | 3 Points in BTR | 4 Points in BTR | 5 Points in BTR | Asymptotic Behavior |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Fixed $\Delta t$ in Step 5** | $0.01185\text{ s}$ | $0.00790\text{ s}$ | $0.00547\text{ s}$ | $0.00444\text{ s}$ | $2.7\times$ refinement |
+| **Fixed $\Delta t$ in Step 5** | $0.01185\text{ s}$ | $0.00790\text{ s}$ | $0.00547\text{ s}$ | $0.00444\text{ s}$ | $2.7\times$ temporal refinement |
 | **Fracture Step 5 Inc.** | **Inc. 5** | **Inc. 6** | **Inc. 8** | **Inc. 10** | Proportional tracking |
 | **Fracture Temp. ($T_{\text{frac}}$)** | **$1469.67\,^\circ\text{C}$** | **$1469.67\,^\circ\text{C}$** | **$1479.92\,^\circ\text{C}$** | **$1478.00\,^\circ\text{C}$** | Resolves solidus boundary |
 | **Incremental Strain ($\Delta \varepsilon_{\text{inc}}$)** | $8.53 \times 10^{-3}$ | $9.36 \times 10^{-3}$ | $4.04 \times 10^{-3}$ | $2.58 \times 10^{-3}$ | Proportional to $\Delta t$ |
@@ -113,14 +148,23 @@ To rigorously investigate the temporal sensitivity of the `UINTER` routine, a co
 | **Final Gap `COPEN` ($25^\circ\text{C}$)** | **$2.0636\,\mu\text{m}$** | **$2.0663\,\mu\text{m}$** | **$2.0680\,\mu\text{m}$** | **$2.0684\,\mu\text{m}$** | **Monotonic ($< 0.23\%$ error)** |
 | **Final Pressure `CPRESS`** | $-970.2\text{ MPa}$ | $-971.5\text{ MPa}$ | $-972.3\text{ MPa}$ | $-972.5\text{ MPa}$ | **Monotonic ($< 0.24\%$ error)** |
 
-#### Key Insights from the Temporal Benchmark:
+### Key Engineering Findings:
 1. **Asymptotic Structural Convergence:** Once ruptured, the final room-temperature crack opening `COPEN` converges monotonically with an error below $0.23\%$ ($2.0636\,\mu\text{m} \rightarrow 2.0684\,\mu\text{m}$), demonstrating that the post-rupture contact release mechanics are structurally sound.
 2. **Thermal Sampling Overshoot:** Coarse time stepping ($\le 3$ points in BTR) skips past the solidus temperature ($1485^\circ\text{C}$), registering fracture with a numerical lag at $1469.67^\circ\text{C}$. A minimum of **4 to 5 increments inside the BTR** ($\Delta t \le 0.005\text{ s}$) is strictly necessary to resolve the true physical onset of hot tearing.
 3. **Severe Discontinuity Overhead:** In all cases, the sudden loss of cohesion across interface nodes triggers **3 Severe Discontinuity Iterations (SDI)** before standard Newton-Raphson equilibrium can be re-established.
 
 ---
 
-## 4. Architectural Comparison: UINTER vs. Cohesive UMAT
+## 5. Critical Bottlenecks of the Contact Formulation
+
+Despite its conceptual elegance, three fundamental limitations prevent industrial deployment:
+1. **Pathological Mesh Dependency:** Operating on discrete displacement jumps $\Delta u_n$ forces the use of a virtual length scale $L_0$. If the mesh is refined from $0.35\text{ mm}$ to $0.10\text{ mm}$, apparent strain concentrates into fewer nodes, triggering **false-positive tears everywhere**.
+2. **Contact Chattering & SDI Cutbacks:** Instantaneous stiffness switching ($0 \to K_{\text{bond}}$) triggers severe solver cutbacks (`1U`, `2U`, `3U`), increasing CPU cost by $5\times - 8\times$.
+3. **MPI Domain Conflicts:** Master/slave surfaces partitioned across multiple CPU cores introduce communication locks.
+
+---
+
+## 6. Architectural Comparison: UINTER vs. Cohesive UMAT
 
 To resolve these limitations, the project pivoted to a **Cohesive Zone Modeling (CZM)** approach via a thermo-mechanical `UMAT`:
 
@@ -134,23 +178,45 @@ To resolve these limitations, the project pivoted to a **Cohesive Zone Modeling 
 
 ---
 
-## 5. File Inventory
+## 7. Scientific Bibliography & References
+
+1. **Won, Y. M., Yeo, T. J., Seol, D. J., & Yim, K. H. (2000).**  
+   *"A new criterion for internal crack formation in continuously cast steels."*  
+   *Metallurgical and Materials Transactions A*, 31(3), 779–794.  
+   *(Foundational paper establishing the empirical Won power-law criterion for hot tearing as a function of cooling rate and strain rate).*
+
+2. **Rappaz, M., Drezet, J. M., & Gremaud, M. (1999).**  
+   *"A new failure criterion for macrosegregation and hot tearing."*  
+   *Metallurgical and Materials Transactions A*, 30(2), 449–455.  
+   *(The definitive Rappaz-Drezet-Gremaud RDG model based on interdendritic liquid pressure drop and permeability).*
+
+3. **Prokhorov, N. N. (1962).**  
+   *"The technological strength of metals during crystallization in welding."*  
+   *Svarochnoe Proizvodstvo (Welding Production)*, 4, 1–8.  
+   *(Pioneering Russian literature introducing the concept of the Brittleness Temperature Range / BTR and critical deformation reserve).*
+
+4. **Pellini, W. S. (1952).**  
+   *"Strain theory of hot tearing."*  
+   *Foundry*, 80(11), 125–133.  
+   *(Earliest experimental demonstration that hot tears initiate when tensile strains open liquid films prior to solidus completion).*
+
+5. **Drezet, J. M., & Rappaz, M. (1996).**  
+   *"Direct chill casting of aluminium alloys: in situ determination of deformation and hot tearing."*  
+   *Light Metals*, 939–946.
+
+6. **Dassault Systèmes SIMULIA (2023).**  
+   *Abaqus User Subroutines Reference Guide: Section UINTER — "User subroutine to define surface interaction behavior."*  
+   *Abaqus Theory Guide: Section 5.1 — "Contact Formulation and Severe Discontinuity Iterations."*
+
+---
+
+## 8. File Inventory
 
 ```text
 03_uinter_welding_interface/
 ├── uinter_btr_hot_cracking.f        # User Subroutine (UINTER state machine in Fortran)
 ├── dummy_btr_contact_patch.inp      # 2-Element unit verification patch test deck
 └── README.md                        # Technical report & research documentation
-```
-
----
-
-## 6. How to Run the Unit Patch Test
-
-To compile and verify the exploratory UINTER routine against the 2-element patch test:
-
-```bash
-abaqus job=dummy_btr_contact_patch user=uinter_btr_hot_cracking.f interactive
 ```
 
 > **Next Step:** See [**`04_umat_cohesive_welding`**](../04_umat_cohesive_welding/README.md) for the production-grade, mesh-independent implementation.

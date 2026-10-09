@@ -352,7 +352,7 @@ for idx, fpath in enumerate(vtk_files):
 # -------------------------------------------------------------
 # 4. Construcao da Paleta Master Imutavel & Gravacao do GIF
 # -------------------------------------------------------------
-fps = 5 if total_frames <= 35 else 8  # Half presentation speed (~120ms per frame)
+fps = 7 if total_frames <= 35 else 11  # Tuned 11 FPS presentation (~90ms per frame)
 output_gif = "gear_torque_simulation.gif"
 print(f"[INFO] A construir paleta master global com hashcodes exatos...")
 
