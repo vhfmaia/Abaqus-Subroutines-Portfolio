@@ -5,6 +5,10 @@
 !              (Raw -> Welded -> Cracked) with Energy-Regularized
 !              BTR (Brittleness Temperature Range) Hot Cracking
 !
+! STATUS:      IN WORK / PROTOTYPE UNDER TESTING
+!              * Research prototype currently undergoing numerical validation.
+!              * DO NOT DEPLOY IN INDUSTRIAL PRODUCTION ENVIRONMENTS.
+!
 ! ELEMENT COMPATIBILITY: COH3D8 (8-Node 3D Cohesive Elements)
 !                        Zero-thickness or thin interface layers
 !

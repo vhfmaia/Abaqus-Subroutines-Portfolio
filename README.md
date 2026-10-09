@@ -11,7 +11,7 @@ A repository of production-grade user subroutines for **Abaqus/Standard** and **
 | **01** | [`DLOAD`](01_dload_gear_fatigue/README.md) | Moving Surface Load / Quasi-Static | High-cycle fatigue analysis of a welded helical crown gear (360° full revolution) | ✅ Verified |
 | **02** | [`DFLUX`](02_dflux_laser_welding/README.md) | Moving Conical Flux / Thermo-Mechanical | Sequentially coupled laser welding with phase transformations and residual stress | ✅ Verified |
 | **03** | [`UINTER`](03_uinter_welding_interface/README.md) | Surface Interaction / BTR Hot Cracking | 3-State contact interface (Raw $\rightarrow$ Welded $\rightarrow$ Cracked) with BTR criteria | ⚠️ Exploratory (R&D Backlog) |
-| **04** | [`UMAT`](04_umat_cohesive_welding/README.md) | Cohesive Zone Modeling / Fracture Energy $G_c$ | Mesh-independent 3-state thermo-mechanical weld interface (`COH3D8`) | 🚀 Production Architecture |
+| **04** | [`UMAT`](04_umat_cohesive_welding/README.md) | Cohesive Zone Modeling / Fracture Energy $G_c$ | Mesh-independent 3-state thermo-mechanical weld interface (`COH3D8`) | ⚠️ In Work (Testing Phase) |
 
 ---
 
@@ -72,12 +72,12 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │  03_uinter_welding_interface (UINTER)        │   • Pathological Mesh Dependency    │  04_umat_cohesive_welding (UMAT + CZM)       │
 │  • Surface Interaction Routine               │ ─────────────────────────────────>  │  • Cohesive Zone Elements (COH3D8)           │
 │  • Contact Master/Slave formulation          │   • Severe Discontinuity (SDI)      │  • Fracture Energy Gc Regularization         │
-│  • Status: ⚠️ Exploratory (R&D Backlog)      │   • MPI Domain Split Conflicts      │  • Status: 🚀 Production Architecture        │
+│  • Status: ⚠️ Exploratory (R&D Backlog)      │   • MPI Domain Split Conflicts      │  • Status: ⚠️ In Work (Testing Phase)        │
 └──────────────────────────────────────────────┘                                     └──────────────────────────────────────────────┘
 ```
 
 * **[03. Exploratory Interface (`UINTER`)](03_uinter_welding_interface/README.md):** Formulates the 3-state state machine on contact surfaces. Benchmarking identified critical mesh-dependency due to displacement jumps vs strain rates, prompting its classification as an exploratory R&D backlog module.
-* **[04. Cohesive Zone Interface (`UMAT`)](04_umat_cohesive_welding/README.md):** Solves the mesh-dependency via critical fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to deliver quadratic Newton-Raphson convergence without contact chattering or SDI cutbacks.
+* **[04. Cohesive Zone Interface (`UMAT`)](04_umat_cohesive_welding/README.md):** Under active development and testing to evaluate mesh-independent fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to investigate convergence without contact chattering or SDI cutbacks (strictly a research prototype under evaluation, not for production use).
 
 ---
 

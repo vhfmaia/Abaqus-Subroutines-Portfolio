@@ -1,6 +1,6 @@
 # 04. Advanced Cohesive Zone Modeling (`UMAT`): 3-State Thermo-Mechanical Weld Interface
 
-[![Status](https://img.shields.io/badge/Status-Production%20Architecture%20%2F%20Validated-success.svg)](README.md)
+[![Status](https://img.shields.io/badge/Status-In%20Work%20%2F%20Prototype%20(Under%20Testing)-orange.svg)](README.md)
 [![Abaqus](https://img.shields.io/badge/Abaqus%2FStandard-User%20Material%20(UMAT)-blue.svg)](README.md)
 [![Element Type](https://img.shields.io/badge/Elements-COH3D8%20(Cohesive%20Zone)-005691.svg)](README.md)
 [![Language](https://img.shields.io/badge/Language-Fortran_90%2F2008-734f96.svg)](README.md)
@@ -10,14 +10,22 @@
 
 ## Executive Summary & Engineering Architecture
 
-> [!NOTE]
-> **TECHNOLOGICAL EVOLUTION FROM PROJECT 03:**  
-> This directory presents the production-grade **Cohesive Zone User Material Subroutine (`UMAT`)** designed to model the progressive constitutive behavior of welded joint interfaces (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**).  
->
-> This architecture directly addresses and resolves the mathematical bottlenecks identified during the exploratory investigation of contact-based subroutines documented in [**`03_uinter_welding_interface`**](../03_uinter_welding_interface/README.md):
-> 1. **Complete Mesh Independence:** Governed by an energy-regularized traction-separation law with critical fracture energy $G_c$, eliminating artificial element size dependence.
-> 2. **Unconditional Solver Stability:** Integrates directly into the standard finite element stiffness matrix, completely bypassing contact chattering and Severe Discontinuity Iterations (SDI).
-> 3. **Linear MPI Scaling:** Operates on local element integration points, scaling effortlessly across multi-core clusters in SIMULIA 3DEXPERIENCE and Abaqus/Standard.
+> [!WARNING]
+> **DEVELOPMENT STATUS: IN WORK / PROTOTYPE (EXPERIMENTAL TESTING PHASE)**  
+> This cohesive zone user material subroutine (`UMAT`) is currently **in development and undergoing testing**.  
+> **DO NOT DEPLOY IN INDUSTRIAL PRODUCTION.**  
+> It is strictly a numerical research prototype under active laboratory and benchmark evaluation. Physical calibration against experimental high-temperature fracture data and industrial validation trials is ongoing.
+
+---
+
+### Technological Evolution from Project 03
+
+This directory investigates a **Cohesive Zone User Material Subroutine (`UMAT`)** designed to model the progressive constitutive behavior of welded joint interfaces (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**).  
+
+This architecture was formulated to evaluate potential solutions to the mathematical bottlenecks identified in the contact-based subroutine documented in [**`03_uinter_welding_interface`**](../03_uinter_welding_interface/README.md):
+1. **Regularized Kinematics:** Governed by an energy-based traction-separation law with critical fracture energy $G_c$, aiming to eliminate element size dependency.
+2. **Contact-Free Formulation:** Integrates directly into the standard finite element stiffness matrix, avoiding contact chattering and Severe Discontinuity Iterations (SDI).
+3. **Linear MPI Scaling:** Operates on local element integration points, scaling across multi-core clusters in SIMULIA 3DEXPERIENCE and Abaqus/Standard.
 
 ---
 
@@ -101,7 +109,7 @@ $$t_{s1} = 0, \quad t_{s2} = 0$$
 
 ## 3. Exact Analytical Tangent Stiffness Matrix ($\mathbf{DDSDDE}$)
 
-To ensure unconditional quadratic convergence in Newton-Raphson iterations, the exact $3 \times 3$ algorithmic tangent Jacobian is formulated as:
+To evaluate solver convergence in Newton-Raphson iterations, the algorithmic tangent Jacobian is formulated as:
 
 $$\mathbf{DDSDDE} = \frac{\partial \mathbf{t}}{\partial \boldsymbol{\delta}} = \begin{bmatrix} \frac{\partial t_n}{\partial \delta_n} & 0 & 0 \\ 0 & \frac{\partial t_{s1}}{\partial \delta_{s1}} & 0 \\ 0 & 0 & \frac{\partial t_{s2}}{\partial \delta_{s2}} \end{bmatrix}$$
 
@@ -109,18 +117,18 @@ $$\mathbf{DDSDDE}_{\text{Welded}} = \begin{bmatrix} K_{\text{bond}} & 0 & 0 \\ 0
 
 $$\mathbf{DDSDDE}_{\text{BTR}} = \begin{bmatrix} (1-D) K_{\text{bond}} & 0 & 0 \\ 0 & (1-D) G_{\text{shear}} & 0 \\ 0 & 0 & (1-D) G_{\text{shear}} \end{bmatrix}$$
 
-Because the Jacobian is fully diagonal and positive semi-definite, Abaqus/Standard resolves non-linear thermal-mechanical increments in **2 to 4 iterations** with zero cutbacks.
-
 ---
 
-## 4. Key Advantages Over Surface Interaction (`UINTER`)
+## 4. Architectural Comparison: UINTER vs. Cohesive UMAT
 
 | Engineering Property | `UINTER` (Project 03) | Cohesive `UMAT` (Project 04) | Physical Rationale |
 | :--- | :--- | :--- | :--- |
+| **Mathematical Domain** | 2D Contact Master/Slave Surface | Continuous Interface Finite Elements | Contact kinematics vs continuum traction-separation |
 | **Mesh Dependency** | ❌ Severe ($L_0$ scale dependent) | ✅ **Zero (Mesh-Independent)** | Governed by fracture energy $G_c$ ($\int \sigma \, d\delta = \text{const}$) |
 | **Convergence Rate** | ⚠️ SDI Cutbacks / Chattering | ✅ **Quadratic Newton-Raphson** | Diagonal $\mathbf{DDSDDE}$ integrated directly into global stiffness |
 | **HPC / MPI Scaling** | ⚠️ Contact surface domain splits | ✅ **Perfect Linear Scaling** | Element-local Gauss integration without inter-domain synchronization |
 | **Constitutive Freedom** | ⚠️ Limited by contact kinematic variables | ✅ **Full Continuum Freedom** | Direct access to all UMAT thermal and field state arrays |
+| **Development Status** | ⚠️ Exploratory Research (Backlog) | ⚠️ **In Work / Testing Phase (Prototype)** | Under laboratory calibration and verification |
 
 ---
 
@@ -128,7 +136,7 @@ Because the Jacobian is fully diagonal and positive semi-definite, Abaqus/Standa
 
 ```text
 04_umat_cohesive_welding/
-├── umat_cohesive_welding_btr.f          # Production User Material Subroutine (Modern Fortran)
+├── umat_cohesive_welding_btr.f          # Prototype User Material Subroutine (Modern Fortran)
 ├── cohesive_weld_btr_verification.inp   # 3-Element benchmark input deck (C3D8 + COH3D8)
 └── README.md                            # Comprehensive technical documentation
 ```
@@ -143,7 +151,7 @@ Execute the 3-element verification test using Abaqus/Standard:
 abaqus job=cohesive_weld_btr_verification user=umat_cohesive_welding_btr.f interactive
 ```
 
-### Verification Checks:
+### Verification Checks Under Evaluation:
 1. **Step 1 (Raw Compression):** Verifies penalty barrier stiffness ($K = 1.0 \times 10^6\text{ N/mm}^3$) with zero penetration.
 2. **Step 2 (Heating to 1550 °C):** Verifies liquid annealing transition and thermal expansion stress relief.
 3. **Step 3 (Cooling & Tensile Pull):** Demonstrates sound joint consolidation ($K = 5.0 \times 10^5\text{ N/mm}^3$) when separation is below $\delta_0$, or progressive softening to $D = 1.0$ when energy exceeds $G_c$.

@@ -174,7 +174,7 @@ To resolve these limitations, the project pivoted to a **Cohesive Zone Modeling 
 | **Mesh Dependency** | ❌ **High** (arbitrary $L_0$ scaling) | ✅ **Zero** (regularized by fracture energy $G_c$) |
 | **Solver Convergence** | ⚠️ High SDI cutbacks & chattering | ✅ Smooth quadratic Newton-Raphson |
 | **HPC / MPI Scaling** | ⚠️ Domain boundary communication bottlenecks | ✅ Perfect linear scaling (element-local integration) |
-| **Industrial Readiness** | ⚠️ Exploratory Research (Backlog) | 🚀 **Production Architecture** ([Project 04](../04_umat_cohesive_welding/README.md)) |
+| **Industrial Readiness** | ⚠️ Exploratory Research (Backlog) | ⚠️ **In Work / Testing Phase** ([Project 04](../04_umat_cohesive_welding/README.md)) |
 
 ---
 
@@ -219,4 +219,4 @@ To resolve these limitations, the project pivoted to a **Cohesive Zone Modeling 
 └── README.md                        # Technical report & research documentation
 ```
 
-> **Next Step:** See [**`04_umat_cohesive_welding`**](../04_umat_cohesive_welding/README.md) for the production-grade, mesh-independent implementation.
+> **Next Step:** See [**`04_umat_cohesive_welding`**](../04_umat_cohesive_welding/README.md) for the mesh-independent cohesive UMAT prototype currently under evaluation.
