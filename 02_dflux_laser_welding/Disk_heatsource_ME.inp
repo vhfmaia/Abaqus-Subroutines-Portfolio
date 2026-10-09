@@ -22,7 +22,7 @@ Units: mm, s, tonne, N, MPa (N/mm2), mJ, C
 ** STRUCTURAL TIES - Weld joint interface
 ** ------------------------------------------------------------------
 *TIE, NAME=TIE_JOINT, TYPE=SURFACE TO SURFACE, ADJUST=YES, POSITION TOLERANCE=0.05
-SURF_HUB_JOINT, SURF_SHAFT_JOINT
+SURF_HUB_RADIAL, SURF_SHAFT_RADIAL
 **
 ** ------------------------------------------------------------------
 ** INITIAL CONDITIONS
@@ -33,11 +33,14 @@ NSET_ALL, 25.0
 **
 ** ------------------------------------------------------------------
 ** BOUNDARY CONDITIONS (INITIAL STEP)
-** Base plate support (Z = 0) with kinematic stabilization against
-** rigid body modes while allowing free radial thermal expansion.
+** Base plate support (Z = 0) in Z only (U3=0) to allow free radial expansion.
+** Anti-rotation constraint (Utheta=0) on inner bore via cylindrical transform.
 ** ------------------------------------------------------------------
+*TRANSFORM, NSET=NSET_SHAFT_INNER, TYPE=C
+ 0.0, 0.0, 0.0,  0.0, 0.0, 1.0
 *BOUNDARY
-NSET_BASE, 3, 3, 0.0
+NSET_BASE_Z, 3, 3, 0.0
+NSET_SHAFT_INNER, 2, 2, 0.0
 1, 1, 2, 0.0
 **
 ** ==================================================================

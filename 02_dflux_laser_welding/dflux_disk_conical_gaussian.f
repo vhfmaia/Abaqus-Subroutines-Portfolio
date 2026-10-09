@@ -44,10 +44,9 @@ module laser_dflux_mod
     real(real64), parameter :: deg_weld      = 360.00d0     ! Full nominal power weld segment [deg]
     real(real64), parameter :: deg_ramp_down = 10.00d0      ! Power ramp-down overlap segment [deg]
 
-    ! Mathematical & analytical normalization constants (Wu et al. 2006 / Farrokhi et al. 2019)
+    ! Mathematical & analytical normalization constants
     real(real64), parameter :: pi_const   = 3.14159265358979323846d0
-    real(real64), parameter :: e3_ratio   = 20.085536923187668d0 / (20.085536923187668d0 - 1.0d0)
-    real(real64), parameter :: q0_peak    = (9.0d0 * eta_absorb * qtot_nominal * e3_ratio) / &
+    real(real64), parameter :: q0_peak    = (9.0d0 * eta_absorb * qtot_nominal) / &
                                             (pi_const * depth_zi * &
                                              (r_top**2 + r_top * r_bottom + r_bottom**2))
 
@@ -64,7 +63,7 @@ contains
         real(real64), intent(out) :: q_vol
 
         real(real64) :: theta_rad, theta_deg
-        real(real64) :: amp_factor, z_local, r0_z
+        real(real64) :: amp_factor, z_local, r0_z, r_cut
         real(real64) :: xc, yc, dx, dy, r_dist_sq
 
         ! Current angular position along the joint
@@ -93,12 +92,15 @@ contains
 
         ! 2. Depth Check relative to top irradiated surface
         z_local = z_surface - coords(3)
-        if (z_local < 0.0d0 .or. z_local > depth_zi) then
+        if (z_local < 0.0d0) then
+            z_local = 0.0d0
+        end if
+        if (z_local > depth_zi) then
             q_vol = 0.0d0
             return
         end if
 
-        ! 3. Local cone radius at current depth z (Wu et al. Eq. 6 / Farrokhi et al. Eq. 6)
+        ! 3. Local cone radius at current depth z
         r0_z = r_top + (r_bottom - r_top) * (z_local / depth_zi)
         if (r0_z <= 0.0d0) then
             q_vol = 0.0d0
@@ -113,8 +115,10 @@ contains
         dy = coords(2) - yc
         r_dist_sq = dx**2 + dy**2
 
-        ! Conical boundary envelope: r <= r0(z) (Farrokhi et al. 2019 / Wu et al. 2006)
-        if (r_dist_sq > (r0_z**2)) then
+        ! Conical boundary envelope with smooth Gaussian tail (cutoff_tol = 1.0d-8)
+        ! Eliminates steep step discontinuities across element integration points
+        r_cut = sqrt(-log(cutoff_tol) / 3.0d0) * r0_z
+        if (r_dist_sq > (r_cut**2)) then
             q_vol = 0.0d0
             return
         end if
