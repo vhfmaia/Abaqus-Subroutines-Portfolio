@@ -49,7 +49,7 @@ Detailed formulation, kinematic equations, FEA verification, and post-processing
   </a>
 </p>
 
-Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (`ABQ_PHASE_TRANS`), hybrid elements (`C3D8H`), continuous annealing at $1500^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.
+Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (`ABQ_PHASE_TRANS`), hybrid elements (`C3D8H`), continuous annealing at $1530^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.
 
 #### Key Thermal, Metallurgical & Mechanical Highlights:
 - **3D Conical Gaussian Heat Source:** Analytically normalized peak flux $Q_0 = 4.6935 \times 10^5\text{ mW/mm}^3$ with $10^\circ$ linear power ramp-up, $360^\circ$ steady weld, and $10^\circ$ crater-filling ramp-down overlap.

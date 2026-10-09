@@ -88,8 +88,8 @@ In industrial finite element modeling, keeping a single material file (`Material
 
 Both input decks reference the identical material identifier:
 ```inp
-*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="16MnCr5"
-*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="16MnCr5"
+*SOLID SECTION, ELSET=SHAFT_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
+*SOLID SECTION, ELSET=HUB_SECTION, MATERIAL="ABQ_PHASE_TRANS_16MNCR5"
 ```
 
 ### 2.2 Built-in Phase Transformation Kinetics (`ABQ_PHASE_TRANS`)
@@ -115,39 +115,44 @@ Governed by Johnson-Mehl-Avrami (JMA) isothermal transformation kinetics adapted
 
 $$f(t, T) = 1 - \exp\left( -k(T) \cdot t^{n(T)} \right)$$
 
-where kinetic coefficients $k(T)$ and $n(T)$ are derived from the alloy's Time-Temperature-Transformation (TTT) diagrams between $Ac_1 = 734^\circ\text{C}$ and $Bs = 617^\circ\text{C}$ for ferrite, and between $Bs = 617^\circ\text{C}$ and $Ms = 425^\circ\text{C}$ for bainite.
+where kinetic coefficients $k(T)$ and $n(T)$ are derived from the alloy's Time-Temperature-Transformation (TTT) diagrams:
+- **Austenite → Ferrite (`AtoF`):** Active in the continuous cooling interval $[550^\circ\text{C}, 810^\circ\text{C}]$.
+- **Austenite → Bainite (`AtoB`):** Active in the continuous cooling interval $[400^\circ\text{C}, 600^\circ\text{C}]$.
 
 #### Displacive Martensitic Transformation (Austenite → Martensite)
-Below the martensite start temperature ($M_s = 425^\circ\text{C}$), diffusionless shear transformation is calculated via the Koistinen-Marburger (K-M) equation:
+Below the martensite start temperature ($M_s = 400^\circ\text{C}$), diffusionless shear transformation is calculated via the Koistinen-Marburger (K-M) equation:
 
 $$f_M = f_A \cdot \left[ 1 - \exp\left( -\gamma \cdot (M_s - T) \right) \right]$$
 
-with empirical rate coefficient $\gamma = 0.011\text{ K}^{-1}$. The material card maps $5\%$ martensite at $420^\circ\text{C}$ and $90\%$ at $216^\circ\text{C}$.
+with empirical rate coefficient $\gamma = 0.011\text{ K}^{-1}$ (`*PROPERTY TABLE, TYPE="ABQ_PHASE_TRANS_Martensitic_KM_Coefficients"`). The transformation is active below $400^\circ\text{C}$ down to room temperature.
 
-#### Austenitization on Rapid Heating
-During laser irradiation, rapid heating across the intercritical range ($Ac_1 = 734^\circ\text{C}$ to $Ac_3 = 840^\circ\text{C}$) dissolves existing ferrite/pearlite into austenite. Equilibrium parent phase fractions and TTT diagrams guarantee complete austenitization prior to melting.
+#### Reverse Austenitization on Rapid Heating
+During laser irradiation, rapid heating triggers reverse diffusional dissolution into austenite:
+- **Ferrite → Austenite (`FtoA`):** Active on heating from $720^\circ\text{C}$ up to solidus ($1485^\circ\text{C}$).
+- **Bainite → Austenite (`BtoA`):** Active on heating from $720^\circ\text{C}$ up to solidus ($1485^\circ\text{C}$).
+- **Martensite → Austenite (`MtoA`):** Active on heating from $650^\circ\text{C}$ up to solidus ($1485^\circ\text{C}$).
 
 #### Latent Heat of Fusion
-The phase change energy is accounted for across the mushy zone ($T_{\text{solidus}} = 1490^\circ\text{C}$ to $T_{\text{liquidus}} = 1515^\circ\text{C}$):
+The phase change energy is accounted for across the calibrated mushy zone ($T_{\text{solidus}} = 1485^\circ\text{C}$ to $T_{\text{liquidus}} = 1530^\circ\text{C}$):
 ```inp
 *PARAMETER TABLE, TYPE="ABQ_PHASE_TRANS_MeltingTemperature"
- 1490, 1515,
+ 1485, 1530,
 *LATENT HEAT
- 2.700E+11, 1490, 1515, 1.0
+ 280e9, 1485, 1530, 1.0
 ```
-where $L = 270\text{ kJ/kg}$ ($2.70 \times 10^{11}\text{ mJ/tonne}$).
+where $L = 280\text{ kJ/kg}$ ($2.80 \times 10^{11}\text{ mJ/tonne}$).
 
 ### 2.3 Mechanical Constitutive Behavior & High-Temperature Annealing
 
-- **Thermal Expansion:** Temperature-dependent secant thermal expansion coefficient $\alpha(T)$ ranging from $1.15 \times 10^{-5}\text{ K}^{-1}$ at $20^\circ\text{C}$ to $1.70 \times 10^{-5}\text{ K}^{-1}$ at $1500^\circ\text{C}$ (`ZERO=25.0`).
-- **Degradation of Elastic Modulus:** Young's modulus drops monotonically from $210\text{ GPa}$ ($20^\circ\text{C}$) to $300\text{ MPa}$ ($1500^\circ\text{C}$); Poisson's ratio approaches the incompressibility limit ($\nu = 0.48$).
-- **Temperature-Dependent Plasticity:** Yield strength decays from $550\text{ MPa}$ at room temperature to $1.5\text{ MPa}$ at $1500^\circ\text{C}$.
+- **Thermal Expansion:** Temperature-dependent isotropic thermal expansion coefficient $\alpha(T)$ with reference temperature `ZERO=-273.15` up to $2800^\circ\text{C}$.
+- **Degradation of Elastic Modulus:** Young's modulus drops monotonically from $210\text{ GPa}$ ($20^\circ\text{C}$) to $500\text{ MPa}$ ($1530^\circ\text{C}$), with $2000\text{ MPa}$ residual fluid-like numerical stiffness up to $2800^\circ\text{C}$ to avoid element distortion singularities.
+- **Temperature-Dependent Plasticity:** Multi-curve strain hardening from $20^\circ\text{C}$ up to $1500^\circ\text{C}$ with linear extrapolation.
 - **Plastic Strain Reset (`*ANNEAL TEMPERATURE`):**
   ```inp
   *ANNEAL TEMPERATURE
-   1500.0
+   1530.0
   ```
-  Molten metal cannot store dislocation hardening. When an element exceeds $1500^\circ\text{C}$, Abaqus resets the equivalent plastic strain (`PEEQ = 0`), preventing artificial accumulated plastic distortion from corrupting the solid-state residual stress field during cool-down.
+  Molten metal cannot store dislocation hardening. When an element exceeds $1530^\circ\text{C}$, Abaqus resets the equivalent plastic strain (`PEEQ = 0`), preventing artificial accumulated plastic distortion from corrupting the solid-state residual stress field during cool-down.
 
 ---
 
@@ -161,8 +166,8 @@ where $L = 270\text{ kJ/kg}$ ($2.70 \times 10^{11}\text{ mJ/tonne}$).
 |                             +--- Material_16MnCr5.inp (k(T), cp(T), rho, Phase Trans)   |
 |                             +--- dflux_disk_conical_gaussian.f (Conical Gaussian TDC)   |
 |                                                                                         |
-|  Step 1: Welding & Solidification (dt = 0.012 s, CFL <= 0.80)                           |
-|  Step 2: Cooling to Ambient (DELTMX = 25 °C adaptive kinetics)                          |
+|  Step 1: Welding & Solidification (dt = 0.01178 s, DELTMX = 5000, MXDEM = 0.5)          |
+|  Step 2: Cooling to Ambient (DELTMX = 5000, MXDEM = 0.1, max dt = 15.0 s)               |
 +--------------------------------------------+--------------------------------------------+
                                              |
                                   Disk_heatsource_TH.odb
@@ -174,8 +179,8 @@ where $L = 270\text{ kJ/kg}$ ($2.70 \times 10^{11}\text{ mJ/tonne}$).
 |                                                                                         |
 |  Disk_heatsource_ME.inp <---+--- Geometry_ME.inp (C3D8H Hybrid Brick Elements, NSET_BASE)|
 |                             +--- Material_16MnCr5.inp (E(T), nu(T), alpha(T), sigma_y)  |
-|                             +--- *TEMPERATURE, FILE=Disk_heatsource_TH                  |
-|                             +--- *ANNEAL TEMPERATURE = 1500.0 °C (Resets Molten PEEQ)    |
+|                             +--- *TEMPERATURE, FILE=Disk_heatsource_TH.fil              |
+|                             +--- *ANNEAL TEMPERATURE = 1530.0 °C (Resets Molten PEEQ)    |
 |                             +--- *DLOAD, GRAV (Hydrostatic Fluid Stabilization)         |
 |                                                                                         |
 |  Step 1: Transient Thermal Stress & Distortions (NLGEOM=YES, Line Search Controls)      |
@@ -448,8 +453,8 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ## 6. Key Results to Evaluate
 
-- **Melt Pool Geometry:** Isotherm $T \ge T_{\text{liquidus}} = 1515^\circ\text{C}$ identifies the molten weld bead width and penetration depth ($z_i \approx 3.0\text{ mm}$).
-- **Heat Affected Zone (HAZ):** Region bounded between $Ac_1 = 734^\circ\text{C}$ and $T_{\text{solidus}} = 1490^\circ\text{C}$.
+- **Melt Pool Geometry:** Isotherm $T \ge T_{\text{liquidus}} = 1530^\circ\text{C}$ identifies the molten weld bead width and penetration depth ($z_i \approx 3.0\text{ mm}$).
+- **Heat Affected Zone (HAZ):** Region bounded between $Ac_1 \approx 720^\circ\text{C}$ and $T_{\text{solidus}} = 1485^\circ\text{C}$.
 - **Phase Distributions (`SDV4`–`SDV7`):** Martensite formation in the rapidly cooled HAZ and bainite/ferrite in adjacent parent material.
 - **Residual Stress State:** Peak hoop ($\sigma_{\theta\theta}$) and axial ($\sigma_{zz}$) tensile stresses locked along the weld fusion line, balanced by compressive stress in the surrounding shaft and hub body.
 
