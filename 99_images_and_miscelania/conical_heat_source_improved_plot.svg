@@ -292597,6 +292597,7 @@ L 899.722603 97.92
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_97">
+    <rect x="869" y="216" width="54" height="23" rx="3" fill="#ffffff" fill-opacity="0.95" stroke="#fed7aa" stroke-width="0.75" />
     <!-- Overlap -->
     <g style="fill: #d9480f" transform="translate(873.191141 225.703768) scale(0.08 -0.08)">
      <defs>
@@ -293751,6 +293752,7 @@ z
     </g>
    </g>
    <g id="text_103">
+    <rect x="846" y="249" width="54" height="15" rx="3" fill="#ffffff" fill-opacity="0.95" stroke="#bbf7d0" stroke-width="0.75" />
     <!-- Start (0°) -->
     <g style="fill: #2b8a3e" transform="translate(849.527945 259.259973) scale(0.08 -0.08)">
      <use xlink:href="#DejaVuSans-Bold-36"/>
@@ -293790,6 +293792,7 @@ L 845.013496 205.674997
 " style="fill: none; stroke: #7048e8; stroke-linecap: round"/>
    </g>
    <g id="text_104">
+    <rect x="845" y="184" width="58" height="15" rx="3" fill="#ffffff" fill-opacity="0.95" stroke="#ddd6fe" stroke-width="0.75" />
     <!-- End (380°) -->
     <g style="fill: #7048e8" transform="translate(848.855261 194.346697) scale(0.08 -0.08)">
      <defs>
@@ -293831,8 +293834,9 @@ L 658.173276 168.164495
 " style="fill: none; stroke: #1864ab; stroke-width: 1.8; stroke-linecap: round"/>
    </g>
    <g id="text_105">
+    <rect x="624" y="135" width="65" height="16" rx="3" fill="#ffffff" fill-opacity="0.95" stroke="#bae6fd" stroke-width="0.75" />
     <!-- $v = 20\,$mm/s -->
-    <g style="fill: #1864ab" transform="translate(629.598768 170.488833) scale(0.08 -0.08)">
+    <g style="fill: #1864ab" transform="translate(627.5 147.0) scale(0.08 -0.08)">
      <defs>
       <path id="Cmmi10-38" d="M 684 722 
 Q 684 866 718 1037 
@@ -294610,8 +294614,9 @@ L 935.315156 498.172205
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_125">
+    <rect x="580" y="660" width="76" height="26" rx="4" fill="#ffffff" fill-opacity="0.95" stroke="#bbf7d0" stroke-width="0.8" />
     <!-- Ramp-Up -->
-    <g style="fill: #2b8a3e" transform="translate(551.520977 646.325282) scale(0.08 -0.08)">
+    <g style="fill: #2b8a3e" transform="translate(593.0 670.5) scale(0.08 -0.08)">
      <defs>
       <path id="DejaVuSans-Bold-38" d="M 588 4666 
 L 1791 4666 
@@ -294640,7 +294645,7 @@ z
      <use xlink:href="#DejaVuSans-Bold-53" transform="translate(442.96875 0)"/>
     </g>
     <!-- (10°, 0.13 s) -->
-    <g style="fill: #2b8a3e" transform="translate(551.520977 655.926845) scale(0.08 -0.08)">
+    <g style="fill: #2b8a3e" transform="translate(586.0 680.5) scale(0.08 -0.08)">
      <defs>
       <path id="DejaVuSans-Bold-11" d="M 653 1209 
 L 1778 1209 
@@ -295194,8 +295199,9 @@ z
     </g>
    </g>
    <g id="text_127">
+    <rect x="818" y="660" width="76" height="26" rx="4" fill="#ffffff" fill-opacity="0.95" stroke="#ddd6fe" stroke-width="0.8" />
     <!-- Ramp-Down -->
-    <g style="fill: #7048e8" transform="translate(858.915229 646.325282) scale(0.08 -0.08)">
+    <g style="fill: #7048e8" transform="translate(828.0 670.5) scale(0.08 -0.08)">
      <use xlink:href="#DejaVuSans-Bold-35"/>
      <use xlink:href="#DejaVuSans-Bold-44" transform="translate(77 0)"/>
      <use xlink:href="#DejaVuSans-Bold-50" transform="translate(144.484375 0)"/>
@@ -295207,7 +295213,7 @@ z
      <use xlink:href="#DejaVuSans-Bold-51" transform="translate(605.875 0)"/>
     </g>
     <!-- (10°, 0.13 s) -->
-    <g style="fill: #7048e8" transform="translate(857.527729 655.926845) scale(0.08 -0.08)">
+    <g style="fill: #7048e8" transform="translate(824.0 680.5) scale(0.08 -0.08)">
      <use xlink:href="#DejaVuSans-Bold-b"/>
      <use xlink:href="#DejaVuSans-Bold-14" transform="translate(45.703125 0)"/>
      <use xlink:href="#DejaVuSans-Bold-13" transform="translate(115.28125 0)"/>

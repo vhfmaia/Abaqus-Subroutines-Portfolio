@@ -7833,6 +7833,9 @@ z
      <use xlink:href="#DejaVuSerif-c" transform="translate(661.627106 0.015625)"/>
     </g>
    </g>
+   <g id="patch_zi_bg">
+    <rect x="436" y="218" width="122" height="48" rx="5" fill="#ffffff" fill-opacity="0.95" stroke="#cbd5e1" stroke-width="0.8" />
+   </g>
    <g id="text_12">
     <!-- $z_i = 3.00\,\mathrm{mm}$ -->
     <g style="fill: #212529" transform="translate(444.450002 235.535129) scale(0.105 -0.105)">

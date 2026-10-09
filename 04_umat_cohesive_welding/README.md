@@ -1,4 +1,4 @@
-﻿# 04. Advanced Cohesive Zone Modeling (`UMAT`): 3-State Thermo-Mechanical Weld Interface
+# 04. Advanced Cohesive Zone Modeling (`UMAT`): 3-State Thermo-Mechanical Weld Interface
 
 [![Status: In Work (Testing)](https://img.shields.io/badge/Status-In%20Work%20%2F%20Prototype%20(Testing)-orange.svg)](#)
 [![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/)
@@ -50,9 +50,11 @@ Precision laser-welded cylindrical and planar assemblies undergo three distinct 
 ## 2. Mathematical & Constitutive Formulation
 
 <div align="justify">
-The subroutine is formulated for 8-node three-dimensional cohesive elements (<code>COH3D8</code>) with traction-separation kinematic response ($\text{NTENS} = 3$):
-$$\boldsymbol{\delta} = \{\delta_n, \delta_{s1}, \delta_{s2}\}^T$$
+The subroutine is formulated for 8-node three-dimensional cohesive elements (<code>COH3D8</code>) with traction-separation kinematic response (<code>NTENS = 3</code>):
 </div>
+
+$$\boldsymbol{\delta} = \{\delta_n, \; \delta_{s1}, \; \delta_{s2}\}^T$$
+
 
 ### 2.1 State-Dependent Constitutive Laws
 

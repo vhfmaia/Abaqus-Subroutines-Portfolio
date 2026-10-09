@@ -304,7 +304,7 @@ To preserve element fractional symmetry under all numerical conditions, the solv
 
 ```inp
 *CONTROLS, PARAMETERS=TIME INCREMENTATION
-20, 30, 10, 50, 20, 10, , 5
+8, 12, 9, 16, 10, 4, ,
 0.5, 2.0, 0.5, 0.5, , 2.0, ,
 ```
 
@@ -312,7 +312,7 @@ To preserve element fractional symmetry under all numerical conditions, the solv
 <ul>
   <li><b>Binary Cutback Factor ($D_f = 0.5$, $D_B = 0.5$):</b> If a local non-linearity requires a step reduction, $\Delta t$ is halved strictly ($\Delta t / 2$). The beam advances by $0.45^\circ$, aligning precisely with a $1/4$ element fraction.</li>
   <li><b>Binary Recovery Factor ($D_C = 2.0$, $D_S = 2.0$):</b> Once equilibrium stabilizes, the solver doubles the time increment back to the nominal dyadic step ($0.90^\circ$).</li>
-  <li><b>Extended Iteration Window ($I_0 = 20$, $I_C = 50$):</b> Increases allowable equilibrium iterations before declaring false divergence, giving Newton-Raphson sufficient room to resolve rapid phase transitions without unnecessary cutbacks.</li>
+  <li><b>Equilibrium Iteration Guard ($I_0 = 8$, $I_R = 12$, $I_C = 16$):</b> Calibrated to accommodate the 3–4 iterations required under the unsymmetric Newton-Raphson scheme, preventing artificial step cutbacks during rapid transient passes.</li>
 </ul>
 </div>
 
@@ -391,36 +391,50 @@ In the validated 16MnCr5 material deck:
 
 ---
 
-### 4.5 Stefan Problem Stabilization: `MXDEM` & Line Search Damping
+### 4.5 Convergence Architecture: Unsymmetric Jacobian (`UNSYMM=YES`), Reference Flux & Damping Removal
 
 <div align="justify">
-Nonlinear transient phase change problems (Stefan problems) require specific numerical aids to prevent iteration chattering:
+Nonlinear transient phase change and metallurgical transformation problems require specific solver configurations to achieve quadratic convergence and eliminate increment crawling:
 <ol>
-  <li><b>Maximum Emission Parameter (<code>MXDEM = 0.5</code>):</b></li>
+  <li><b>Unsymmetric Solver Formulation (<code>*STEP, ..., UNSYMM=YES</code>):</b></li>
 </ol>
 </div>
 
 ```inp
-*HEAT TRANSFER, DELTMX=5000., MXDEM=0.5
+*STEP, NAME=WELDING_STEP_THERMAL, AMPLITUDE=STEP, INC=10000, UNSYMM=YES
+*HEAT TRANSFER, DELTMX=5000.
 ```
 
 <div align="justify">
-Specifying <code>MXDEM = 0.5</code> enables Abaqus to monitor the maximum allowable change in temperature due to latent heat emission per iteration, smoothing the Stefan phase front.
+The solid-state phase transformation kinetics in <code>ABQ_PHASE_TRANS_16MNCR5</code> (Leblond, Koistinen-Marburger, and JMAK rate equations) coupled with latent heat enthalpy rates introduce strong off-diagonal non-symmetry into the tangent conductivity/effective capacity matrix:
+</div>
+
+$$\mathbf{K}_{ij} = \frac{\partial R_i}{\partial T_j} \ne \frac{\partial R_j}{\partial T_i}$$
+
+<div align="justify">
+When <code>UNSYMM=YES</code> is omitted, Abaqus defaults to the symmetric direct sparse solver ($\mathbf{K}_{\text{sym}} = \frac{1}{2}(\mathbf{K} + \mathbf{K}^T)$). This strips Newton-Raphson of its quadratic convergence rate, causing the residual to decay with a sluggish geometric contraction factor ($\rho \approx 0.69$ per iteration), leading to 18–30 iterations per increment and catastrophic cutbacks. Enabling <code>UNSYMM=YES</code> factors the full unsymmetric Jacobian, restoring quadratic Newton convergence ($R_{k+1} \propto R_k^2$) in just <b>3–4 iterations</b>.
 </div>
 
 <div align="justify">
 <ol start="2">
-  <li><b>Line Search Non-Linear Damping:</b></li>
+  <li><b>Localized Reference Heat Flux (<code>*CONTROLS, PARAMETERS=FIELD, FIELD=TEMPERATURE</code>):</b></li>
 </ol>
 </div>
 
 ```inp
-*CONTROLS, PARAMETERS=LINE SEARCH
-10, 1, 0.001, 0.25, 0.01
+*CONTROLS, PARAMETERS=FIELD, FIELD=TEMPERATURE
+0.01, 0.02, , 250.0, 0.05
 ```
 
 <div align="justify">
-When sharp thermal gradients advance across elements, standard Newton-Raphson corrections often overshoot the equilibrium state. The Line Search algorithm automatically scales correction vectors by an energy-minimizing factor $\eta \in [0.01, 1.0]$, eliminating residual oscillation and accelerating convergence from 15+ iterations down to 3–4 iterations per increment.
+In standard Abaqus heat transfer, the residual equilibrium tolerance is computed as $R_{\text{tol}} = R_n^\alpha \cdot \tilde{q}$, where $\tilde{q}$ is the time-averaged flux across the <i>entire mesh</i>. In this 225,000-element model, over 99.7% of elements are outside the laser spot ($q = 0$). Dilution drops $\tilde{q}$ to $\sim 25\text{ mW/mm}^3$, forcing an unphysically microscopic residual tolerance of $0.125\text{ mW/mm}^3$ against a peak laser source of $469,000\text{ mW/mm}^3$ ($2.6 \times 10^{-7}$ relative error). Setting an explicit characteristic weld pool flux norm $\bar{q} = 250.0\text{ mW/mm}^3$ locks the tolerance to $2.5\text{ mW/mm}^3$ ($5 \times 10^{-6}$ relative tolerance), preventing spurious solver rejections.
+</div>
+
+<div align="justify">
+<ol start="3">
+  <li><b>Deactivation of Line Search:</b></li>
+</ol>
+Line Search scale factors ($\eta \in [0.35, 0.72]$) artificially under-relax Newton steps across the latent heat plateau ($1485^\circ\text{C} - 1530^\circ\text{C}$), trapping temperatures inside the transition zone and causing iteration stalling. Removing line search enables uninhibited Newton-Raphson steps across phase fronts.
 </div>
 
 ---

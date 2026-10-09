@@ -75,21 +75,22 @@
     <rect width="930" height="68" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
     
     <!-- Substrate 1 -->
-    <rect x="15" y="10" width="180" height="20" rx="3" fill="#cbd5e1" />
-    <text x="30" y="24" class="badge-pill" fill="#334155">BASE COMPONENT 1 (Steel Hub)</text>
+    <rect x="15" y="10" width="160" height="20" rx="3" fill="#cbd5e1" />
+    <text x="25" y="24" class="badge-pill" fill="#334155">BASE COMPONENT 1</text>
 
     <!-- Cohesive Layer -->
-    <rect x="15" y="32" width="180" height="7" fill="#6366f1" />
-    <text x="205" y="38" class="badge-pill" fill="#4338ca">◄ COH3D8 Cohesive Element (Zero-Thickness, Governed by UMAT)</text>
+    <rect x="15" y="32" width="160" height="7" fill="#6366f1" />
+    <text x="185" y="38" class="badge-pill" fill="#4338ca">◄ COH3D8 Cohesive Element (Zero-Thickness, UMAT)</text>
 
     <!-- Substrate 2 -->
-    <rect x="15" y="41" width="180" height="20" rx="3" fill="#cbd5e1" />
-    <text x="30" y="55" class="badge-pill" fill="#334155">BASE COMPONENT 2 (Shaft)</text>
+    <rect x="15" y="41" width="160" height="20" rx="3" fill="#cbd5e1" />
+    <text x="25" y="55" class="badge-pill" fill="#334155">BASE COMPONENT 2</text>
 
-    <!-- Traction Law Note -->
-    <line x1="590" y1="10" x2="590" y2="58" stroke="#cbd5e1" stroke-width="1" />
-    <text x="610" y="27" class="card-text"><b>Kinematic Tractions:</b> <b>t</b> = {t<sub>n</sub>, t<sub>s1</sub>, t<sub>s2</sub>}<sup>T</sup> &amp; Displacements <b>δ</b> = {δ<sub>n</sub>, δ<sub>s1</sub>, δ<sub>s2</sub>}<sup>T</sup></text>
-    <text x="610" y="50" class="card-subtext">Eliminates virtual length L<sub>0</sub> dependency via fracture energy dissipation: ∫ t<sub>n</sub> dδ<sub>n</sub> = G<sub>c</sub></text>
+    <!-- Traction Law & Energy Regularization Note -->
+    <line x1="475" y1="8" x2="475" y2="60" stroke="#cbd5e1" stroke-width="1" />
+    <text x="490" y="24" class="card-text"><tspan font-weight="700">Kinematic Tractions:</tspan> t = {tₙ, tₛ₁, tₛ₂}ᵀ &amp; Displacements δ = {δₙ, δₛ₁, δₛ₂}ᵀ</text>
+    <text x="490" y="41" class="card-subtext"><tspan font-weight="700" fill="#334155">Energy Dissipation:</tspan> ∫ tₙ dδₙ = G_c (Fracture energy regularization)</text>
+    <text x="490" y="57" class="card-subtext"><tspan font-weight="700" fill="#334155">Mesh Independence:</tspan> Eliminates virtual length scale L₀ pathological dependency</text>
   </g>
 
   <!-- ==================== STATE 0: RAW PRE-WELD ==================== -->
