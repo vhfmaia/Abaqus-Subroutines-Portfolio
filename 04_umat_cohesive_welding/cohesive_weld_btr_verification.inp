@@ -1,0 +1,129 @@
+** ==================================================================
+** ABAQUS/STANDARD COHESIVE BENCHMARK: 3-ELEMENT VERIFICATION DECK
+** SUBROUTINE: UMAT (Cohesive Traction-Separation Formulation)
+** APPLICATION: 3-State Thermo-Mechanical Weld Interface (Raw/Welded/Cracked)
+** STATUS:     Production Architecture (Project 04)
+** ==================================================================
+*HEADING
+3-State Cohesive Zone Interface Verification (UMAT with COH3D8)
+**
+** Geometry: Lower Block (Z: 0 to 1), Cohesive Layer (Z: 1 to 1), Upper Block (Z: 1 to 2)
+*NODE
+1, 0.0, 0.0, 0.0
+2, 1.0, 0.0, 0.0
+3, 1.0, 1.0, 0.0
+4, 0.0, 1.0, 0.0
+5, 0.0, 0.0, 1.0
+6, 1.0, 0.0, 1.0
+7, 1.0, 1.0, 1.0
+8, 0.0, 1.0, 1.0
+** Upper block nodes
+101, 0.0, 0.0, 1.0
+102, 1.0, 0.0, 1.0
+103, 1.0, 1.0, 1.0
+104, 0.0, 1.0, 1.0
+105, 0.0, 0.0, 2.0
+106, 1.0, 0.0, 2.0
+107, 1.0, 1.0, 2.0
+108, 0.0, 1.0, 2.0
+**
+*ELEMENT, TYPE=C3D8, ELSET=E_LOWER
+1, 1, 2, 3, 4, 5, 6, 7, 8
+*ELEMENT, TYPE=C3D8, ELSET=E_UPPER
+2, 101, 102, 103, 104, 105, 106, 107, 108
+** Cohesive element (zero geometric thickness, connects 5-8 with 101-104)
+*ELEMENT, TYPE=COH3D8, ELSET=E_COHESIVE
+3, 5, 6, 7, 8, 101, 102, 103, 104
+**
+** Sections
+*SOLID SECTION, ELSET=E_LOWER, MATERIAL=STEEL_16MNCR5
+*SOLID SECTION, ELSET=E_UPPER, MATERIAL=STEEL_16MNCR5
+*COHESIVE SECTION, ELSET=E_COHESIVE, MATERIAL=COH_WELD_MAT, RESPONSE=TRACTION SEPARATION
+**
+** Base Material Properties
+*MATERIAL, NAME=STEEL_16MNCR5
+*ELASTIC
+210000.0, 0.30
+*EXPANSION
+1.2E-5
+*DENSITY
+7.85E-9
+**
+** ==================================================================
+** COHESIVE UMAT PROPERTIES
+** PROPS(1) = K_PENALTY_RAW   (1.0E6 N/mm3)
+** PROPS(2) = K_BOND_SOLID    (5.0E5 N/mm3)
+** PROPS(3) = G_SHEAR_SOLID   (2.0E5 N/mm3)
+** PROPS(4) = T_SOLIDUS       (1485.0 C)
+** PROPS(5) = T_LIQUIDUS      (1530.0 C)
+** PROPS(6) = SIGMA_CRIT_BTR  (15.0 MPa - semi-solid tensile strength)
+** PROPS(7) = GC_FRACTURE_BTR (0.50 N/mm = mJ/mm2 - critical fracture energy)
+** PROPS(8) = DELTA_MAX_CRACK (0.0667 mm = 2*Gc/Sigma_c)
+** ==================================================================
+*MATERIAL, NAME=COH_WELD_MAT
+*USER MATERIAL, CONSTANTS=8
+1.0E6, 5.0E5, 2.0E5, 1485.0, 1530.0, 15.0, 0.50, 0.06667
+*DEPVAR
+5
+1, WELD_STATE, "State (0:Raw, 1:BTR, 2:Welded, 3:Cracked)"
+2, PEAK_TEMP,  "Peak Historic Temperature"
+3, DAMAGE,     "Continuous Damage Variable D"
+4, MAX_OPEN,   "Peak Tensile Opening in BTR"
+5, DISSIP_ENG, "Dissipated Cracking Energy"
+**
+*NSET, NSET_BASE
+1, 2, 3, 4
+*NSET, NSET_TOP
+105, 106, 107, 108
+*ELSET, ALL_ELEMENTS
+E_LOWER, E_UPPER, E_COHESIVE
+**
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+ALL_ELEMENTS, 20.0
+**
+** ==================================================================
+** STEP 1: INITIAL COMPRESSION (VERIFIES RAW PENALTY BEHAVIOR)
+** ==================================================================
+*STEP, NAME=STEP_RAW_COMPRESSION
+*STATIC
+0.1, 1.0
+*BOUNDARY
+NSET_BASE, 1, 3, 0.0
+NSET_TOP, 1, 2, 0.0
+NSET_TOP, 3, 3, -0.02
+*OUTPUT, FIELD
+*NODE OUTPUT
+U, RF
+*ELEMENT OUTPUT, ELSET=E_COHESIVE
+S, E, SDV
+*END STEP
+**
+** ==================================================================
+** STEP 2: THERMAL CYCLE & LIQUIDUS MELT POOL CREATION
+** ==================================================================
+*STEP, NAME=STEP_MELT_CYCLE
+*STATIC
+0.05, 1.0
+*TEMPERATURE
+ALL_ELEMENTS, 1550.0
+*OUTPUT, FIELD
+*ELEMENT OUTPUT, ELSET=E_COHESIVE
+S, E, SDV
+*END STEP
+**
+** ==================================================================
+** STEP 3: COOLING THROUGH BTR & STRUCTURAL LOADING
+** ==================================================================
+*STEP, NAME=STEP_COOL_SOLIDIFY
+*STATIC
+0.01, 1.0
+*TEMPERATURE
+ALL_ELEMENTS, 25.0
+*BOUNDARY
+NSET_TOP, 3, 3, 0.05
+*OUTPUT, FIELD
+*NODE OUTPUT
+U, RF
+*ELEMENT OUTPUT, ELSET=E_COHESIVE
+S, E, SDV
+*END STEP

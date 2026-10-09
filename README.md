@@ -10,6 +10,8 @@ A repository of production-grade user subroutines for **Abaqus/Standard** and **
 | :---: | :--- | :--- | :--- | :---: |
 | **01** | [`DLOAD`](01_dload_gear_fatigue/README.md) | Moving Surface Load / Quasi-Static | High-cycle fatigue analysis of a welded helical crown gear (360° full revolution) | ✅ Verified |
 | **02** | [`DFLUX`](02_dflux_laser_welding/README.md) | Moving Conical Flux / Thermo-Mechanical | Sequentially coupled laser welding with phase transformations and residual stress | ✅ Verified |
+| **03** | [`UINTER`](03_uinter_welding_interface/README.md) | Surface Interaction / BTR Hot Cracking | 3-State contact interface (Raw $\rightarrow$ Welded $\rightarrow$ Cracked) with BTR criteria | ⚠️ Exploratory (R&D Backlog) |
+| **04** | [`UMAT`](04_umat_cohesive_welding/README.md) | Cohesive Zone Modeling / Fracture Energy $G_c$ | Mesh-independent 3-state thermo-mechanical weld interface (`COH3D8`) | 🚀 Production Architecture |
 
 ---
 
@@ -61,6 +63,24 @@ Detailed formulation, verification routines, simulation input decks, and automat
 
 ---
 
+### Project Showcase: 03 & 04. Advanced Interface Modeling Evolution
+
+The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**):
+
+```text
+┌──────────────────────────────────────────────┐       Identified Bottlenecks:       ┌──────────────────────────────────────────────┐
+│  03_uinter_welding_interface (UINTER)        │   • Pathological Mesh Dependency    │  04_umat_cohesive_welding (UMAT + CZM)       │
+│  • Surface Interaction Routine               │ ─────────────────────────────────>  │  • Cohesive Zone Elements (COH3D8)           │
+│  • Contact Master/Slave formulation          │   • Severe Discontinuity (SDI)      │  • Fracture Energy Gc Regularization         │
+│  • Status: ⚠️ Exploratory (R&D Backlog)      │   • MPI Domain Split Conflicts      │  • Status: 🚀 Production Architecture        │
+└──────────────────────────────────────────────┘                                     └──────────────────────────────────────────────┘
+```
+
+* **[03. Exploratory Interface (`UINTER`)](03_uinter_welding_interface/README.md):** Formulates the 3-state state machine on contact surfaces. Benchmarking identified critical mesh-dependency due to displacement jumps vs strain rates, prompting its classification as an exploratory R&D backlog module.
+* **[04. Cohesive Zone Interface (`UMAT`)](04_umat_cohesive_welding/README.md):** Solves the mesh-dependency via critical fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to deliver quadratic Newton-Raphson convergence without contact chattering or SDI cutbacks.
+
+---
+
 ## Directory Layout
 
 ```text
@@ -82,10 +102,19 @@ Detailed formulation, verification routines, simulation input decks, and automat
 │   ├── Material_16MnCr5.inp                   # Unified Thermo-Elasto-Plastic & Phase Transformation Deck
 │   ├── dflux_disk_conical_gaussian.f          # User Subroutine (Modern Fortran TDC Conical Model)
 │   ├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
+│   ├── sequentially_coupled_architecture.svg  # Multi-Physics Data Flow & Pipeline Architecture (SVG)
 │   ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK Extractor & ZIP Packager
 │   ├── compile_vtk_to_gif.py                  # Multi-Viewport Animated Report Compiler
 │   ├── run_pipeline.sh                        # Headless Linux / HPC Batch Execution Pipeline
 │   └── README.md                              # Comprehensive Technical Report
+├── 03_uinter_welding_interface/
+│   ├── uinter_btr_hot_cracking.f              # User Subroutine (UINTER State Machine in Fortran)
+│   ├── dummy_btr_contact_patch.inp            # 2-Element Contact Patch Benchmark Deck
+│   └── README.md                              # Technical Report & R&D Backlog Documentation
+├── 04_umat_cohesive_welding/
+│   ├── umat_cohesive_welding_btr.f            # User Material Subroutine (Cohesive UMAT in Modern Fortran)
+│   ├── cohesive_weld_btr_verification.inp     # 3-Element Cohesive Zone Benchmark Deck (COH3D8)
+│   └── README.md                              # Comprehensive Technical Report & Formulation
 ├── LICENSE
 └── README.md
 ```
@@ -97,4 +126,4 @@ Detailed formulation, verification routines, simulation input decks, and automat
 **Victor Maia**  
 - **Email:** [vhfm08@gmail.com](mailto:vhfm08@gmail.com)  
 - **GitHub:** [@vhfmaia](https://github.com/vhfmaia)  
-- **Specialization:** Advanced Abaqus User Subroutines (`UMAT`, `VUMAT`, `DLOAD`, `DFLUX`, `DISP`, `USDFLD`, `HETVAL`) & FEA Simulation Automation
+- **Specialization:** Advanced Abaqus User Subroutines (`UMAT`, `VUMAT`, `DLOAD`, `DFLUX`, `UINTER`, `DISP`, `USDFLD`, `HETVAL`) & FEA Simulation Automation
