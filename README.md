@@ -88,3 +88,13 @@ Detailed formulation, verification routines, simulation input decks, and automat
 │   └── README.md                              # Comprehensive Technical Report
 ├── LICENSE
 └── README.md
+```
+
+---
+
+## Author & Contact
+
+**Victor Maia**  
+- **Email:** [vhfm08@gmail.com](mailto:vhfm08@gmail.com)  
+- **GitHub:** [@vhfmaia](https://github.com/vhfmaia)  
+- **Specialization:** Advanced Abaqus User Subroutines (`UMAT`, `VUMAT`, `DLOAD`, `DFLUX`, `DISP`, `USDFLD`, `HETVAL`) & FEA Simulation Automation
