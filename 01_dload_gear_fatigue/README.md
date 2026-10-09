@@ -11,9 +11,9 @@
 
 ## 1. Executive Summary
 
-This repository presents an industrial-grade **analytical contact simulation and high-cycle fatigue framework** for a heavy-duty automotive welded helical crown gear ($z = 60$, $m_n = 3.0\text{ mm}$, $\beta = 25^\circ$, $T = 270\text{ N}\cdot\text{m}$).
-
-Instead of using penalty or Lagrange multiplier contact pairs between multi-body gear assemblies—which can suffer from severe convergence issues, chatter, and prohibitive CPU times—this framework applies the physical contact pressure analytically directly onto the active flank surface (`SURF_TOOTH`) via an advanced **Abaqus User Subroutine `DLOAD`**.
+<div align="justify">
+This repository presents an industrial-grade <b>analytical contact simulation and high-cycle fatigue framework</b> for a heavy-duty automotive welded helical crown gear ($z = 60$, $m_n = 3.0\text{ mm}$, $\beta = 25^\circ$, $T = 270\text{ N}\cdot\text{m}$). Instead of using penalty or Lagrange multiplier contact pairs between multi-body gear assemblies—which can suffer from severe convergence issues, chatter, and prohibitive CPU times—this framework applies the physical contact pressure analytically directly onto the active flank surface (<code>SURF_TOOTH</code>) via an advanced <b>Abaqus User Subroutine <code>DLOAD</code></b>.
+</div>
 
 ### Key Achievements:
 - **Kinematic Rolling Across Full Revolution (360° / 60 teeth):** Complete stress-time history $\sigma(t)$ extracted at every tooth root fillet and the circumferential laser-welded joint to apply S-N Wöhler curves and evaluate stress amplitude $\sigma_a = (\sigma_{\max} - \sigma_{\min}) / 2$.
@@ -48,21 +48,37 @@ Instead of using penalty or Lagrange multiplier contact pairs between multi-body
 ## 3. Mathematical Formulation of Subroutine `DLOAD`
 
 ### 3.1 Transverse Kinematics & Line of Action
+<div align="justify">
 The transverse module $m_t$ and transverse pressure angle $\alpha_t$ are calculated as:
+</div>
+
 $$m_t = \frac{m_n}{\cos\beta}, \quad \alpha_t = \arctan\left(\frac{\tan\alpha_n}{\cos\beta}\right), \quad \tan\beta_b = \tan\beta \cos\alpha_t$$
 
-For any surface integration point at spatial coordinates $(x, y, z)$ on `SURF_TOOTH`, the cylindrical radius and involute roll distance are:
+<div align="justify">
+For any surface integration point at spatial coordinates $(x, y, z)$ on <code>SURF_TOOTH</code>, the cylindrical radius and involute roll distance are:
+</div>
+
 $$r = \sqrt{x^2 + z^2}, \quad u_p = \sqrt{r^2 - r_{b}^2}, \quad \alpha_p = \arctan\left(\frac{u_p}{r_b}\right)$$
 
 ### 3.2 Helical Contact Line Phase
+<div align="justify">
 Accounting for the continuous shaft rotation $\phi_{\text{rot}}(t) = \omega \cdot \max(0, t - t_{\text{ramp}})$ and axial helical shift across face width $y$:
+</div>
+
 $$\theta = \text{atan2}(x, z) + \text{dir} \cdot \phi_{\text{rot}}(t)$$
 $$\delta\theta = (\theta_p - \theta) + \alpha_{wt} - \alpha_p - 2\pi \cdot \text{NINT}\left(\frac{(\theta_p - \theta) + \alpha_{wt} - \alpha_p}{2\pi}\right)$$
+
+<div align="justify">
 The active line-of-action coordinate $u$ is:
+</div>
+
 $$u = u_p + r_b \cdot \delta\theta - y \cdot \tan\beta_b$$
 
 ### 3.3 Hertzian Contact Profile & Flank Relief
+<div align="justify">
 Across the semi-contact width $h_b$, the pressure distribution follows a parabolic Hertzian profile modified by cubic end-relief tapering:
+</div>
+
 $$q(u) = \frac{(u^2 - u_p^2)}{2 r_b h_b}, \quad p(u, y) = p_0 \cdot \max\left(0, 1 - q^2\right) \cdot W_{\text{flank}}(u) \cdot W_{\text{tab}}(\phi)$$
 
 ---
@@ -97,13 +113,19 @@ The simulation is executed in **Abaqus/Standard** (fully compatible with **3DEXP
 
 ## 5. Post-Processing Pipeline & GIF Compilation
 
+<div align="justify">
 The simulation output is extracted and compiled with a headless Python pipeline:
-
-1. **`odb_to_vtk.py`**: Extracts nodal displacement fields ($U$) and element Von Mises stresses ($S$) frame-by-frame directly from the Abaqus ODB into ASCII VTK unstructured grids.
-2. **`compile_vtk_to_gif.py`**: Reads the extracted VTK dataset and renders the synchronized 3-viewport animation:
-   - **Viewport 1:** 3D Isometric View with 3DEXPERIENCE palette and wireframe feature edges.
-   - **Viewport 2:** Frontal Y View (wheel face in $X-Z$ plane).
-   - **Viewport 3:** 3D $RZ$ Cylindrical Section Cut with continuous kinematic sliding angle $\theta(t)$ and solid body depth.
+<ol>
+  <li><b><code>odb_to_vtk.py</code>:</b> Extracts nodal displacement fields ($U$) and element Von Mises stresses ($S$) frame-by-frame directly from the Abaqus ODB into ASCII VTK unstructured grids.</li>
+  <li><b><code>compile_vtk_to_gif.py</code>:</b> Reads the extracted VTK dataset and renders the synchronized 3-viewport animation:
+    <ul>
+      <li><i>Viewport 1:</i> 3D Isometric View with 3DEXPERIENCE palette and wireframe feature edges.</li>
+      <li><i>Viewport 2:</i> Frontal Y View (wheel face in $X-Z$ plane).</li>
+      <li><i>Viewport 3:</i> 3D $RZ$ Cylindrical Section Cut with continuous kinematic sliding angle $\theta(t)$ and solid body depth.</li>
+    </ul>
+  </li>
+</ol>
+</div>
 
 ```bash
 # Execute local GIF compilation from VTK archive
@@ -114,28 +136,40 @@ python compile_vtk_to_gif.py gear_helical_vtk.zip
 
 ## 6. Stress Amplitude & High-Cycle Fatigue (HCF) Analysis
 
+<div align="justify">
 Based on post-processing all 61 output frames (600 time increments across the full 360° revolution under nominal $T = 270\text{ N}\cdot\text{m}$) and 97,085 finite elements:
+</div>
 
 ### 6.1 Critical Stress Amplitude & Temporal Peaks
 
-The critical stress concentration occurs at **Element #2443** (and adjacent elements #2412, #2439) located at the **Tooth Root Fillet (Dedendum)**:
-- **Cylindrical Radius:** $R = 95.95\text{ mm}$ (pitch radius $r = 99.30\text{ mm}$, base radius $r_b = 93.31\text{ mm}$, root fillet $r_f \approx 95.5-96.0\text{ mm}$)
-- **Axial Position:** $Y = -0.71\text{ mm}$ (adjacent to the front engagement entry face)
+<div align="justify">
+The critical stress concentration occurs at <b>Element #2443</b> (and adjacent elements #2412, #2439) located at the <b>Tooth Root Fillet (Dedendum)</b>:
+<ul>
+  <li><b>Cylindrical Radius:</b> $R = 95.95\text{ mm}$ (pitch radius $r = 99.30\text{ mm}$, base radius $r_b = 93.31\text{ mm}$, root fillet $r_f \approx 95.5-96.0\text{ mm}$)</li>
+  <li><b>Axial Position:</b> $Y = -0.71\text{ mm}$ (adjacent to the front engagement entry face)</li>
+</ul>
+</div>
 
 #### Temporal Pulse History:
 1. **Maximum Tensile Peak ($\sigma_{\max}$):**
    $$\sigma_{\max} = 68.13\text{ MPa} \quad \text{at Frame 55 } (t = 1.100\text{ s}, \text{Increment } 550)$$
+   <div align="justify">
    Occurs when the analytical helical contact line sweeps across the tooth flank, inducing peak cantilever bending tension at the loaded root fillet.
+   </div>
 2. **Minimum Baseline Valley ($\sigma_{\min}$):**
    $$\sigma_{\min} = 0.00\text{ MPa} \quad \text{at Frame 30 } (t = 0.600\text{ s}, \text{Increment } 300)$$
+   <div align="justify">
    Occurs when the wheel has rotated $180^\circ$ out of phase and the tooth is completely out of mesh.
+   </div>
 3. **Stress Range ($\Delta\sigma$) and Amplitude ($\sigma_a$):**
    $$\Delta\sigma = \sigma_{\max} - \sigma_{\min} = 68.13\text{ MPa}$$
    $$\sigma_a = \frac{\Delta\sigma}{2} = 34.07\text{ MPa}$$
    $$\sigma_m = \frac{\sigma_{\max} + \sigma_{\min}}{2} = 34.07\text{ MPa}$$
    $$\text{Stress Ratio: } R = \frac{\sigma_{\min}}{\sigma_{\max}} = 0 \quad (\text{Pulsating zero-to-tension cycle})$$
 
-*(Note: Under fully reversed alternating bending across opposing root flanks, tension on the loaded side and compression on the trailing side yield an alternating amplitude of $\sigma_a = 68.13\text{ MPa}$ at $R = -1$.)*
+<div align="justify">
+<i>(Note: Under fully reversed alternating bending across opposing root flanks, tension on the loaded side and compression on the trailing side yield an alternating amplitude of $\sigma_a = 68.13\text{ MPa}$ at $R = -1$.)</i>
+</div>
 
 ### 6.2 Stress Distribution Across Gear Anatomy
 
@@ -146,22 +180,29 @@ The critical stress concentration occurs at **Element #2443** (and adjacent elem
 | **3. Gear Rim / Web** | $78 - 92\text{ mm}$ | $29.18\text{ MPa}$ | $14.59\text{ MPa}$ | Torsional and radial shear transfer |
 | **4. Inner Bore & Welded Joint** | $< 78\text{ mm}$ | $10.20\text{ MPa}$ | $5.10\text{ MPa}$ | Shaft torque reaction at bore coupling |
 
+<div align="justify">
 The circumferential laser weld and inner rim undergo stress amplitudes below $5.10\text{ MPa}$, confirming that the weld joint is completely shielded from severe cyclic stresses.
+</div>
 
 ### 6.3 Fatigue Life Assessment & Engineering Conclusion
 
+<div align="justify">
 Evaluating against the structural gear steel properties ($\sigma_{y0} = 600\text{ MPa}$, $\sigma_{uts} = 850\text{ MPa}$):
-
-1. **Linear Elastic Safety:** Peak Von Mises stress ($68.13\text{ MPa}$) represents only **11.4% of yield strength** ($\sigma_{y0} = 600\text{ MPa}$), confirming zero localized plastic deformation ($PEEQ = 0$).
-2. **Mean Stress Correction (Goodman Criterion):**
-   $$\sigma_{a,\text{eq}} = \frac{\sigma_a}{1 - \frac{\sigma_m}{\sigma_{uts}}} = \frac{34.07}{1 - \frac{34.07}{850}} = 35.50\text{ MPa}$$
-3. **Modified Endurance Limit ($S_e$):**
-   Accounting for surface finish ($k_a \approx 0.85$), size effect ($k_b \approx 0.85$), and 99% reliability ($k_c \approx 0.814$):
-   $$S_e = k_a \cdot k_b \cdot k_c \cdot (0.5 \sigma_{uts}) \approx 250\text{ MPa}$$
-4. **Fatigue Safety Factor & Life Regime:**
-   $$SF_F = \frac{S_e}{\sigma_{a,\text{eq}}} \approx \frac{250\text{ MPa}}{35.50\text{ MPa}} \approx \mathbf{7.0}$$
-   - **Regime:** **Infinite Fatigue Life / High-Cycle Fatigue (HCF)** ($N > 10^7\text{ cycles}$).
-   - **Conclusion:** Under the nominal design torque of $270\text{ N}\cdot\text{m}$, tooth bending fatigue failure is completely ruled out ($SF_F \approx 7.0$). In prolonged service life, the governing durability mode will be **contact surface pitting/spalling** after hundreds of millions of duty cycles, validating a highly reliable structural gear design.
+<ol>
+  <li><b>Linear Elastic Safety:</b> Peak Von Mises stress ($68.13\text{ MPa}$) represents only <b>11.4% of yield strength</b> ($\sigma_{y0} = 600\text{ MPa}$), confirming zero localized plastic deformation ($PEEQ = 0$).</li>
+  <li><b>Mean Stress Correction (Goodman Criterion):</b>
+  $$\sigma_{a,\text{eq}} = \frac{\sigma_a}{1 - \frac{\sigma_m}{\sigma_{uts}}} = \frac{34.07}{1 - \frac{34.07}{850}} = 35.50\text{ MPa}$$</li>
+  <li><b>Modified Endurance Limit ($S_e$):</b> Accounting for surface finish ($k_a \approx 0.85$), size effect ($k_b \approx 0.85$), and 99% reliability ($k_c \approx 0.814$):
+  $$S_e = k_a \cdot k_b \cdot k_c \cdot (0.5 \sigma_{uts}) \approx 250\text{ MPa}$$</li>
+  <li><b>Fatigue Safety Factor &amp; Life Regime:</b>
+  $$SF_F = \frac{S_e}{\sigma_{a,\text{eq}}} \approx \frac{250\text{ MPa}}{35.50\text{ MPa}} \approx \mathbf{7.0}$$
+  <ul>
+    <li><b>Regime:</b> <b>Infinite Fatigue Life / High-Cycle Fatigue (HCF)</b> ($N > 10^7\text{ cycles}$).</li>
+    <li><b>Conclusion:</b> Under the nominal design torque of $270\text{ N}\cdot\text{m}$, tooth bending fatigue failure is completely ruled out ($SF_F \approx 7.0$). In prolonged service life, the governing durability mode will be <b>contact surface pitting/spalling</b> after hundreds of millions of duty cycles, validating a highly reliable structural gear design.</li>
+  </ul>
+  </li>
+</ol>
+</div>
 
 ---
 

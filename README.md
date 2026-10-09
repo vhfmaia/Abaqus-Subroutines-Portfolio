@@ -1,6 +1,8 @@
 # Advanced Abaqus User Subroutines Portfolio
 
-A repository of production-grade user subroutines for **Abaqus/Standard** and **3DEXPERIENCE SIMULIA**, written in **Fortran** for high-performance structural, fatigue, and manufacturing simulations.
+<div align="justify">
+A repository of production-grade user subroutines for <b>Abaqus/Standard</b> and <b>3DEXPERIENCE SIMULIA</b>, written in <b>Fortran</b> for high-performance structural, fatigue, and manufacturing simulations.
+</div>
 
 ---
 
@@ -27,7 +29,9 @@ A repository of production-grade user subroutines for **Abaqus/Standard** and **
   </a>
 </p>
 
+<div align="justify">
 Analytical multi-viewport simulation across all 60 teeth of a heavy-duty automotive helical crown gear ($T = 270\text{ N}\cdot\text{m}$, $z = 60$, $\beta = 25^\circ$), featuring 3D European isometric projection, Y-axis frontal view, and transverse 3D RZ section.
+</div>
 
 #### Key Simulation & Fatigue Results:
 - **Peak Tensile Bending:** $\sigma_{\max} = 68.13\text{ MPa}$ at **Frame 55** ($t = 1.100\text{ s}$, Increment 550) in tooth root fillet.
@@ -35,7 +39,9 @@ Analytical multi-viewport simulation across all 60 teeth of a heavy-duty automot
 - **Cyclic Stress Amplitude:** $\sigma_a = 34.07\text{ MPa}$ (pulsating ratio $R = 0$, Goodman equivalent $\sigma_{a,\text{eq}} = 35.50\text{ MPa}$).
 - **Fatigue Life Regime:** **Infinite Life / High-Cycle Fatigue** ($N > 10^7\text{ cycles}$) with structural safety factor $SF_F \approx 7.0$ ($S_e \approx 250\text{ MPa}$).
 
-Detailed formulation, kinematic equations, FEA verification, and post-processing scripts are available in [01_dload_gear_fatigue/](01_dload_gear_fatigue/README.md).
+<div align="justify">
+Detailed formulation, kinematic equations, FEA verification, and post-processing scripts are available in <a href="01_dload_gear_fatigue/README.md">01_dload_gear_fatigue/</a>.
+</div>
 
 ---
 
@@ -51,7 +57,9 @@ Detailed formulation, kinematic equations, FEA verification, and post-processing
   </a>
 </p>
 
-Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (`ABQ_PHASE_TRANS`), hybrid elements (`C3D8H`), continuous annealing at $1530^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.
+<div align="justify">
+Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (<code>ABQ_PHASE_TRANS</code>), hybrid elements (<code>C3D8H</code>), continuous annealing at $1530^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.
+</div>
 
 #### Key Thermal, Metallurgical & Mechanical Highlights:
 - **3D Conical Gaussian Heat Source:** Analytically normalized peak flux $Q_0 = 4.6935 \times 10^5\text{ mW/mm}^3$ with $10^\circ$ linear power ramp-up, $360^\circ$ steady weld, and $10^\circ$ crater-filling ramp-down overlap.
@@ -59,13 +67,17 @@ Sequentially coupled thermo-mechanical analysis of circumferential laser welding
 - **Metallurgical Kinetics & Solidification (BTR):** Tracks liquidus/solidus melt pool kinetics and solid-state phase decomposition (Ferrite-Pearlite, Austenite, Bainite, Martensite via JMA and Koistinen-Marburger kinetics).
 - **Sequentially Coupled Structural Analysis:** Mitigates high-temperature volumetric locking via hybrid formulation elements (`C3D8H`), hydrostatic gravity stabilization, and line search non-linear controls.
 
-Detailed formulation, verification routines, simulation input decks, and automated post-processing pipeline are available in [02_dflux_laser_welding/](02_dflux_laser_welding/README.md).
+<div align="justify">
+Detailed formulation, verification routines, simulation input decks, and automated post-processing pipeline are available in <a href="02_dflux_laser_welding/README.md">02_dflux_laser_welding/</a>.
+</div>
 
 ---
 
 ### Project Showcase: 03 & 04. Advanced Interface Modeling Evolution
 
-The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (**Raw $\rightarrow$ Welded $\rightarrow$ Cracked**):
+<div align="justify">
+The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (<b>Raw $\rightarrow$ Welded $\rightarrow$ Cracked</b>):
+</div>
 
 ```text
 ┌──────────────────────────────────────────────┐       Identified Bottlenecks:       ┌──────────────────────────────────────────────┐
@@ -76,8 +88,12 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 └──────────────────────────────────────────────┘                                     └──────────────────────────────────────────────┘
 ```
 
-* **[03. Exploratory Interface (`UINTER`)](03_uinter_welding_interface/README.md):** Formulates the 3-state state machine on contact surfaces. Benchmarking identified critical mesh-dependency due to displacement jumps vs strain rates, prompting its classification as an exploratory R&D backlog module.
-* **[04. Cohesive Zone Interface (`UMAT`)](04_umat_cohesive_welding/README.md):** Under active development and testing to evaluate mesh-independent fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to investigate convergence without contact chattering or SDI cutbacks (strictly a research prototype under evaluation, not for production use).
+<div align="justify">
+<ul>
+  <li><b><a href="03_uinter_welding_interface/README.md">03. Exploratory Interface (UINTER)</a>:</b> Formulates the 3-state state machine on contact surfaces. Benchmarking identified critical mesh-dependency due to displacement jumps vs strain rates, prompting its classification as an exploratory R&D backlog module.</li>
+  <li><b><a href="04_umat_cohesive_welding/README.md">04. Cohesive Zone Interface (UMAT)</a>:</b> Under active development and testing to evaluate mesh-independent fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to investigate convergence without contact chattering or SDI cutbacks (strictly a research prototype under evaluation, not for production use).</li>
+</ul>
+</div>
 
 ---
 
@@ -89,7 +105,7 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │   ├── DLOAD_CROWN_HELICAL.f                  # User Subroutine (Modern Fortran DLOAD + UEXTERNALDB)
 │   ├── Gear_torque.inp                        # Master Input Deck
 │   ├── GEOMETRY_GEAR.inp                      # 3D Finite Element Mesh & Topology
-│   ├── gear_torque_simulation.gif             # Full 360-degree multi-viewport animation
+│   ├── gear_torque_simulation.gif             # Full 360-degree multi-viewport animation (11 FPS)
 │   ├── compile_vtk_to_gif.py                  # Multi-viewport visualization compiler
 │   ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK extractor
 │   ├── run_pipeline.sh                        # Headless Linux / HPC batch execution script
@@ -112,12 +128,20 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │   ├── dummy_btr_contact_patch.inp            # 2-Element Contact Patch Benchmark Deck
 │   └── README.md                              # Technical Report & R&D Backlog Documentation
 ├── 04_umat_cohesive_welding/
-│   ├── umat_cohesive_welding_btr.f            # User Material Subroutine (Cohesive UMAT in Modern Fortran)
+│   ├── umat_cohesive_welding_btr.f            # Prototype User Material Subroutine (Modern Fortran)
 │   ├── cohesive_weld_btr_verification.inp     # 3-Element Cohesive Zone Benchmark Deck (COH3D8)
 │   └── README.md                              # Comprehensive Technical Report & Formulation
 ├── LICENSE
 └── README.md
 ```
+
+---
+
+## Disclaimer
+
+<div align="justify">
+This repository is published for professional portfolio and academic demonstration purposes. All CAD dimensions, process parameters, and metallurgical kinetics presented herein are synthetic, open-literature benchmarks designed to illustrate advanced FEA and Fortran programming methodologies, and do not represent any confidential data.
+</div>
 
 ---
 
