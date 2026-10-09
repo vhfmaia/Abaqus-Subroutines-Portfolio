@@ -520,9 +520,13 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ## 7. Key Results to Evaluate
 
+<p align="center">
+  <img src="disk_heatsource_th_simulation.gif" alt="Abaqus DFLUX Circumferential Laser Welding Simulation - Thermal Analysis Animation" width="100%" />
+</p>
+
 <div align="justify">
 <ul>
-  <li><b>Melt Pool Geometry:</b> Isotherm <i>T</i> ≥ <i>T</i><sub>liquidus</sub> = 1530 °C identifies the molten weld bead width and penetration depth (<i>z</i><sub>i</sub> ≈ 3.0 mm).</li>
+  <li><b>Melt Pool Geometry:</b> Isotherm <i>T</i> ≥ <i>T</i><sub>liquidus</sub> = 1530 °C identifies the molten weld bead width and penetration depth (<i>z</i><sub>i</sub> ≈ 3.0 mm), visible dynamically in the local tracking viewport.</li>
   <li><b>Heat Affected Zone (HAZ):</b> Region bounded between <i>Ac</i><sub>1</sub> ≈ 720 °C and <i>T</i><sub>solidus</sub> = 1485 °C.</li>
   <li><b>Phase Distributions (<code>SDV4</code>–<code>SDV7</code>):</b> Martensite formation in the rapidly cooled HAZ and bainite/ferrite in adjacent parent material.</li>
   <li><b>Residual Stress State:</b> Peak hoop (<i>σ</i><sub>θθ</sub>) and axial (<i>σ</i><sub>zz</sub>) tensile stresses locked along the weld fusion line, balanced by compressive stress in the surrounding shaft and hub body.</li>
