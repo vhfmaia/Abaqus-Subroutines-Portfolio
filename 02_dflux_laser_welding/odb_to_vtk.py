@@ -27,12 +27,12 @@ def export_odb_to_vtk(odb_name, step_name=None, output_prefix=None, create_zip=T
     # Auto-determine output prefix if not provided
     if output_prefix is None:
         base = os.path.splitext(os.path.basename(odb_name))[0].lower()
-        if "therm" in base:
+        if "therm" in base or "_th" in base:
             output_prefix = "laser_therm"
-        elif "mech" in base:
+        elif "mech" in base or "_me" in base:
             output_prefix = "laser_mech"
         else:
-            output_prefix = base + "_vtk"
+            output_prefix = base
 
     print("==========================================================")
     print("  Abaqus ODB -> VTK Exporter: %s" % odb_name)
@@ -257,8 +257,8 @@ def export_odb_to_vtk(odb_name, step_name=None, output_prefix=None, create_zip=T
     # ZIP packaging
     if create_zip and exported_files:
         zip_name = "%s_vtk.zip" % output_prefix
-        print("[INFO] Creating archive '%s'..." % zip_name)
-        with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zf:
+        print("[INFO] Creating archive '%s' (ZIP64 enabled)..." % zip_name)
+        with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
             for vf in exported_files:
                 zf.write(vf)
         zip_size_mb = os.path.getsize(zip_name) / (1024.0 * 1024.0)

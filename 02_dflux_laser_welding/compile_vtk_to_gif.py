@@ -51,6 +51,7 @@ def parse_args():
     parser.add_argument("--field", "-f", default=None, choices=["auto", "Temperature", "Von_Mises", "PEEQ"],
                         help="Scalar field to visualize (default: auto-detect)")
     parser.add_argument("--fps", type=int, default=15, help="Animation playback FPS")
+    parser.add_argument("--stride", "-s", type=int, default=1, help="Frame step stride (e.g., 2 to skip every other frame)")
     parser.add_argument("--max-val", type=float, default=None, help="Max scalar value for color normalization")
     parser.add_argument("--min-val", type=float, default=None, help="Min scalar value for color normalization")
     return parser.parse_args()
@@ -62,9 +63,12 @@ def locate_and_extract_vtk(input_path):
         candidates.append(input_path)
     candidates.extend([
         os.path.join(script_dir, "laser_therm_vtk.zip"),
+        os.path.join(script_dir, "disk_heatsource_th_vtk.zip"),
         os.path.join(script_dir, "laser_mech_vtk.zip"),
+        os.path.join(script_dir, "disk_heatsource_me_vtk.zip"),
         os.path.join(script_dir, "gear_helical_vtk.zip")
     ])
+    candidates.extend(sorted(glob.glob(os.path.join(script_dir, "*_vtk.zip"))))
 
     zip_file = None
     for cand in candidates:
@@ -93,7 +97,11 @@ def main():
         print("[ERROR] No VTK files found to process. Please provide an ODB or VTK zip.")
         sys.exit(1)
 
-    print("[INFO] Found %d VTK frames." % len(vtk_files))
+    if args.stride > 1:
+        vtk_files = vtk_files[::args.stride]
+        print("[INFO] Applied stride %d: using %d VTK frames." % (args.stride, len(vtk_files)))
+    else:
+        print("[INFO] Found %d VTK frames." % len(vtk_files))
 
     # Inspect first frame to detect active scalar field
     sample_mesh = pv.read(vtk_files[0])
