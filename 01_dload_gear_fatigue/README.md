@@ -1,11 +1,12 @@
 # High-Cycle Fatigue & Rolling Contact Analysis of a Helical Crown Gear (Abaqus DLOAD)
 
-[![Abaqus](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/products-services/simulia/products/abaqus/)
-[![SIMULIA Compatible](https://img.shields.io/badge/SIMULIA-3DEXPERIENCE%20Compatible-005691.svg)](https://www.3ds.com/)
-[![Fortran](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status: Verified](https://img.shields.io/badge/Status-Verified-brightgreen.svg)](#)
+[![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/)
+[![Subroutine: DLOAD](https://img.shields.io/badge/Subroutine-DLOAD-005691.svg)](#)
+[![Language: Fortran](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
-![Abaqus DLOAD Simulation Animation](gear_torque_simulation.gif)
+![Abaqus DLOAD Simulation Animation](../99_images_and_miscelania/gear_torque_simulation.gif)
 
 ---
 
@@ -215,7 +216,6 @@ Evaluating against the structural gear steel properties ($\sigma_{y0} = 600\text
 ├── compile_vtk_to_gif.py     # 3-Viewport 3DEXPERIENCE simulation GIF compiler
 ├── odb_to_vtk.py             # Abaqus Python ODB to VTK exporter
 ├── run_pipeline.sh           # Headless Linux / HPC batch extraction script
-├── gear_torque_simulation.gif# Synchronized 3-viewport animated simulation
 └── README.md                 # Complete technical documentation
 ```
 

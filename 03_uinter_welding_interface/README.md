@@ -1,10 +1,10 @@
 # 03. 3-State Contact Interface & BTR Hot Cracking (`UINTER`)
 
-[![Status](https://img.shields.io/badge/Status-Exploratory%20%2F%20In%20Work%20(R%26D%20Backlog)-orange.svg)](README.md)
-[![Abaqus](https://img.shields.io/badge/Abaqus%2FStandard-User%20Interaction%20(UINTER)-blue.svg)](README.md)
-[![Hot Cracking Model](https://img.shields.io/badge/Theory-Won%20%2F%20Prokhorov%20BTR-005691.svg)](README.md)
-[![Language](https://img.shields.io/badge/Language-Fortran_90%2F2008-734f96.svg)](README.md)
-[![Next-Gen Under Testing](https://img.shields.io/badge/Evaluated%20Alternative-04__umat__cohesive__welding-orange.svg)](../04_umat_cohesive_welding/README.md)
+[![Status](https://img.shields.io/badge/Status-In%20Work%20(R%26D%20Backlog)-orange.svg)](#)
+[![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/)
+[![Subroutine: UINTER](https://img.shields.io/badge/Subroutine-UINTER-005691.svg)](#)
+[![Language: Fortran](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
 ---
 
@@ -32,33 +32,9 @@ In conventional finite element welding analyses, joint interfaces are typically 
 To bridge this gap, an interaction model was formulated to dynamically transition between three discrete constitutive states:
 </div>
 
-```text
-                     ┌───────────────────────────────────────┐
-                     │         STATE 0: RAW (Virgin)         │
-                     │  - Pure unilateral penalty contact    │
-                     │  - Free tensile opening (Pn = 0)      │
-                     │  - Coulomb friction (µ ≈ 0.35)        │
-                     └───────────────────────────────────────┘
-                                         │
-                                         │ Beam arrival: T >= T_liquidus (1530 °C)
-                                         ▼
-                     ┌───────────────────────────────────────┐
-                     │        BTR MUSH-ZONE SOLIDIFICATION   │
-                     │         [T_solidus, T_liquidus]       │
-                     │   Tracks normal opening rate Δu_n     │
-                     └───────────────────────────────────────┘
-                                    /         \
-          Won criterion NOT violated           Won criterion violated
-          (ε_eval < ε_crit)                   (ε_eval >= ε_crit)
-                        /                           \
-                       ▼                             ▼
-       ┌───────────────────────────────┐   ┌───────────────────────────────┐
-       │    STATE 2: WELDED (Sound)    │   │    STATE 3: CRACKED (Tear)    │
-       │ - Bilateral stiffness Kn, Ks  │   │ - Permanent loss of cohesion  │
-       │ - Transmits tension & shear   │   │   in tension (Pn = 0, un > 0) │
-       │ - Full continuum continuity   │   │ - Compressive contact only    │
-       └───────────────────────────────┘   └───────────────────────────────┘
-```
+<p align="center">
+  <img src="../99_images_and_miscelania/uinter_3state_state_machine.svg" alt="Abaqus UINTER 3-State Contact Interface and Won BTR Hot Tearing Engine" width="100%" />
+</p>
 
 ---
 
@@ -91,11 +67,11 @@ All material and process constants in <code>PROPS</code> were obtained through <
 | **`PROPS(2)`** | `T_SOLIDUS` | $1485.0\,^\circ\text{C}$ | Solidus temperature (16MnCr5) | Differential Scanning Calorimetry (DSC) & Scheil solidification |
 | **`PROPS(3)`** | `T_LIQUIDUS` | $1530.0\,^\circ\text{C}$ | Liquidus temperature (16MnCr5) | DSC high-temperature thermal analysis ($45^\circ\text{C}$ BTR span) |
 | **`PROPS(4)`** | `PHI_CONST` ($\phi$) | $2.95 \times 10^{-4}$ | Empirical Won ductility coefficient | High-temperature Gleeble hot tensile tearing tests |
-| **`PROPS(5)`** | `M_STAR` ($m^*$) | $0.40$ | Strain-rate sensitivity exponent | Fit from strain-rate jump tests in the mushy zone ($10^{-4} - 10^{-1}\,\text{s}^{-1}$) |
-| **`PROPS(6)`** | `N_STAR` ($n^*$) | $1.20$ | Cooling rate sensitivity exponent | Solidification morphology / secondary dendrite arm spacing (SDAS) fit |
+| **`PROPS(5)`** | `M_STAR` ($m^{\ast}$) | $0.40$ | Strain-rate sensitivity exponent | Fit from strain-rate jump tests in the mushy zone ($10^{-4} - 10^{-1}\,\text{s}^{-1}$) |
+| **`PROPS(6)`** | `N_STAR` ($n^{\ast}$) | $1.20$ | Cooling rate sensitivity exponent | Solidification morphology / secondary dendrite arm spacing (SDAS) fit |
 
 <div align="justify">
-<b>Why are these parameters empirical?</b> Direct physical measurement of tensile ductility during solidification is virtually impossible using classical static testing machines because the material is a fragile dendritic slurry ($f_s \in [0.90, 0.99]$) surrounded by liquid segregation films. Parameters $\phi$, $m^*$, and $n^*$ must be calibrated on specialized <b>Gleeble thermo-mechanical physical simulators</b> or <b>Transvarestraint testing rigs</b> by pulling the specimen at controlled stroke rates during rapid cooling.
+<b>Why are these parameters empirical?</b> Direct physical measurement of tensile ductility during solidification is virtually impossible using classical static testing machines because the material is a fragile dendritic slurry ($f_s \in [0.90, 0.99]$) surrounded by liquid segregation films. Parameters $\phi$, $m^{\ast}$, and $n^{\ast}$ must be calibrated on specialized <b>Gleeble thermo-mechanical physical simulators</b> or <b>Transvarestraint testing rigs</b> by pulling the specimen at controlled stroke rates during rapid cooling.
 </div>
 
 ---
@@ -132,7 +108,7 @@ Abaqus allocates 16 solution-dependent state variables (<code>DEPVAR=16</code>) 
 The classical hot tearing criterion of <b>Won, Yeo, Seol, and Yim (2000)</b> posits that solidification cracking occurs when the accumulated tensile strain within the critical solid fraction range ($f_s = 0.90 - 0.99$, corresponding to the BTR) exceeds a threshold $\varepsilon_{\text{crit}}$ that depends on both the strain rate $\dot{\varepsilon}$ and the thermal cooling rate $\dot{T}$:
 </div>
 
-$$\varepsilon_{\text{crit}} = \frac{\phi}{\dot{\varepsilon}^{m^*} \cdot \dot{T}^{n^*}}$$
+$$\varepsilon_{\text{crit}} = \frac{\phi}{\dot{\varepsilon}^{m^{\ast}} \cdot \dot{T}^{n^{\ast}}}$$
 
 <div align="justify">
 <ul>

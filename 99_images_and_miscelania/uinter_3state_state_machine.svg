@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 740" width="1000" height="740">
+  <defs>
+    <!-- Background & Card Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+
+    <linearGradient id="rawHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <linearGradient id="btrHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <linearGradient id="weldHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <linearGradient id="crackHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+
+    <!-- Filters for crisp elevation shadows -->
+    <filter id="cardShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+
+    <!-- Marker Arrows -->
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706" />
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669" />
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#dc2626" />
+    </marker>
+  </defs>
+
+  <style>
+    .title-main { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #0f172a; }
+    .title-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13px; font-weight: 400; fill: #475569; }
+    .card-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #ffffff; }
+    .card-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12.5px; fill: #1e293b; line-height: 1.5; }
+    .card-subtext { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11.5px; fill: #64748b; }
+    .arrow-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #334155; }
+    .badge-pill { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; font-weight: 600; }
+  </style>
+
+  <!-- Clean Background -->
+  <rect width="1000" height="740" fill="#ffffff" />
+
+  <!-- Outer Border Container -->
+  <rect x="15" y="15" width="970" height="710" rx="12" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Title & Header Bar -->
+  <rect x="15" y="15" width="970" height="65" rx="12" fill="#f8fafc" />
+  <line x1="15" y1="80" x2="985" y2="80" stroke="#e2e8f0" stroke-width="1.5" />
+  <text x="35" y="44" class="title-main">Abaqus UINTER: 3-State Contact Interface &amp; BTR Hot Tearing Engine</text>
+  <text x="35" y="65" class="title-sub">Progressive Thermo-Mechanical State Machine: Raw Press-Fit → BTR Mushy Zone Solidification → Sound Weld / Hot Tear</text>
+
+  <!-- ==================== STATE 0: RAW CONTACT ==================== -->
+  <g transform="translate(290, 105)" filter="url(#cardShadow)">
+    <rect width="420" height="125" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 34 L 0 34 Z" fill="url(#rawHeaderGrad)" />
+    <text x="18" y="23" class="card-title">STATE 0: RAW CONTACT (Virgin Press-Fit Interface)</text>
+    <circle cx="395" cy="17" r="6" fill="#94a3b8" />
+
+    <!-- Content Items -->
+    <circle cx="28" cy="56" r="3" fill="#475569" />
+    <text x="40" y="60" class="card-text"><b>Unilateral Normal Penalty:</b> P<sub>n</sub> = K<sub>pen</sub> · |u<sub>n</sub>| (u<sub>n</sub> &lt; 0), prevents penetration</text>
+    
+    <circle cx="28" cy="80" r="3" fill="#475569" />
+    <text x="40" y="84" class="card-text"><b>Free Tensile Clearance:</b> P<sub>n</sub> = 0 for u<sub>n</sub> ≥ 0 (no cohesion prior to melting)</text>
+
+    <circle cx="28" cy="104" r="3" fill="#475569" />
+    <text x="40" y="108" class="card-text"><b>Coulomb Friction:</b> |τ| ≤ μ · P<sub>n</sub> with dry coefficient μ = 0.35</text>
+  </g>
+
+  <!-- Arrow State 0 -> BTR Solidification -->
+  <g>
+    <line x1="500" y1="230" x2="500" y2="280" stroke="#d97706" stroke-width="2.2" marker-end="url(#arrowOrange)" />
+    <rect x="515" y="242" width="310" height="24" rx="4" fill="#fef3c7" stroke="#fde68a" stroke-width="1" />
+    <text x="525" y="258" class="badge-pill" fill="#92400e">Laser Arrival: T ≥ T<sub>liquidus</sub> (1530 °C) • Anneal Stresses to 0</text>
+  </g>
+
+  <!-- ==================== TRANSITION: BTR SOLIDIFICATION ==================== -->
+  <g transform="translate(210, 285)" filter="url(#cardShadow)">
+    <rect width="580" height="165" rx="8" fill="#ffffff" stroke="#fcd34d" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 572 0 Q 580 0 580 8 L 580 34 L 0 34 Z" fill="url(#btrHeaderGrad)" />
+    <text x="20" y="23" class="card-title">BTR MUSHY ZONE SOLIDIFICATION (1485 °C ≤ T ≤ 1530 °C)</text>
+    <circle cx="555" cy="17" r="6" fill="#fde047" />
+
+    <!-- Content Items -->
+    <circle cx="28" cy="56" r="3" fill="#d97706" />
+    <text x="40" y="60" class="card-text"><b>Normal Opening Tracking:</b> Integrates plastic separation rate: Δu<sub>n</sub> = u<sub>n</sub>(t + Δt) - u<sub>n</sub>(t)</text>
+
+    <circle cx="28" cy="82" r="3" fill="#d97706" />
+    <text x="40" y="86" class="card-text"><b>Virtual Strain Scaling:</b> ε<sub>eval</sub> = Δu<sub>n,accum</sub> / L<sub>0</sub> (with calibrated length scale L<sub>0</sub> = 0.35 mm)</text>
+
+    <circle cx="28" cy="108" r="3" fill="#d97706" />
+    <text x="40" y="112" class="card-text"><b>Won Critical Strain:</b> ε<sub>crit</sub> = φ / ( (dε/dt)<sup>m*</sup> · (dT/dt)<sup>n*</sup> ) [φ = 2.95e-4, m* = 0.40, n* = 1.20]</text>
+
+    <circle cx="28" cy="134" r="3" fill="#d97706" />
+    <text x="40" y="138" class="card-text"><b>Damage Accumulation Index:</b> I<sub>Won</sub> = ε<sub>eval</sub> / ε<sub>crit</sub> (Evaluated across solid fraction f<sub>s</sub> ∈ [0.90, 0.99])</text>
+  </g>
+
+  <!-- Left Branch: Successful Solidification (Welded) -->
+  <g>
+    <path d="M 370 450 L 370 485 Q 370 500 350 500 L 255 500 L 255 525" fill="none" stroke="#059669" stroke-width="2.2" marker-end="url(#arrowGreen)" />
+    <rect x="135" y="475" width="200" height="24" rx="4" fill="#d1fae5" stroke="#a7f3d0" stroke-width="1" />
+    <text x="145" y="491" class="badge-pill" fill="#065f46">Won Index I<sub>Won</sub> &lt; 1.0 (No Tear)</text>
+  </g>
+
+  <!-- Right Branch: Hot Tearing Failure (Cracked) -->
+  <g>
+    <path d="M 630 450 L 630 485 Q 630 500 650 500 L 745 500 L 745 525" fill="none" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrowRed)" />
+    <rect x="665" y="475" width="200" height="24" rx="4" fill="#fee2e2" stroke="#fecaca" stroke-width="1" />
+    <text x="675" y="491" class="badge-pill" fill="#991b1b">Won Index I<sub>Won</sub> ≥ 1.0 (Rupture)</text>
+  </g>
+
+  <!-- ==================== STATE 2: WELDED JOINT ==================== -->
+  <g transform="translate(45, 530)" filter="url(#cardShadow)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 34 L 0 34 Z" fill="url(#weldHeaderGrad)" />
+    <text x="18" y="23" class="card-title">STATE 2: WELDED JOINT (Sound Steel Seam)</text>
+    <circle cx="395" cy="17" r="6" fill="#34d399" />
+
+    <!-- Content Items -->
+    <circle cx="28" cy="56" r="3" fill="#059669" />
+    <text x="40" y="60" class="card-text"><b>Bilateral Normal Bond:</b> P<sub>n</sub> = K<sub>bond</sub> · u<sub>n</sub> (∀ u<sub>n</sub> ∈ (-∞, +∞))</text>
+
+    <circle cx="28" cy="80" r="3" fill="#059669" />
+    <text x="40" y="84" class="card-text"><b>Shear Traction Cohesion:</b> τ<sub>s1</sub> = G<sub>shear</sub> · u<sub>s1</sub>, τ<sub>s2</sub> = G<sub>shear</sub> · u<sub>s2</sub></text>
+
+    <circle cx="28" cy="104" r="3" fill="#059669" />
+    <text x="40" y="108" class="card-text"><b>Continuum Continuity:</b> Transmits full cyclic torque &amp; bending loads</text>
+
+    <circle cx="28" cy="128" r="3" fill="#059669" />
+    <text x="40" y="132" class="card-text"><b>Thermal Equilibrium:</b> Cools to 25 °C without discontinuity</text>
+  </g>
+
+  <!-- ==================== STATE 3: CRACKED JOINT ==================== -->
+  <g transform="translate(535, 530)" filter="url(#cardShadow)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#fca5a5" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 34 L 0 34 Z" fill="url(#crackHeaderGrad)" />
+    <text x="18" y="23" class="card-title">STATE 3: CRACKED JOINT (Hot Tear Delamination)</text>
+    <circle cx="395" cy="17" r="6" fill="#f87171" />
+
+    <!-- Content Items -->
+    <circle cx="28" cy="56" r="3" fill="#dc2626" />
+    <text x="40" y="60" class="card-text"><b>Permanent Loss of Cohesion:</b> P<sub>n</sub> = 0 for u<sub>n</sub> ≥ 0 (free crack opening)</text>
+
+    <circle cx="28" cy="80" r="3" fill="#dc2626" />
+    <text x="40" y="84" class="card-text"><b>Zero Shear Capacity:</b> τ<sub>s1</sub> = 0, τ<sub>s2</sub> = 0 (frictionless free crack faces)</text>
+
+    <circle cx="28" cy="104" r="3" fill="#dc2626" />
+    <text x="40" y="108" class="card-text"><b>Crack Closure Penalty:</b> P<sub>n</sub> = K<sub>pen</sub> · |u<sub>n</sub>| (u<sub>n</sub> &lt; 0), prevents re-penetration</text>
+
+    <circle cx="28" cy="128" r="3" fill="#dc2626" />
+    <text x="40" y="132" class="card-text"><b>Numerical Bottleneck:</b> Triggers 3 Severe Discontinuity Iterations (SDI)</text>
+  </g>
+
+  <!-- Bottom Legend / Status Bar -->
+  <g transform="translate(15, 695)">
+    <rect width="970" height="30" rx="6" fill="#f1f5f9" />
+    <text x="25" y="20" class="card-subtext"><b>SIMULIA Abaqus/Standard UINTER Architecture</b> • Subroutine Language: Fortran 2008 / F90 • Benchmark Verified on 2-Element Patch Deck</text>
+  </g>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 230" width="980" height="230">
+  <defs>
+    <filter id="boxShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+    <marker id="arrowComp" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7" />
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13.5px; font-weight: 700; }
+    .text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12px; fill: #334155; }
+    .badge { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; font-weight: 600; }
+  </style>
+
+  <rect width="980" height="230" fill="#ffffff" rx="10" stroke="#e2e8f0" stroke-width="1.2" />
+
+  <!-- Left Card: UINTER -->
+  <g transform="translate(25, 20)" filter="url(#boxShadow)">
+    <rect width="320" height="190" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <path d="M 0 8 Q 0 0 8 0 L 312 0 Q 320 0 320 8 L 320 34 L 0 34 Z" fill="#475569" />
+    <text x="14" y="22" class="title" fill="#ffffff">03_uinter_welding_interface (UINTER)</text>
+    
+    <circle cx="22" cy="56" r="3" fill="#64748b" />
+    <text x="32" y="60" class="text">Surface Interaction routine on contact faces</text>
+    
+    <circle cx="22" cy="82" r="3" fill="#64748b" />
+    <text x="32" y="86" class="text">Contact master / slave discretization</text>
+
+    <circle cx="22" cy="108" r="3" fill="#64748b" />
+    <text x="32" y="112" class="text">Arbitrary virtual length scale L<sub>0</sub> dependency</text>
+
+    <rect x="14" y="145" width="230" height="24" rx="4" fill="#fef3c7" stroke="#fde68a" stroke-width="1" />
+    <text x="22" y="161" class="badge" fill="#92400e">Status: ⚠️ Exploratory (R&amp;D Backlog)</text>
+  </g>
+
+  <!-- Middle Bridge: Evolution & Bottlenecks -->
+  <g transform="translate(365, 20)">
+    <rect width="250" height="190" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+    
+    <text x="32" y="30" class="title" fill="#0369a1">Identified Bottlenecks:</text>
+    
+    <circle cx="30" cy="58" r="3" fill="#ef4444" />
+    <text x="40" y="62" class="text" fill="#b91c1c">Pathological mesh dependency</text>
+    
+    <circle cx="30" cy="84" r="3" fill="#ef4444" />
+    <text x="40" y="88" class="text" fill="#b91c1c">Severe Discontinuity (SDI) cutbacks</text>
+    
+    <circle cx="30" cy="110" r="3" fill="#ef4444" />
+    <text x="40" y="114" class="text" fill="#b91c1c">MPI contact domain conflicts</text>
+
+    <!-- Arrow line pointing right -->
+    <line x1="20" y1="155" x2="230" y2="155" stroke="#0284c7" stroke-width="2.5" marker-end="url(#arrowComp)" />
+    <text x="50" y="145" class="badge" fill="#0284c7">CZM METHODOLOGY EVOLUTION</text>
+  </g>
+
+  <!-- Right Card: Cohesive UMAT -->
+  <g transform="translate(635, 20)" filter="url(#boxShadow)">
+    <rect width="320" height="190" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.2" />
+    <path d="M 0 8 Q 0 0 8 0 L 312 0 Q 320 0 320 8 L 320 34 L 0 34 Z" fill="#1e40af" />
+    <text x="14" y="22" class="title" fill="#ffffff">04_umat_cohesive_welding (UMAT)</text>
+    
+    <circle cx="22" cy="56" r="3" fill="#2563eb" />
+    <text x="32" y="60" class="text">Cohesive Zone Elements (COH3D8)</text>
+    
+    <circle cx="22" cy="82" r="3" fill="#2563eb" />
+    <text x="32" y="86" class="text">Fracture Energy G<sub>c</sub> Regularization</text>
+
+    <circle cx="22" cy="108" r="3" fill="#2563eb" />
+    <text x="32" y="112" class="text">Exact 3×3 analytical DDSDDE Jacobian</text>
+
+    <rect x="14" y="145" width="220" height="24" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+    <text x="22" y="161" class="badge" fill="#1e40af">Status: ⚠️ In Work (Testing Phase)</text>
+  </g>
+</svg>

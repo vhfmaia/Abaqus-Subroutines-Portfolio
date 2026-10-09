@@ -1,9 +1,9 @@
 # Circumferential Laser Welding: Sequentially Coupled Thermo-Mechanical FEA & Phase Transformations
 
-[![FEA: Abaqus/Standard](https://img.shields.io/badge/Solver-Abaqus%2FStandard-005a9c.svg)](https://www.3ds.com/products-services/simulia/products/abaqus/)
-[![SIMULIA Compatible](https://img.shields.io/badge/SIMULIA-3DEXPERIENCE%20Compatible-005691.svg)](https://www.3ds.com/)
-[![Language: Modern Fortran](https://img.shields.io/badge/Language-Fortran_2008%2F90-734f96.svg)](https://en.wikipedia.org/wiki/Fortran)
-[![Automation: Pipeline](https://img.shields.io/badge/Automation-Shell%20%26%20Python-3776ab.svg)](https://www.python.org/)
+[![Status: Verified](https://img.shields.io/badge/Status-Verified-brightgreen.svg)](#)
+[![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/)
+[![Subroutine: DFLUX](https://img.shields.io/badge/Subroutine-DFLUX-005691.svg)](#)
+[![Language: Fortran](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
 <div align="justify">
@@ -43,7 +43,7 @@ where:
 $$R_0(z) = r_e + (r_i - r_e) \frac{z}{z_i}$$
 
 <p align="center">
-  <img src="conical_heat_source_schematic.svg" alt="Analytical Conical Gaussian Heat Source Model and Geometry Parameters" width="85%" />
+  <img src="../99_images_and_miscelania/conical_heat_source_schematic.svg" alt="Analytical Conical Gaussian Heat Source Model and Geometry Parameters" width="85%" />
 </p>
 
 ### 1.2 Analytical Volume Energy Conservation (Farrokhi et al. / Wu et al. TDC Model)
@@ -77,7 +77,7 @@ For nominal parameters ($P_l = 1800\text{ W}$, $\eta = 0.60 \implies P_{\text{ab
 </div>
 
 <p align="center">
-  <img src="conical_heat_source_improved_plot.svg" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source Model, Cross-Section, Joint Trajectory and Power Schedule" width="100%" />
+  <img src="../99_images_and_miscelania/conical_heat_source_improved_plot.svg" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source Model, Cross-Section, Joint Trajectory and Power Schedule" width="100%" />
 </p>
 
 ### 1.3 Kinematics & Angular Power Schedule
@@ -216,7 +216,7 @@ Molten metal cannot store dislocation hardening. When an element exceeds $1530^\
 ## 3. Sequentially Coupled Architecture & FEA Pipeline
 
 <p align="center">
-  <img src="sequentially_coupled_architecture.svg" alt="Abaqus Sequentially Coupled Thermo-Mechanical Laser Welding Architecture and Multi-Physics Data Pipeline" width="100%" />
+  <img src="../99_images_and_miscelania/sequentially_coupled_architecture.svg" alt="Abaqus Sequentially Coupled Thermo-Mechanical Laser Welding Architecture and Multi-Physics Data Pipeline" width="100%" />
 </p>
 
 ---
@@ -513,11 +513,8 @@ At temperatures near melting ($T > 1200^\circ\text{C}$) and in the plastic regim
 ├── Material_16MnCr5.inp                   # Unified thermo-elasto-plastic & phase transformation deck
 ├── dflux_disk_conical_gaussian.f          # User subroutine (Modern Fortran 2008/90, TDC model)
 ├── compile_vtk_to_gif.py                  # Multi-viewport 3DEXPERIENCE simulation report compiler
-├── compile_vtk_to_gid.py                  # Pipeline alias script
 ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK ASCII exporter & ZIP packager
 ├── run_pipeline.sh                        # HPC / batch automated execution pipeline
-├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
-├── sequentially_coupled_architecture.svg  # Multi-Physics Data Flow & Pipeline Architecture (SVG)
 └── README.md                              # Technical report & documentation
 ```
 

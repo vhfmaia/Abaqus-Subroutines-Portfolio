@@ -1,10 +1,10 @@
-# 04. Advanced Cohesive Zone Modeling (`UMAT`): 3-State Thermo-Mechanical Weld Interface
+﻿# 04. Advanced Cohesive Zone Modeling (`UMAT`): 3-State Thermo-Mechanical Weld Interface
 
-[![Status](https://img.shields.io/badge/Status-In%20Work%20%2F%20Prototype%20(Under%20Testing)-orange.svg)](README.md)
-[![Abaqus](https://img.shields.io/badge/Abaqus%2FStandard-User%20Material%20(UMAT)-blue.svg)](README.md)
-[![Element Type](https://img.shields.io/badge/Elements-COH3D8%20(Cohesive%20Zone)-005691.svg)](README.md)
-[![Language](https://img.shields.io/badge/Language-Fortran_90%2F2008-734f96.svg)](README.md)
-[![Preceded By](https://img.shields.io/badge/Evolved%20From-03__uinter__welding__interface-orange.svg)](../03_uinter_welding_interface/README.md)
+[![Status: In Work (Testing)](https://img.shields.io/badge/Status-In%20Work%20%2F%20Prototype%20(Testing)-orange.svg)](#)
+[![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](https://www.3ds.com/)
+[![Subroutine: UMAT](https://img.shields.io/badge/Subroutine-UMAT-005691.svg)](#)
+[![Language: Fortran](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
 ---
 
@@ -40,42 +40,10 @@ This architecture was formulated to evaluate potential solutions to the mathemat
 Precision laser-welded cylindrical and planar assemblies undergo three distinct physical stages during manufacturing:
 </div>
 
-```text
-  [ BASE COMPONENT 1 ]
-──────────────────────────  Upper Substrate
-  [ COH3D8 COHESIVE LAYER ]  Zero-geometric thickness governed by UMAT
-──────────────────────────  Lower Substrate
-  [ BASE COMPONENT 2 ]
-```
+<p align="center">
+  <img src="../99_images_and_miscelania/cohesive_3state_state_machine.svg" alt="Abaqus UMAT Cohesive Zone Modeling 3-State Thermo-Mechanical Interface Engine" width="100%" />
+</p>
 
-```text
-                     ┌────────────────────────────────────────┐
-                     │          STATE 0: RAW PRE-WELD         │
-                     │  - High penalty barrier in compression │
-                     │  - Zero tensile cohesion (free gap)    │
-                     │  - Simulates initial press-fit mount   │
-                     └────────────────────────────────────────┘
-                                         │
-                                         │ Laser beam arrival: T >= T_liquidus (1530 °C)
-                                         ▼
-                     ┌────────────────────────────────────────┐
-                     │      MELTING & BTR SOLIDIFICATION      │
-                     │  - Liquid annealing: resets stresses   │
-                     │  - Mushy zone tracking: [1485 - 1530°C]│
-                     │  - Energy dissipation: G_dissip <= Gc  │
-                     └────────────────────────────────────────┘
-                                    /          \
-            Dissipated energy < Gc              Dissipated energy >= Gc
-            (No hot tear in BTR)                (Semi-solid rupture)
-                     /                                  \
-                    ▼                                    ▼
-       ┌───────────────────────────────┐   ┌───────────────────────────────┐
-       │     STATE 2: WELDED JOINT     │   │     STATE 3: CRACKED JOINT    │
-       │ - Full bilateral continuity   │   │ - Irreversible damage (D = 1) │
-       │ - High tensile & shear bond   │   │ - Zero tensile load capacity  │
-       │ - Sound solid steel monolith  │   │ - Compressive contact barrier │
-       └───────────────────────────────┘   └───────────────────────────────┘
-```
 
 ---
 

@@ -1,5 +1,11 @@
 # Advanced Abaqus User Subroutines Portfolio
 
+[![Status](https://img.shields.io/badge/Status-Portfolio%20Verified%20%26%20In%20Work-blue.svg)](#)
+[![FEA: Abaqus/Standard](https://img.shields.io/badge/FEA-Abaqus%2FStandard-005691.svg)](https://www.3ds.com/)
+[![Subroutine](https://img.shields.io/badge/Subroutine-DLOAD%20%7C%20DFLUX%20%7C%20UINTER%20%7C%20UMAT-blue.svg)](#)
+[![Language](https://img.shields.io/badge/Language-Fortran%202008%20%2F%20F90-734f96.svg)](https://fortran-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 <div align="justify">
 A repository of production-grade user subroutines for <b>Abaqus/Standard</b> and <b>3DEXPERIENCE SIMULIA</b>, written in <b>Fortran</b> for high-performance structural, fatigue, and manufacturing simulations.
 </div>
@@ -19,13 +25,9 @@ A repository of production-grade user subroutines for <b>Abaqus/Standard</b> and
 
 ### Project Showcase: 01. Helical Crown Gear Fatigue (`DLOAD`)
 
-[![FEA Abaqus](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](01_dload_gear_fatigue/README.md)
-[![SIMULIA Compatible](https://img.shields.io/badge/SIMULIA-3DEXPERIENCE%20Compatible-005691.svg)](01_dload_gear_fatigue/README.md)
-[![Fortran](https://img.shields.io/badge/Language-Fortran_2008%2F90-734f96.svg)](01_dload_gear_fatigue/README.md)
-
 <p align="center">
   <a href="01_dload_gear_fatigue/README.md">
-    <img src="01_dload_gear_fatigue/gear_torque_simulation.gif" alt="Abaqus DLOAD Helical Gear Rolling Contact Simulation (360 Degrees)" width="100%" />
+    <img src="99_images_and_miscelania/gear_torque_simulation.gif" alt="Abaqus DLOAD Helical Gear Rolling Contact Simulation (360 Degrees)" width="100%" />
   </a>
 </p>
 
@@ -47,13 +49,9 @@ Detailed formulation, kinematic equations, FEA verification, and post-processing
 
 ### Project Showcase: 02. Circumferential Laser Welding (`DFLUX`)
 
-[![FEA Abaqus](https://img.shields.io/badge/FEA-Abaqus%2FStandard-blue.svg)](02_dflux_laser_welding/README.md)
-[![SIMULIA Compatible](https://img.shields.io/badge/SIMULIA-3DEXPERIENCE%20Compatible-005691.svg)](02_dflux_laser_welding/README.md)
-[![Fortran](https://img.shields.io/badge/Language-Fortran_2008%2F90-734f96.svg)](02_dflux_laser_welding/README.md)
-
 <p align="center">
   <a href="02_dflux_laser_welding/README.md">
-    <img src="02_dflux_laser_welding/conical_heat_source_improved_plot.svg" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source and Welding Power Schedule" width="100%" />
+    <img src="99_images_and_miscelania/conical_heat_source_improved_plot.svg" alt="Abaqus DFLUX 3D Conical Gaussian Heat Source and Welding Power Schedule" width="100%" />
   </a>
 </p>
 
@@ -79,14 +77,9 @@ Detailed formulation, verification routines, simulation input decks, and automat
 The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (<b>Raw $\rightarrow$ Welded $\rightarrow$ Cracked</b>):
 </div>
 
-```text
-┌──────────────────────────────────────────────┐       Identified Bottlenecks:       ┌──────────────────────────────────────────────┐
-│  03_uinter_welding_interface (UINTER)        │   • Pathological Mesh Dependency    │  04_umat_cohesive_welding (UMAT + CZM)       │
-│  • Surface Interaction Routine               │ ─────────────────────────────────>  │  • Cohesive Zone Elements (COH3D8)           │
-│  • Contact Master/Slave formulation          │   • Severe Discontinuity (SDI)      │  • Fracture Energy Gc Regularization         │
-│  • Status: ⚠️ Exploratory (R&D Backlog)      │   • MPI Domain Split Conflicts      │  • Status: ⚠️ In Work (Testing Phase)        │
-└──────────────────────────────────────────────┘                                     └──────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="99_images_and_miscelania/uinter_vs_czm_comparison.svg" alt="Architectural Evolution from Contact Interaction UINTER to Cohesive Zone Modeling UMAT" width="100%" />
+</p>
 
 <div align="justify">
 <ul>
@@ -105,7 +98,6 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │   ├── DLOAD_CROWN_HELICAL.f                  # User Subroutine (Modern Fortran DLOAD + UEXTERNALDB)
 │   ├── Gear_torque.inp                        # Master Input Deck
 │   ├── GEOMETRY_GEAR.inp                      # 3D Finite Element Mesh & Topology
-│   ├── gear_torque_simulation.gif             # Full 360-degree multi-viewport animation (11 FPS)
 │   ├── compile_vtk_to_gif.py                  # Multi-viewport visualization compiler
 │   ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK extractor
 │   ├── run_pipeline.sh                        # Headless Linux / HPC batch execution script
@@ -117,10 +109,8 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │   ├── Geometry_ME.inp                        # Mechanical Hybrid Mesh Deck (C3D8H, NSET_BASE)
 │   ├── Material_16MnCr5.inp                   # Unified Thermo-Elasto-Plastic & Phase Transformation Deck
 │   ├── dflux_disk_conical_gaussian.f          # User Subroutine (Modern Fortran TDC Conical Model)
-│   ├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
-│   ├── sequentially_coupled_architecture.svg  # Multi-Physics Data Flow & Pipeline Architecture (SVG)
-│   ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK Extractor & ZIP Packager
 │   ├── compile_vtk_to_gif.py                  # Multi-Viewport Animated Report Compiler
+│   ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK Extractor & ZIP Packager
 │   ├── run_pipeline.sh                        # Headless Linux / HPC Batch Execution Pipeline
 │   └── README.md                              # Comprehensive Technical Report
 ├── 03_uinter_welding_interface/
@@ -131,6 +121,15 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 │   ├── umat_cohesive_welding_btr.f            # Prototype User Material Subroutine (Modern Fortran)
 │   ├── cohesive_weld_btr_verification.inp     # 3-Element Cohesive Zone Benchmark Deck (COH3D8)
 │   └── README.md                              # Comprehensive Technical Report & Formulation
+├── 99_images_and_miscelania/
+│   ├── gear_torque_simulation.gif             # Full 360-degree multi-viewport animation (11 FPS)
+│   ├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
+│   ├── conical_heat_source_schematic.svg      # Analytical Heat Source Geometry Schematic (SVG)
+│   ├── sequentially_coupled_architecture.svg  # Multi-Physics Data Flow & Pipeline Architecture (SVG)
+│   ├── uinter_3state_state_machine.svg        # UINTER 3-State Contact State Machine & Won Criteria (SVG)
+│   ├── cohesive_3state_state_machine.svg      # Cohesive Zone UMAT Architecture & Softening Law (SVG)
+│   ├── uinter_vs_czm_comparison.svg           # Interface Modeling Evolution & Bottlenecks (SVG)
+│   └── conical_gaussian_3d.png                # Conical Heat Source Surface Elevation (PNG)
 ├── LICENSE
 └── README.md
 ```

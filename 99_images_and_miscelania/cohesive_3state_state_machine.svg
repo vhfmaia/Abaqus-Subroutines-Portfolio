@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" width="1000" height="780">
+  <defs>
+    <!-- Background & Card Gradients -->
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+
+    <linearGradient id="rawHeaderGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <linearGradient id="btrHeaderGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <linearGradient id="weldHeaderGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <linearGradient id="crackHeaderGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+
+    <linearGradient id="layerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e0e7ff" />
+      <stop offset="100%" stop-color="#c7d2fe" />
+    </linearGradient>
+
+    <!-- Drop Shadows -->
+    <filter id="cardShadow4" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+
+    <!-- Markers -->
+    <marker id="arrowBlue4" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrowGreen4" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669" />
+    </marker>
+    <marker id="arrowRed4" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#dc2626" />
+    </marker>
+  </defs>
+
+  <style>
+    .title-main { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #0f172a; }
+    .title-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13px; font-weight: 400; fill: #475569; }
+    .card-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #ffffff; }
+    .card-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12.5px; fill: #1e293b; line-height: 1.5; }
+    .card-subtext { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11.5px; fill: #64748b; }
+    .badge-pill { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11.5px; }
+  </style>
+
+  <!-- Clean Background -->
+  <rect width="1000" height="780" fill="#ffffff" />
+
+  <!-- Outer Border Container -->
+  <rect x="15" y="15" width="970" height="750" rx="12" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Title & Header Bar -->
+  <rect x="15" y="15" width="970" height="65" rx="12" fill="#f8fafc" />
+  <line x1="15" y1="80" x2="985" y2="80" stroke="#e2e8f0" stroke-width="1.5" />
+  <text x="35" y="44" class="title-main">Abaqus UMAT: Cohesive Zone Modeling (CZM) 3-State Interface Architecture</text>
+  <text x="35" y="65" class="title-sub">Energy-Regularized Kinematics (G<sub>c</sub> = 0.50 N/mm) • Continuum 3D Cohesive Elements (COH3D8) • Exact Algorithmic DDSDDE Jacobian</text>
+
+  <!-- ==================== TOP BAR: PHYSICAL TOPOLOGY ==================== -->
+  <g transform="translate(35, 95)">
+    <rect width="930" height="68" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    
+    <!-- Substrate 1 -->
+    <rect x="15" y="10" width="180" height="20" rx="3" fill="#cbd5e1" />
+    <text x="30" y="24" class="badge-pill" fill="#334155">BASE COMPONENT 1 (Steel Hub)</text>
+
+    <!-- Cohesive Layer -->
+    <rect x="15" y="32" width="180" height="7" fill="#6366f1" />
+    <text x="205" y="38" class="badge-pill" fill="#4338ca">◄ COH3D8 Cohesive Element (Zero-Thickness, Governed by UMAT)</text>
+
+    <!-- Substrate 2 -->
+    <rect x="15" y="41" width="180" height="20" rx="3" fill="#cbd5e1" />
+    <text x="30" y="55" class="badge-pill" fill="#334155">BASE COMPONENT 2 (Shaft)</text>
+
+    <!-- Traction Law Note -->
+    <line x1="590" y1="10" x2="590" y2="58" stroke="#cbd5e1" stroke-width="1" />
+    <text x="610" y="27" class="card-text"><b>Kinematic Tractions:</b> <b>t</b> = {t<sub>n</sub>, t<sub>s1</sub>, t<sub>s2</sub>}<sup>T</sup> &amp; Displacements <b>δ</b> = {δ<sub>n</sub>, δ<sub>s1</sub>, δ<sub>s2</sub>}<sup>T</sup></text>
+    <text x="610" y="50" class="card-subtext">Eliminates virtual length L<sub>0</sub> dependency via fracture energy dissipation: ∫ t<sub>n</sub> dδ<sub>n</sub> = G<sub>c</sub></text>
+  </g>
+
+  <!-- ==================== STATE 0: RAW PRE-WELD ==================== -->
+  <g transform="translate(290, 180)" filter="url(#cardShadow4)">
+    <rect width="420" height="120" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 32 L 0 32 Z" fill="url(#rawHeaderGrad4)" />
+    <text x="18" y="22" class="card-title">STATE 0: RAW PRE-WELD (Press-Fit Assembly)</text>
+    <circle cx="395" cy="16" r="6" fill="#94a3b8" />
+
+    <circle cx="28" cy="52" r="3" fill="#475569" />
+    <text x="40" y="56" class="card-text"><b>Normal Compression Penalty:</b> t<sub>n</sub> = K<sub>pen</sub> · δ<sub>n</sub> (δ<sub>n</sub> &lt; 0) [K<sub>pen</sub> = 1.0e6 N/mm³]</text>
+
+    <circle cx="28" cy="74" r="3" fill="#475569" />
+    <text x="40" y="78" class="card-text"><b>Zero Tensile Cohesion:</b> t<sub>n</sub> = 0 for δ<sub>n</sub> ≥ 0 (free initial separation)</text>
+
+    <circle cx="28" cy="96" r="3" fill="#475569" />
+    <text x="40" y="100" class="card-text"><b>Tangential Response:</b> t<sub>s1</sub> = 0, t<sub>s2</sub> = 0 (frictionless press-fit clearance)</text>
+  </g>
+
+  <!-- Arrow State 0 -> BTR Solidification -->
+  <g>
+    <line x1="500" y1="300" x2="500" y2="345" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrowBlue4)" />
+    <rect x="515" y="310" width="310" height="24" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+    <text x="525" y="326" class="badge-pill" fill="#1e40af">Laser Arrival: T ≥ T<sub>liquidus</sub> (1530 °C) • Liquid Annealing (σ = 0)</text>
+  </g>
+
+  <!-- ==================== TRANSITION: BTR SOLIDIFICATION ==================== -->
+  <g transform="translate(210, 350)" filter="url(#cardShadow4)">
+    <rect width="580" height="165" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 572 0 Q 580 0 580 8 L 580 34 L 0 34 Z" fill="url(#btrHeaderGrad4)" />
+    <text x="20" y="23" class="card-title">BTR MUSHY ZONE TRACTION-SEPARATION SOFTENING [1485 - 1530 °C]</text>
+    <circle cx="555" cy="17" r="6" fill="#60a5fa" />
+
+    <!-- Content Items -->
+    <circle cx="28" cy="56" r="3" fill="#2563eb" />
+    <text x="40" y="60" class="card-text"><b>Elastic Damage Initiation:</b> δ<sub>0</sub> = σ<sub>c,BTR</sub> / K<sub>bond</sub> (dendritic bridging threshold)</text>
+
+    <circle cx="28" cy="82" r="3" fill="#2563eb" />
+    <text x="40" y="86" class="card-text"><b>Linear Softening Damage Law:</b> D = [δ<sub>f</sub>(δ<sub>max</sub> - δ<sub>0</sub>)] / [δ<sub>max</sub>(δ<sub>f</sub> - δ<sub>0</sub>)], D ∈ [0.0, 1.0]</text>
+
+    <circle cx="28" cy="108" r="3" fill="#2563eb" />
+    <text x="40" y="112" class="card-text"><b>Energy Regularization:</b> δ<sub>f</sub> = 2·G<sub>c</sub> / σ<sub>c,BTR</sub> with critical fracture energy G<sub>c</sub> = 0.50 N/mm</text>
+
+    <circle cx="28" cy="134" r="3" fill="#2563eb" />
+    <text x="40" y="138" class="card-text"><b>Mesh Independence:</b> Energy dissipation per unit joint area is mathematically invariant</text>
+  </g>
+
+  <!-- Left Branch: Solidification without Rupture -->
+  <g>
+    <path d="M 370 515 L 370 550 Q 370 565 350 565 L 255 565 L 255 585" fill="none" stroke="#059669" stroke-width="2.2" marker-end="url(#arrowGreen4)" />
+    <rect x="135" y="540" width="205" height="24" rx="4" fill="#d1fae5" stroke="#a7f3d0" stroke-width="1" />
+    <text x="145" y="556" class="badge-pill" fill="#065f46">Cooled below T<sub>solidus</sub> &amp; D &lt; 1.0</text>
+  </g>
+
+  <!-- Right Branch: Semi-Solid Hot Tear -->
+  <g>
+    <path d="M 630 515 L 630 550 Q 630 565 650 565 L 745 565 L 745 585" fill="none" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrowRed4)" />
+    <rect x="660" y="540" width="210" height="24" rx="4" fill="#fee2e2" stroke="#fecaca" stroke-width="1" />
+    <text x="670" y="556" class="badge-pill" fill="#991b1b">Dissipated Energy ≥ G<sub>c</sub> (D = 1.0)</text>
+  </g>
+
+  <!-- ==================== STATE 2: WELDED MONOLITH ==================== -->
+  <g transform="translate(45, 590)" filter="url(#cardShadow4)">
+    <rect width="420" height="140" rx="8" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 32 L 0 32 Z" fill="url(#weldHeaderGrad4)" />
+    <text x="18" y="22" class="card-title">STATE 2: WELDED JOINT (Monolithic Sound Bond)</text>
+    <circle cx="395" cy="16" r="6" fill="#34d399" />
+
+    <circle cx="28" cy="52" r="3" fill="#059669" />
+    <text x="40" y="56" class="card-text"><b>Full Bilateral Tension:</b> t<sub>n</sub> = K<sub>bond</sub> · δ<sub>n</sub> (∀ δ<sub>n</sub> ∈ (-∞, +∞))</text>
+
+    <circle cx="28" cy="74" r="3" fill="#059669" />
+    <text x="40" y="78" class="card-text"><b>Full Shear Continuity:</b> t<sub>s1</sub> = G<sub>shear</sub> · δ<sub>s1</sub>, t<sub>s2</sub> = G<sub>shear</sub> · δ<sub>s2</sub></text>
+
+    <circle cx="28" cy="96" r="3" fill="#059669" />
+    <text x="40" y="100" class="card-text"><b>Exact Jacobian:</b> DDSDDE = diag(K<sub>bond</sub>, G<sub>shear</sub>, G<sub>shear</sub>)</text>
+
+    <circle cx="28" cy="118" r="3" fill="#059669" />
+    <text x="40" y="122" class="card-text"><b>Convergence:</b> Smooth quadratic Newton-Raphson equilibrium</text>
+  </g>
+
+  <!-- ==================== STATE 3: CRACKED JOINT ==================== -->
+  <g transform="translate(535, 590)" filter="url(#cardShadow4)">
+    <rect width="420" height="140" rx="8" fill="#ffffff" stroke="#fca5a5" stroke-width="1.5" />
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 32 L 0 32 Z" fill="url(#crackHeaderGrad4)" />
+    <text x="18" y="22" class="card-title">STATE 3: CRACKED JOINT (Hot Tear Delamination)</text>
+    <circle cx="395" cy="16" r="6" fill="#f87171" />
+
+    <circle cx="28" cy="52" r="3" fill="#dc2626" />
+    <text x="40" y="56" class="card-text"><b>Permanent Rupture:</b> t<sub>n</sub> = 0 for δ<sub>n</sub> ≥ 0 (zero tensile resistance)</text>
+
+    <circle cx="28" cy="74" r="3" fill="#dc2626" />
+    <text x="40" y="78" class="card-text"><b>Zero Shear Capacity:</b> t<sub>s1</sub> = 0, t<sub>s2</sub> = 0 (frictionless open crack)</text>
+
+    <circle cx="28" cy="96" r="3" fill="#dc2626" />
+    <text x="40" y="100" class="card-text"><b>Crack Closure Barrier:</b> t<sub>n</sub> = K<sub>pen</sub> · δ<sub>n</sub> for δ<sub>n</sub> &lt; 0 (prevents penetration)</text>
+
+    <circle cx="28" cy="118" r="3" fill="#dc2626" />
+    <text x="40" y="122" class="card-text"><b>SDI Free:</b> Direct stiffness integration without contact chatter</text>
+  </g>
+
+  <!-- Bottom Legend -->
+  <g transform="translate(15, 738)">
+    <rect width="970" height="26" rx="6" fill="#f1f5f9" />
+    <text x="25" y="17" class="card-subtext"><b>SIMULIA Abaqus/Standard CZM UMAT Prototype</b> • Subroutine: Modern Fortran 2008 / F90 • Benchmark Verified on COH3D8 Input Deck</text>
+  </g>
+</svg>
