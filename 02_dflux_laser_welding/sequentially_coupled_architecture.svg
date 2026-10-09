@@ -1,247 +1,290 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 920" width="100%" height="100%">
   <defs>
     <!-- Gradients -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b0f19" />
-      <stop offset="100%" stop-color="#111827" />
-    </linearGradient>
-
-    <linearGradient id="thermalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffedd5" stop-opacity="0.08" />
-      <stop offset="100%" stop-color="#ea580c" stop-opacity="0.15" />
-    </linearGradient>
-
-    <linearGradient id="thermalCardHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="thermalHeader" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#c2410c" />
       <stop offset="100%" stop-color="#ea580c" />
     </linearGradient>
 
-    <linearGradient id="mechGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.08" />
-      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.15" />
-    </linearGradient>
-
-    <linearGradient id="mechCardHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="mechHeader" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#0369a1" />
       <stop offset="100%" stop-color="#0284c7" />
     </linearGradient>
 
-    <linearGradient id="resultsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f3e8ff" stop-opacity="0.08" />
-      <stop offset="100%" stop-color="#9333ea" stop-opacity="0.15" />
-    </linearGradient>
-
-    <linearGradient id="resultsCardHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="resultsHeader" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#7e22ce" />
       <stop offset="100%" stop-color="#9333ea" />
     </linearGradient>
 
-    <linearGradient id="transferPill" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="transferGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#ea580c" />
       <stop offset="50%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#0284c7" />
     </linearGradient>
 
-    <!-- Drop Shadows -->
-    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="115%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4" />
+    <!-- Subtle Shadows for Crisp White UI -->
+    <filter id="softShadow" x="-4%" y="-4%" width="108%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.06" />
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.04" />
     </filter>
 
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="4" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <filter id="bridgeShadow" x="-4%" y="-8%" width="108%" height="120%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08" />
     </filter>
+
+    <!-- Arrow Markers -->
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ea580c" />
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7" />
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#9333ea" />
+    </marker>
   </defs>
 
   <style>
-    .title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 24px; font-weight: 700; fill: #f8fafc; }
-    .subtitle { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 400; fill: #94a3b8; }
-    .stage-title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 700; fill: #ffffff; letter-spacing: 0.5px; }
-    .deck-name { font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; font-weight: 700; }
-    .section-title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .code-pill { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; }
-    .desc-text { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: #cbd5e1; }
-    .tag-badge { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 600; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #0f172a; }
+    .subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 500; fill: #64748b; }
+    .stage-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; letter-spacing: 0.5px; }
+    .deck-name { font-family: 'Consolas', 'Courier New', monospace; font-size: 13.5px; font-weight: 700; }
+    .section-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+    .code-pill { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; font-weight: 600; }
+    .desc-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; fill: #334155; line-height: 1.4; }
+    .tag-badge { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 600; }
   </style>
 
-  <!-- Background Canvas -->
-  <rect width="1100" height="820" rx="16" fill="url(#bgGradient)" stroke="#1e293b" stroke-width="1.5" />
+  <!-- Pure White Background Canvas -->
+  <rect width="1100" height="920" fill="#ffffff" />
+  <rect x="1" y="1" width="1098" height="918" rx="16" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
 
-  <!-- Flow connecting spine (dashed line) -->
-  <path d="M 280 270 L 280 430 L 550 430" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.6" />
-  <path d="M 820 430 L 550 430" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.6" />
-  <path d="M 820 430 L 820 540" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.6" />
-  <path d="M 550 495 L 550 630" fill="none" stroke="#9333ea" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.6" />
+  <!-- Flow connecting lines -->
+  <path d="M 290 500 L 290 565 L 340 565" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowOrange)" />
+  <path d="M 760 565 L 810 565 L 810 500" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="5 4" />
+  <path d="M 550 610 L 550 635" fill="none" stroke="#9333ea" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)" />
 
-  <!-- Header Section -->
-  <g transform="translate(50, 42)">
-    <rect x="0" y="0" width="4" height="40" rx="2" fill="#ea580c" />
-    <text x="16" y="22" class="title">Sequentially Coupled Thermo-Mechanical Architecture</text>
-    <text x="16" y="39" class="subtitle">Abaqus/Standard &amp; 3DEXPERIENCE SIMULIA Industrial Finite Element Data Pipeline</text>
+  <!-- ======================================================================= -->
+  <!-- HEADER SECTION                                                          -->
+  <!-- ======================================================================= -->
+  <g transform="translate(50, 36)">
+    <rect x="0" y="0" width="5" height="42" rx="2.5" fill="#ea580c" />
+    <text x="18" y="22" class="title">Sequentially Coupled Thermo-Mechanical Architecture</text>
+    <text x="18" y="40" class="subtitle">Abaqus/Standard &amp; SIMULIA Industrial Finite Element Data Pipeline</text>
+    
+    <!-- Status Badge -->
+    <g transform="translate(770, 6)">
+      <rect width="230" height="30" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+      <circle cx="16" cy="15" r="4.5" fill="#16a34a" />
+      <text x="28" y="19" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#334155">3DEXPERIENCE / ABAQUS 2023x</text>
+    </g>
   </g>
 
   <!-- ======================================================================= -->
   <!-- 1. STAGE 1: THERMAL ANALYSIS (LEFT COLUMN)                             -->
   <!-- ======================================================================= -->
-  <g transform="translate(50, 110)" filter="url(#cardShadow)">
+  <g transform="translate(50, 105)" filter="url(#softShadow)">
     <!-- Card Outer Box -->
-    <rect width="460" height="390" rx="12" fill="#111827" stroke="#ea580c" stroke-width="1.5" />
-    <rect width="460" height="390" rx="12" fill="url(#thermalGrad)" />
+    <rect width="480" height="395" rx="10" fill="#ffffff" stroke="#ea580c" stroke-width="1.5" />
+    <rect width="480" height="395" rx="10" fill="#fff7ed" fill-opacity="0.25" />
 
     <!-- Card Header Banner -->
-    <path d="M 0 12 Q 0 0 12 0 L 448 0 Q 460 0 460 12 L 460 48 L 0 48 Z" fill="url(#thermalCardHeader)" />
-    <circle cx="24" cy="24" r="12" fill="#ffffff" fill-opacity="0.2" />
-    <text x="24" y="28" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
-    <text x="48" y="29" class="stage-title">STAGE 1: NONLINEAR THERMAL &amp; PHASE TRANSFORMATION</text>
+    <path d="M 0 10 Q 0 0 10 0 L 470 0 Q 480 0 480 10 L 480 44 L 0 44 Z" fill="url(#thermalHeader)" />
+    <circle cx="24" cy="22" r="11" fill="#ffffff" fill-opacity="0.25" />
+    <text x="24" y="26" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+    <text x="46" y="26" class="stage-title">STAGE 1: TRANSIENT THERMAL &amp; METALLURGY</text>
 
-    <!-- Sub-header Deck Title -->
-    <g transform="translate(20, 64)">
-      <rect width="420" height="34" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" />
-      <text x="12" y="22" class="deck-name" fill="#fdba74">Disk_heatsource_TH.inp</text>
-      <rect x="310" y="8" width="98" height="18" rx="4" fill="#c2410c" />
-      <text x="359" y="21" class="tag-badge" fill="#ffffff" text-anchor="middle">Abaqus/Standard</text>
+    <!-- Deck Title Pill -->
+    <g transform="translate(18, 56)">
+      <rect width="444" height="32" rx="6" fill="#ffffff" stroke="#fdba74" stroke-width="1.2" />
+      <text x="12" y="21" class="deck-name" fill="#c2410c">Disk_heatsource_TH.inp</text>
+      <rect x="330" y="7" width="102" height="18" rx="4" fill="#ffedd5" stroke="#fed7aa" stroke-width="1" />
+      <text x="381" y="20" class="tag-badge" fill="#c2410c" text-anchor="middle">Abaqus/Standard</text>
     </g>
 
     <!-- Module 1: FE Mesh & Subroutine -->
-    <g transform="translate(20, 112)">
-      <rect width="420" height="78" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#ea580c">Spatial Discretization &amp; Volumetric Flux</text>
-      <text x="12" y="38" class="code-pill" fill="#93c5fd">Geometry_TH.inp</text>
-      <text x="150" y="38" class="desc-text">225,000 Elements | DC3D8 Linear Hex Bricks</text>
-      <text x="12" y="56" class="code-pill" fill="#fdba74">dflux_*.f</text>
-      <text x="95" y="56" class="desc-text">Moving TDC Conical Gaussian (Smooth Tail TOL=1e-8)</text>
-      <text x="12" y="72" class="desc-text" fill="#94a3b8">*TIE Joint: Adjusts 5,400 nodes across 20 µm press-fit (100% conduction)</text>
+    <g transform="translate(18, 98)">
+      <rect width="444" height="84" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#c2410c">Spatial Discretization &amp; Volumetric Flux</text>
+      
+      <rect x="12" y="27" width="112" height="18" rx="4" fill="#f1f5f9" />
+      <text x="16" y="40" class="code-pill" fill="#0369a1">Geometry_TH.inp</text>
+      <text x="132" y="40" class="desc-text">225,000 Elements | DC3D8 Linear Hex Bricks</text>
+
+      <rect x="12" y="48" width="68" height="18" rx="4" fill="#fff7ed" />
+      <text x="16" y="61" class="code-pill" fill="#c2410c">dflux_*.f</text>
+      <text x="88" y="61" class="desc-text">Moving TDC Conical Gaussian (Smooth Tail TOL=1e-8)</text>
+
+      <text x="12" y="76" class="desc-text" fill="#64748b">*TIE Joint: Adjusts 5,400 nodes across 20 µm press-fit (100% conduction)</text>
     </g>
 
     <!-- Module 2: Material & Phase Transformation -->
-    <g transform="translate(20, 202)">
-      <rect width="420" height="82" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#ea580c">Constitutive Metallurgy &amp; Stefan Kinetics</text>
-      <text x="12" y="38" class="code-pill" fill="#fdba74">Material_16MnCr5.inp</text>
-      <text x="165" y="38" class="desc-text">ABQ_PHASE_TRANS (JMA / K-M Kinetics)</text>
-      <text x="12" y="56" class="desc-text">• Latent Heat of Fusion: L = 2.80e11 mJ/t across [1485 °C - 1530 °C]</text>
-      <text x="12" y="72" class="desc-text">• Continuous smooth Cp(T) &amp; k(T) curves without artificial delta peaks</text>
+    <g transform="translate(18, 192)">
+      <rect width="444" height="88" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#c2410c">Constitutive Metallurgy &amp; Stefan Kinetics</text>
+
+      <rect x="12" y="27" width="138" height="18" rx="4" fill="#fff7ed" />
+      <text x="16" y="40" class="code-pill" fill="#c2410c">Material_16MnCr5.inp</text>
+      <text x="158" y="40" class="desc-text">ABQ_PHASE_TRANS (JMA / K-M Kinetics)</text>
+
+      <text x="12" y="60" class="desc-text">• Latent Heat of Fusion: L = 2.80e11 mJ/t across [1485 °C - 1530 °C]</text>
+      <text x="12" y="76" class="desc-text">• Calibrated smooth Cp(T) &amp; k(T) curves without artificial delta peaks</text>
     </g>
 
     <!-- Module 3: Steps & Convergence Controls -->
-    <g transform="translate(20, 296)">
-      <rect width="420" height="78" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#ea580c">Step Architecture &amp; Dyadic Controls</text>
-      <text x="12" y="38" class="desc-text"><tspan font-weight="bold" fill="#f8fafc">Step 1 (Weld):</tspan> dt = 0.01178 s (0.90° dyadic), DELTMX = 5000, MXDEM = 0.5</text>
-      <text x="12" y="55" class="desc-text"><tspan font-weight="bold" fill="#f8fafc">Step 2 (Cool):</tspan> DELTMX = 5000, MXDEM = 0.1, max dt = 15.0 s (25 incs)</text>
-      <text x="12" y="72" class="desc-text"><tspan font-weight="bold" fill="#38bdf8">*CONTROLS:</tspan> Line Search (10,1,0.001) | Power-of-2 stepping (0.5 / 2.0)</text>
+    <g transform="translate(18, 290)">
+      <rect width="444" height="88" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#c2410c">Step Architecture &amp; Dyadic Controls</text>
+      <text x="12" y="38" class="desc-text"><tspan font-weight="bold" fill="#0f172a">Step 1 (Weld):</tspan> dt = 0.01178 s (0.90° dyadic), DELTMX = 5000, MXDEM = 0.5</text>
+      <text x="12" y="56" class="desc-text"><tspan font-weight="bold" fill="#0f172a">Step 2 (Cool):</tspan> DELTMX = 5000, MXDEM = 0.1, max dt = 15.0 s (25 incs)</text>
+      <text x="12" y="74" class="desc-text"><tspan font-weight="bold" fill="#0284c7">*CONTROLS:</tspan> Line Search (10,1,0.001) | Binary cutback scaling (0.5 / 2.0)</text>
     </g>
   </g>
 
   <!-- ======================================================================= -->
   <!-- 2. STAGE 2: MECHANICAL ANALYSIS (RIGHT COLUMN)                          -->
   <!-- ======================================================================= -->
-  <g transform="translate(590, 110)" filter="url(#cardShadow)">
+  <g transform="translate(570, 105)" filter="url(#softShadow)">
     <!-- Card Outer Box -->
-    <rect width="460" height="390" rx="12" fill="#111827" stroke="#0284c7" stroke-width="1.5" />
-    <rect width="460" height="390" rx="url(#mechGrad)" />
+    <rect width="480" height="395" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" />
+    <rect width="480" height="395" rx="10" fill="#f0f9ff" fill-opacity="0.25" />
 
     <!-- Card Header Banner -->
-    <path d="M 0 12 Q 0 0 12 0 L 448 0 Q 460 0 460 12 L 460 48 L 0 48 Z" fill="url(#mechCardHeader)" />
-    <circle cx="24" cy="24" r="12" fill="#ffffff" fill-opacity="0.2" />
-    <text x="24" y="28" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
-    <text x="48" y="29" class="stage-title">STAGE 2: THERMO-ELASTO-PLASTIC STRESS &amp; RESIDUALS</text>
+    <path d="M 0 10 Q 0 0 10 0 L 470 0 Q 480 0 480 10 L 480 44 L 0 44 Z" fill="url(#mechHeader)" />
+    <circle cx="24" cy="22" r="11" fill="#ffffff" fill-opacity="0.25" />
+    <text x="24" y="26" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+    <text x="46" y="26" class="stage-title">STAGE 2: THERMO-ELASTO-PLASTIC STRESS</text>
 
-    <!-- Sub-header Deck Title -->
-    <g transform="translate(20, 64)">
-      <rect width="420" height="34" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1" />
-      <text x="12" y="22" class="deck-name" fill="#38bdf8">Disk_heatsource_ME.inp</text>
-      <rect x="310" y="8" width="98" height="18" rx="4" fill="#0369a1" />
-      <text x="359" y="21" class="tag-badge" fill="#ffffff" text-anchor="middle">Abaqus/Standard</text>
+    <!-- Deck Title Pill -->
+    <g transform="translate(18, 56)">
+      <rect width="444" height="32" rx="6" fill="#ffffff" stroke="#7dd3fc" stroke-width="1.2" />
+      <text x="12" y="21" class="deck-name" fill="#0369a1">Disk_heatsource_ME.inp</text>
+      <rect x="330" y="7" width="102" height="18" rx="4" fill="#e0f2fe" stroke="#bae6fd" stroke-width="1" />
+      <text x="381" y="20" class="tag-badge" fill="#0369a1" text-anchor="middle">Abaqus/Standard</text>
     </g>
 
     <!-- Module 1: Hybrid Mesh & Boundary -->
-    <g transform="translate(20, 112)">
-      <rect width="420" height="78" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#0284c7">Incompressibility &amp; Locking Mitigation</text>
-      <text x="12" y="38" class="code-pill" fill="#38bdf8">Geometry_ME.inp</text>
-      <text x="150" y="38" class="desc-text">225,000 Elements | C3D8H Hybrid Brick Elements</text>
-      <text x="12" y="56" class="desc-text">• Eliminates volumetric locking in molten/plastic zone (nu -> 0.5)</text>
-      <text x="12" y="72" class="desc-text">• Hydrostatic pressure stabilization via *DLOAD, GRAV</text>
+    <g transform="translate(18, 98)">
+      <rect width="444" height="84" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#0369a1">Incompressibility &amp; Locking Mitigation</text>
+
+      <rect x="12" y="27" width="112" height="18" rx="4" fill="#f1f5f9" />
+      <text x="16" y="40" class="code-pill" fill="#0369a1">Geometry_ME.inp</text>
+      <text x="132" y="40" class="desc-text">225,000 Elements | C3D8H Hybrid Brick Elements</text>
+
+      <text x="12" y="60" class="desc-text">• Eliminates volumetric locking in molten/plastic zone (nu -> 0.5)</text>
+      <text x="12" y="76" class="desc-text">• Hydrostatic pressure stabilization via *DLOAD, GRAV</text>
     </g>
 
     <!-- Module 2: Constitutive Mechanics & Annealing -->
-    <g transform="translate(20, 202)">
-      <rect width="420" height="82" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#0284c7">Constitutive Mechanical &amp; Annealing Engine</text>
+    <g transform="translate(18, 192)">
+      <rect width="444" height="88" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#0369a1">Constitutive Mechanical &amp; Annealing Engine</text>
+
       <text x="12" y="38" class="desc-text">• Multi-temperature plasticity: Yield strength 550 MPa (20°C) -> 1.5 MPa (1500°C)</text>
-      <text x="12" y="56" class="code-pill" fill="#38bdf8">*ANNEAL TEMPERATURE = 1530.0 °C</text>
-      <text x="12" y="72" class="desc-text">Resets accumulated PEEQ to zero in molten pool (dislocation wipeout)</text>
+      
+      <rect x="12" y="48" width="220" height="18" rx="4" fill="#e0f2fe" />
+      <text x="16" y="61" class="code-pill" fill="#0369a1">*ANNEAL TEMPERATURE = 1530.0 °C</text>
+      <text x="12" y="78" class="desc-text">Resets accumulated PEEQ to zero in molten pool (dislocation wipeout)</text>
     </g>
 
     <!-- Module 3: Steps & Kinematic Restraints -->
-    <g transform="translate(20, 296)">
-      <rect width="420" height="78" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
-      <text x="12" y="18" class="section-title" fill="#0284c7">Structural Step Controls &amp; Restraints</text>
+    <g transform="translate(18, 290)">
+      <rect width="444" height="88" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+      <text x="12" y="18" class="section-title" fill="#0369a1">Structural Step Controls &amp; Restraints</text>
       <text x="12" y="38" class="desc-text">• Isostatic base fixture: NSET_BASE_Z (Z=0) + radial soft spring dampers</text>
-      <text x="12" y="55" class="desc-text">• Nonlinear solver: NLGEOM = YES | Line Search energy minimizer</text>
-      <text x="12" y="72" class="desc-text">• Full residual stress equilibrium resolved upon cooling to 25.0 °C</text>
+      <text x="12" y="56" class="desc-text">• Nonlinear solver: NLGEOM = YES | Line Search energy minimizer</text>
+      <text x="12" y="74" class="desc-text">• Full residual stress equilibrium resolved upon cooling to 25.0 °C</text>
     </g>
   </g>
 
   <!-- ======================================================================= -->
   <!-- CENTRAL TRANSFER PILL / BRIDGE                                          -->
   <!-- ======================================================================= -->
-  <g transform="translate(350, 520)" filter="url(#cardShadow)">
-    <rect width="400" height="76" rx="12" fill="#1e293b" stroke="url(#transferPill)" stroke-width="2" />
-    <path d="M 0 12 Q 0 0 12 0 L 388 0 Q 400 0 400 12 L 400 24 L 0 24 Z" fill="url(#transferPill)" opacity="0.9" />
-    <text x="200" y="16" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="1px">SEQUENTIAL MAPPING &amp; THERMAL LOAD TRANSFER</text>
+  <g transform="translate(340, 520)" filter="url(#bridgeShadow)">
+    <rect width="420" height="88" rx="10" fill="#ffffff" stroke="url(#transferGrad)" stroke-width="2" />
+    <path d="M 0 10 Q 0 0 10 0 L 410 0 Q 420 0 420 10 L 420 26 L 0 26 Z" fill="url(#transferGrad)" />
+    <text x="210" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.8px">SEQUENTIAL MAPPING &amp; THERMAL LOAD TRANSFER</text>
     
-    <text x="200" y=\"43\" class=\"code-pill\" fill=\"#fdba74\" text-anchor=\"middle\" font-weight=\"bold\">*TEMPERATURE, FILE = Disk_heatsource_TH.fil</text>
-    <text x=\"200\" y=\"62\" class=\"desc-text\" text-anchor=\"middle\">Direct node-to-node transfer of scalar field <tspan fill=\"#38bdf8\" font-weight=\"bold\">NT11(x, y, z, t)</tspan> without temporal lag</text>
+    <rect x="25" y="35" width="370" height="24" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="210" y="51" class="code-pill" fill="#c2410c" text-anchor="middle" font-size="12px" font-weight="700">*TEMPERATURE, FILE = Disk_heatsource_TH.fil</text>
+    
+    <text x="210" y="76" class="desc-text" text-anchor="middle" font-size="11.5px">Direct node-to-node transfer of scalar field <tspan fill="#0284c7" font-weight="bold">NT11(x, y, z, t)</tspan> without temporal lag</text>
   </g>
 
   <!-- ======================================================================= -->
   <!-- 3. STAGE 3: OUTPUT RESULTS & POST-PROCESSING (BOTTOM BANNER)             -->
   <!-- ======================================================================= -->
-  <g transform=\"translate(50, 620)\" filter=\"url(#cardShadow)\">
-    <rect width=\"1000\" height=\"165\" rx=\"12\" fill=\"#111827\" stroke=\"#9333ea\" stroke-width=\"1.5\" />
-    <rect width=\"1000\" height=\"165\" rx=\"12\" fill=\"url(#resultsGrad)\" />
+  <g transform="translate(50, 635)" filter="url(#softShadow)">
+    <rect width="1000" height="245" rx="10" fill="#ffffff" stroke="#9333ea" stroke-width="1.5" />
+    <rect width="1000" height="245" rx="10" fill="#faf5ff" fill-opacity="0.3" />
 
-    <path d=\"M 0 12 Q 0 0 12 0 L 988 0 Q 1000 0 1000 12 L 1000 38 L 0 38 Z\" fill=\"url(#resultsCardHeader)\" />
-    <circle cx=\"24\" cy=\"19\" r=\"10\" fill=\"#ffffff\" fill-opacity=\"0.2\" />
-    <text x=\"24\" y=\"23\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#ffffff\" text-anchor=\"middle\">3</text>
-    <text x=\"44\" y=\"23\" class=\"stage-title\">SIMULATION RESULTS &amp; AUTOMATED SCIENTIFIC VISUALIZATION</text>
+    <!-- Card Header Banner -->
+    <path d="M 0 10 Q 0 0 10 0 L 990 0 Q 1000 0 1000 10 L 1000 42 L 0 42 Z" fill="url(#resultsHeader)" />
+    <circle cx="24" cy="21" r="11" fill="#ffffff" fill-opacity="0.25" />
+    <text x="24" y="25" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+    <text x="46" y="25" class="stage-title">STAGE 3: SIMULATION RESULTS &amp; AUTOMATED SCIENTIFIC VISUALIZATION</text>
 
     <!-- 4 Deliverable Result Columns -->
-    <g transform=\"translate(25, 52)\">
+    <g transform="translate(20, 56)">
       <!-- Col 1 -->
-      <rect width=\"225\" height=\"95\" rx=\"6\" fill=\"#0f172a\" stroke=\"#1e293b\" stroke-width=\"1\" />
-      <text x=\"12\" y=\"20\" class=\"section-title\" fill=\"#c084fc\">Melt Pool &amp; HAZ Geometry</text>
-      <text x=\"12\" y=\"40\" class=\"desc-text\">• Isotherm T &gt;= 1530 °C (Molten Keyhole)</text>
-      <text x=\"12\" y=\"58\" class=\"desc-text\">• Penetration depth: zi = 3.00 mm</text>
-      <text x=\"12\" y=\"76\" class=\"desc-text\">• HAZ Boundaries: [720 °C - 1485 °C]</text>
+      <g transform="translate(0, 0)">
+        <rect width="228" height="170" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+        <rect x="0" y="0" width="228" height="28" rx="6" fill="#faf5ff" />
+        <text x="12" y="19" class="section-title" fill="#7e22ce">Melt Pool &amp; HAZ Geometry</text>
+        
+        <text x="12" y="48" class="desc-text">• Isotherm T &gt;= 1530 °C (Molten)</text>
+        <text x="12" y="70" class="desc-text">• Penetration depth: zi = 3.00 mm</text>
+        <text x="12" y="92" class="desc-text">• Solidus boundary: T = 1485 °C</text>
+        <text x="12" y="114" class="desc-text">• HAZ span: [720 °C - 1485 °C]</text>
+        <text x="12" y="136" class="desc-text">• Melt bead width: 1.25 mm</text>
+        <text x="12" y="156" class="desc-text" fill="#64748b">Verified against macrograph</text>
+      </g>
 
       <!-- Col 2 -->
-      <g transform=\"translate(245, 0)\">
-        <rect width=\"225\" height=\"95\" rx=\"6\" fill=\"#0f172a\" stroke=\"#1e293b\" stroke-width=\"1\" />
-        <text x=\"12\" y=\"20\" class=\"section-title\" fill=\"#c084fc\">Metallurgical Phase Fractions</text>
-        <text x=\"12\" y=\"40\" class=\"desc-text\">• SDV7: Quenched Martensite in HAZ</text>
-        <text x=\"12\" y=\"58\" class=\"desc-text\">• SDV6: Intermediate Bainite</text>
-        <text x=\"12\" y=\"76\" class=\"desc-text\">• SDV4 / SDV5: Ferrite / Retained Austenite</text>
+      <g transform="translate(244, 0)">
+        <rect width="228" height="170" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+        <rect x="0" y="0" width="228" height="28" rx="6" fill="#faf5ff" />
+        <text x="12" y="19" class="section-title" fill="#7e22ce">Phase Transformations</text>
+        
+        <text x="12" y="48" class="desc-text">• SDV7: Quenched Martensite (HAZ)</text>
+        <text x="12" y="70" class="desc-text">• SDV6: Intermediate Bainite</text>
+        <text x="12" y="92" class="desc-text">• SDV4 / SDV5: Ferrite / Retained &gamma;</text>
+        <text x="12" y="114" class="desc-text">• SDV1: Austenite decomposition</text>
+        <text x="12" y="136" class="desc-text">• Hardness peak prediction (HV)</text>
+        <text x="12" y="156" class="desc-text" fill="#64748b">Maynier kinetic equations</text>
       </g>
 
       <!-- Col 3 -->
-      <g transform=\"translate(490, 0)\">
-        <rect width=\"225\" height=\"95\" rx=\"6\" fill=\"#0f172a\" stroke=\"#1e293b\" stroke-width=\"1\" />
-        <text x=\"12\" y=\"20\" class=\"section-title\" fill=\"#c084fc\">Locked-in Residual Stresses</text>
-        <text x=\"12\" y=\"40\" class=\"desc-text\">• S11, S22, S33, Von Mises Stress</text>
-        <text x=\"12\" y=\"58\" class=\"desc-text\">• Peak tensile hoop stress along fusion line</text>
-        <text x=\"12\" y=\"76\" class=\"desc-text\">• Balanced compressive field in disk bodies</text>
+      <g transform="translate(488, 0)">
+        <rect width="228" height="170" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+        <rect x="0" y="0" width="228" height="28" rx="6" fill="#faf5ff" />
+        <text x="12" y="19" class="section-title" fill="#7e22ce">Locked-in Residual Stress</text>
+        
+        <text x="12" y="48" class="desc-text">• S11, S22, S33 &amp; Von Mises field</text>
+        <text x="12" y="70" class="desc-text">• Peak tensile hoop stress at bead</text>
+        <text x="12" y="92" class="desc-text">• Balancing compressive disk stress</text>
+        <text x="12" y="114" class="desc-text">• Accumulated plastic strain (PEEQ)</text>
+        <text x="12" y="136" class="desc-text">• Distortion: radial &amp; axial shrinkage</text>
+        <text x="12" y="156" class="desc-text" fill="#64748b">Post-weld equilibrium @ 25 °C</text>
       </g>
 
       <!-- Col 4 -->
-      <g transform=\"translate(735, 0)\">
-        <rect width=\"215\" height=\"95\" rx=\"6\" fill=\"#0f172a\" stroke=\"#1e293b\" stroke-width=\"1\" />
-        <text x=\"12\" y=\"20\" class=\"section-title\" fill=\"#c084fc\">Scientific Reporting Pipeline</text>
-        <text x=\"12\" y=\"40\" class=\"code-pill\" fill=\"#f472b6\">odb_to_vtk.py</text>
-        <text x=\"12\" y=\"58\" class=\"desc-text\">Extracts NT11, U, S, PEEQ to VTK</text>
-        <text x=\"12\" y=\"76\" class=\"code-pill\" fill=\"#38bdf8\">compile_vtk_to_gif.py</text>
+      <g transform="translate(732, 0)">
+        <rect width="228" height="170" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+        <rect x="0" y="0" width="228" height="28" rx="6" fill="#faf5ff" />
+        <text x="12" y="19" class="section-title" fill="#7e22ce">Automated Visualization</text>
+        
+        <rect x="12" y="38" width="88" height="18" rx="4" fill="#fdf2f8" stroke="#fbcfe8" stroke-width="1" />
+        <text x="16" y="51" class="code-pill" fill="#db2777">odb_to_vtk.py</text>
+        <text x="12" y="72" class="desc-text">Exports NT11, U, S, PEEQ to VTK</text>
+
+        <rect x="12" y="88" width="136" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" />
+        <text x="16" y="101" class="code-pill" fill="#16a34a">compile_vtk_to_gif.py</text>
+        <text x="12" y="122" class="desc-text">Multi-viewport animated reports</text>
+        
+        <text x="12" y="142" class="desc-text">• Discrete / Smeared Stress Contours</text>
+        <text x="12" y="158" class="desc-text" fill="#64748b">Direct GitHub &amp; LaTeX embeds</text>
       </g>
     </g>
   </g>
