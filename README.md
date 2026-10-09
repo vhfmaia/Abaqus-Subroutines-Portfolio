@@ -17,8 +17,8 @@ A repository of production-grade user subroutines for <b>Abaqus/Standard</b> and
 | :---: | :--- | :--- | :--- | :---: |
 | **01** | [`DLOAD`](01_dload_gear_fatigue/README.md) | Moving Surface Load / Quasi-Static | High-cycle fatigue analysis of a welded helical crown gear (360° full revolution) | ✅ Verified |
 | **02** | [`DFLUX`](02_dflux_laser_welding/README.md) | Moving Conical Flux / Thermo-Mechanical | Sequentially coupled laser welding with phase transformations and residual stress | ✅ Verified |
-| **03** | [`UINTER`](03_uinter_welding_interface/README.md) | Surface Interaction / BTR Hot Cracking | 3-State contact interface (Raw $\rightarrow$ Welded $\rightarrow$ Cracked) with BTR criteria | ⚠️ Exploratory (R&D Backlog) |
-| **04** | [`UMAT`](04_umat_cohesive_welding/README.md) | Cohesive Zone Modeling / Fracture Energy $G_c$ | Mesh-independent 3-state thermo-mechanical weld interface (`COH3D8`) | ⚠️ In Work (Testing Phase) |
+| **03** | [`UINTER`](03_uinter_welding_interface/README.md) | Surface Interaction / BTR Hot Cracking | 3-State contact interface (Raw → Welded → Cracked) with BTR criteria | ⚠️ Exploratory (R&D Backlog) |
+| **04** | [`UMAT`](04_umat_cohesive_welding/README.md) | Cohesive Zone Modeling / Fracture Energy *G*<sub>c</sub> | Mesh-independent 3-state thermo-mechanical weld interface (`COH3D8`) | ⚠️ In Work (Testing Phase) |
 
 ---
 
@@ -31,14 +31,14 @@ A repository of production-grade user subroutines for <b>Abaqus/Standard</b> and
 </p>
 
 <div align="justify">
-Analytical multi-viewport simulation across all 60 teeth of a heavy-duty automotive helical crown gear ($T = 270\text{ N}\cdot\text{m}$, $z = 60$, $\beta = 25^\circ$), featuring 3D European isometric projection, Y-axis frontal view, and transverse 3D RZ section.
+Analytical multi-viewport simulation across all 60 teeth of a heavy-duty automotive helical crown gear (<i>T</i> = 270 N·m, <i>z</i> = 60, <i>β</i> = 25°), featuring 3D European isometric projection, Y-axis frontal view, and transverse 3D RZ section.
 </div>
 
 #### Key Simulation & Fatigue Results:
-- **Peak Tensile Bending:** $\sigma_{\max} = 68.13\text{ MPa}$ at **Frame 55** ($t = 1.100\text{ s}$, Increment 550) in tooth root fillet.
-- **Out-of-Mesh Valley:** $\sigma_{\min} = 0.00\text{ MPa}$ at **Frame 30** ($t = 0.600\text{ s}$, Increment 300), $180^\circ$ out of phase.
-- **Cyclic Stress Amplitude:** $\sigma_a = 34.07\text{ MPa}$ (pulsating ratio $R = 0$, Goodman equivalent $\sigma_{a,\text{eq}} = 35.50\text{ MPa}$).
-- **Fatigue Life Regime:** **Infinite Life / High-Cycle Fatigue** ($N > 10^7\text{ cycles}$) with structural safety factor $SF_F \approx 7.0$ ($S_e \approx 250\text{ MPa}$).
+- **Peak Tensile Bending:** *σ*<sub>max</sub> = 68.13 MPa at **Frame 55** (*t* = 1.100 s, Increment 550) in tooth root fillet.
+- **Out-of-Mesh Valley:** *σ*<sub>min</sub> = 0.00 MPa at **Frame 30** (*t* = 0.600 s, Increment 300), 180° out of phase.
+- **Cyclic Stress Amplitude:** *σ*<sub>a</sub> = 34.07 MPa (pulsating ratio *R* = 0, Goodman equivalent *σ*<sub>a,eq</sub> = 35.50 MPa).
+- **Fatigue Life Regime:** **Infinite Life / High-Cycle Fatigue** (*N* > 10⁷ cycles) with structural safety factor *SF*<sub>F</sub> ≈ 7.0 (*S*<sub>e</sub> ≈ 250 MPa).
 
 <div align="justify">
 Detailed formulation, kinematic equations, FEA verification, and post-processing scripts are available in <a href="01_dload_gear_fatigue/README.md">01_dload_gear_fatigue/</a>.
@@ -55,11 +55,11 @@ Detailed formulation, kinematic equations, FEA verification, and post-processing
 </p>
 
 <div align="justify">
-Sequentially coupled thermo-mechanical analysis of circumferential laser welding ($R = 15\text{ mm}$, $P_{\text{abs}} = 1080\text{ W}$, $v = 1200\text{ mm/min}$) with moving conical Gaussian heat source, metallurgical phase transformations (<code>ABQ_PHASE_TRANS</code>), hybrid elements (<code>C3D8H</code>), continuous annealing at $1530^\circ\text{C}$, and residual stress prediction for 16MnCr5 case-hardening steel.
+Sequentially coupled thermo-mechanical analysis of circumferential laser welding (<i>R</i> = 15 mm, <i>P</i><sub>abs</sub> = 1080 W, <i>v</i> = 1200 mm/min) with moving conical Gaussian heat source, metallurgical phase transformations (<code>ABQ_PHASE_TRANS</code>), hybrid elements (<code>C3D8H</code>), continuous annealing at 1530 °C, and residual stress prediction for 16MnCr5 case-hardening steel.
 </div>
 
 #### Key Thermal, Metallurgical & Mechanical Highlights:
-- **3D Conical Gaussian Heat Source:** Analytically normalized peak flux $Q_0 = 4.6935 \times 10^5\text{ mW/mm}^3$ with $10^\circ$ linear power ramp-up, $360^\circ$ steady weld, and $10^\circ$ crater-filling ramp-down overlap.
+- **3D Conical Gaussian Heat Source:** Analytically normalized peak flux *Q*<sub>0</sub> = 4.6935 × 10⁵ mW/mm³ with 10° linear power ramp-up, 360° steady weld, and 10° crater-filling ramp-down overlap.
 - **Unified Material Architecture:** Single `Material_16MnCr5.inp` shared by both thermal and mechanical simulations, ensuring seamless data consistency.
 - **Metallurgical Kinetics & Solidification (BTR):** Tracks liquidus/solidus melt pool kinetics and solid-state phase decomposition (Ferrite-Pearlite, Austenite, Bainite, Martensite via JMA and Koistinen-Marburger kinetics).
 - **Quadratic Unsymmetric Thermal Convergence:** Direct unsymmetric solver formulation (`UNSYMM=YES`) resolving non-symmetric metallurgical tangent matrices, localized reference flux controls (`*CONTROLS, PARAMETERS=FIELD`) eliminating cold-element dilution, and uninhibited Newton-Raphson steps without line search under-relaxation.
@@ -74,7 +74,7 @@ Detailed formulation, verification routines, simulation input decks, and automat
 ### Project Showcase: 03 & 04. Advanced Interface Modeling Evolution
 
 <div align="justify">
-The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (<b>Raw $\rightarrow$ Welded $\rightarrow$ Cracked</b>):
+The portfolio demonstrates a complete engineering R&D cycle comparing two distinct methodologies to capture the 3 physical states of a welded interface (<b>Raw → Welded → Cracked</b>):
 </div>
 
 <p align="center">
@@ -84,7 +84,7 @@ The portfolio demonstrates a complete engineering R&D cycle comparing two distin
 <div align="justify">
 <ul>
   <li><b><a href="03_uinter_welding_interface/README.md">03. Exploratory Interface (UINTER)</a>:</b> Formulates the 3-state state machine on contact surfaces. Benchmarking identified critical mesh-dependency due to displacement jumps vs strain rates, prompting its classification as an exploratory R&D backlog module.</li>
-  <li><b><a href="04_umat_cohesive_welding/README.md">04. Cohesive Zone Interface (UMAT)</a>:</b> Under active development and testing to evaluate mesh-independent fracture energy $G_c$ regularization. Uses an exact $3 \times 3$ analytical $\mathbf{DDSDDE}$ Jacobian to investigate convergence without contact chattering or SDI cutbacks (strictly a research prototype under evaluation, not for production use).</li>
+  <li><b><a href="04_umat_cohesive_welding/README.md">04. Cohesive Zone Interface (UMAT)</a>:</b> Under active development and testing to evaluate mesh-independent fracture energy <i>G</i><sub>c</sub> regularization. Uses an exact 3 × 3 analytical <code>DDSDDE</code> Jacobian to investigate convergence without contact chattering or SDI cutbacks (strictly a research prototype under evaluation, not for production use).</li>
 </ul>
 </div>
 

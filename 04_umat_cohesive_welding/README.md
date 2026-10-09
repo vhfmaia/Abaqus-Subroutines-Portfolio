@@ -20,13 +20,13 @@
 ### Technological Evolution from Project 03
 
 <div align="justify">
-This directory investigates a <b>Cohesive Zone User Material Subroutine (<code>UMAT</code>)</b> designed to model the progressive constitutive behavior of welded joint interfaces (<b>Raw $\rightarrow$ Welded $\rightarrow$ Cracked</b>).
+This directory investigates a <b>Cohesive Zone User Material Subroutine (<code>UMAT</code>)</b> designed to model the progressive constitutive behavior of welded joint interfaces (<b>Raw → Welded → Cracked</b>).
 </div>
 
 <div align="justify">
 This architecture was formulated to evaluate potential solutions to the mathematical bottlenecks identified in the contact-based subroutine documented in <a href="../03_uinter_welding_interface/README.md"><b>03_uinter_welding_interface</b></a>:
 <ol>
-  <li><b>Regularized Kinematics:</b> Governed by an energy-based traction-separation law with critical fracture energy $G_c$, aiming to eliminate element size dependency.</li>
+  <li><b>Regularized Kinematics:</b> Governed by an energy-based traction-separation law with critical fracture energy <i>G</i><sub>c</sub>, aiming to eliminate element size dependency.</li>
   <li><b>Contact-Free Formulation:</b> Integrates directly into the standard finite element stiffness matrix, avoiding contact chattering and Severe Discontinuity Iterations (SDI).</li>
   <li><b>Linear MPI Scaling:</b> Operates on local element integration points, scaling across multi-core clusters in SIMULIA 3DEXPERIENCE and Abaqus/Standard.</li>
 </ol>
@@ -65,7 +65,7 @@ $$t_{s1} = 0, \quad t_{s2} = 0$$
 
 #### Transition: Melting & BTR Mushy Zone ($T_{\text{solidus}} \le T \le T_{\text{liquidus}}$)
 <div align="justify">
-Upon crossing $T_{\text{liquidus}}$, the interface undergoes complete liquid annealing: prior plastic deformations and stresses are reset to zero. During cooling through the <b>Brittleness Temperature Range (BTR)</b> ($1485.0\,^\circ\text{C} \le T \le 1530.0\,^\circ\text{C}$), semi-solid dendritic bridges form while residual liquid films persist at grain boundaries. Tensile separation $\delta_n > \delta_0$ induces progressive micro-tearing governed by linear softening:
+Upon crossing <i>T</i><sub>liquidus</sub>, the interface undergoes complete liquid annealing: prior plastic deformations and stresses are reset to zero. During cooling through the <b>Brittleness Temperature Range (BTR)</b> (1485.0 °C ≤ <i>T</i> ≤ 1530.0 °C), semi-solid dendritic bridges form while residual liquid films persist at grain boundaries. Tensile separation <i>δ</i><sub>n</sub> > <i>δ</i><sub>0</sub> induces progressive micro-tearing governed by linear softening:
 </div>
 
 $$D = \frac{\delta_f (\delta_{\max} - \delta_0)}{\delta_{\max} (\delta_f - \delta_0)}, \quad D \in [0.0, 1.0]$$
@@ -77,7 +77,7 @@ Where:
 
 #### State 2: Welded (Sound Metallurgical Bond)
 <div align="justify">
-If the interface cools below $T_{\text{solidus}} = 1485.0\,^\circ\text{C}$ with $D < 1.0$, the remaining micro-voids consolidate into a continuous sound steel weld ($D = 0$):
+If the interface cools below <i>T</i><sub>solidus</sub> = 1485.0 °C with <i>D</i> < 1.0, the remaining micro-voids consolidate into a continuous sound steel weld (<i>D</i> = 0):
 </div>
 
 $$t_n = K_{\text{bond}} \cdot \delta_n \quad (\forall \delta_n \in (-\infty, +\infty))$$
@@ -85,7 +85,7 @@ $$t_{s1} = G_{\text{shear}} \cdot \delta_{s1}, \quad t_{s2} = G_{\text{shear}} \
 
 #### State 3: Cracked (Hot Tearing / Welded Joint Delamination)
 <div align="justify">
-If the energy dissipated in the BTR reaches $G_c$ ($D \ge 0.999$), permanent rupture is locked into the element:
+If the energy dissipated in the BTR reaches <i>G</i><sub>c</sub> (<i>D</i> ≥ 0.999), permanent rupture is locked into the element:
 </div>
 
 $$t_n = \begin{cases} K_{\text{penalty}} \cdot \delta_n & \text{if } \delta_n < 0 \text{ (crack closure: unilateral compression)} \\ 0 & \text{if } \delta_n \ge 0 \text{ (open crack: zero tensile stress)} \end{cases}$$
@@ -112,8 +112,8 @@ $$\mathbf{DDSDDE}_{\text{BTR}} = \begin{bmatrix} (1-D) K_{\text{bond}} & 0 & 0 \
 | Engineering Property | `UINTER` (Project 03) | Cohesive `UMAT` (Project 04) | Physical Rationale |
 | :--- | :--- | :--- | :--- |
 | **Mathematical Domain** | 2D Contact Master/Slave Surface | Continuous Interface Finite Elements | Contact kinematics vs continuum traction-separation |
-| **Mesh Dependency** | ❌ Severe ($L_0$ scale dependent) | ✅ **Zero (Mesh-Independent)** | Governed by fracture energy $G_c$ ($\int \sigma \, d\delta = \text{const}$) |
-| **Solver Convergence** | ⚠️ High SDI cutbacks & chattering | ✅ **Quadratic Newton-Raphson** | Diagonal $\mathbf{DDSDDE}$ integrated directly into global stiffness |
+| **Mesh Dependency** | ❌ Severe (<i>L</i><sub>0</sub> scale dependent) | ✅ **Zero (Mesh-Independent)** | Governed by fracture energy <i>G</i><sub>c</sub> (∫ <i>σ</i> d<i>δ</i> = const) |
+| **Solver Convergence** | ⚠️ High SDI cutbacks & chattering | ✅ **Quadratic Newton-Raphson** | Diagonal <code>DDSDDE</code> integrated directly into global stiffness |
 | **HPC / MPI Scaling** | ⚠️ Contact surface domain splits | ✅ **Perfect Linear Scaling** | Element-local Gauss integration without inter-domain synchronization |
 | **Constitutive Freedom** | ⚠️ Limited by contact kinematic variables | ✅ **Full Continuum Freedom** | Direct access to all UMAT thermal and field state arrays |
 | **Development Status** | ⚠️ Exploratory Research (Backlog) | ⚠️ **In Work / Testing Phase (Prototype)** | Under laboratory calibration and verification |
@@ -144,8 +144,8 @@ abaqus job=cohesive_weld_btr_verification user=umat_cohesive_welding_btr.f inter
 ### Verification Checks Under Evaluation:
 <div align="justify">
 <ol>
-  <li><b>Step 1 (Raw Compression):</b> Verifies penalty barrier stiffness ($K = 1.0 \times 10^6\text{ N/mm}^3$) with zero penetration.</li>
+  <li><b>Step 1 (Raw Compression):</b> Verifies penalty barrier stiffness (<i>K</i> = 1.0 × 10⁶ N/mm³) with zero penetration.</li>
   <li><b>Step 2 (Heating to 1550 °C):</b> Verifies liquid annealing transition and thermal expansion stress relief.</li>
-  <li><b>Step 3 (Cooling &amp; Tensile Pull):</b> Demonstrates sound joint consolidation ($K = 5.0 \times 10^5\text{ N/mm}^3$) when separation is below $\delta_0$, or progressive softening to $D = 1.0$ when energy exceeds $G_c$.</li>
+  <li><b>Step 3 (Cooling &amp; Tensile Pull):</b> Demonstrates sound joint consolidation (<i>K</i> = 5.0 × 10⁵ N/mm³) when separation is below <i>δ</i><sub>0</sub>, or progressive softening to <i>D</i> = 1.0 when energy exceeds <i>G</i><sub>c</sub>.</li>
 </ol>
 </div>
