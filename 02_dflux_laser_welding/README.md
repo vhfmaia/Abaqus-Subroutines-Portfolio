@@ -96,19 +96,15 @@ Both input decks reference the identical material identifier:
 
 Rather than relying on external user subroutines (`HETVAL` or `USDFLD`), the thermal model leverages the built-in Abaqus metallurgical engine via constitutive parameter tables and solution-dependent state variables (`*DEPVAR`):
 
-```
-+-----------------------------------------------------------------------------------------+
-|                    SOLUTION-DEPENDENT STATE VARIABLES (SDV1 - SDV7)                     |
-+-----------------------------------------------------------------------------------------+
-| SDV1: RLS              --> Remaining Liquid Solidification fraction (1.0=Solid, 0.0=Liquid)
-| SDV2: fGrainColumnar   --> Columnar vs Equiaxed grain morphology fraction
-| SDV3: GrainSize        --> Prior austenite grain size evolution [µm]
-| SDV4: fPhase_Ferrite   --> Ferrite + Pearlite fraction (initial condition = 1.0)
-| SDV5: fPhase_Austenite --> High-temperature Austenite fraction
-| SDV6: fPhase_Bainite   --> Intermediate Bainite fraction
-| SDV7: fPhase_Martensite--> Hard Martensite fraction (quenched fusion zone / HAZ)
-+-----------------------------------------------------------------------------------------+
-```
+| State Variable (`*DEPVAR`) | Symbol | Metallurgical Phase / Metric | Admissible Range | Initial Value | Physical Interpretation in Abaqus / CAE Viewer |
+| :---: | :---: | :--- | :---: | :---: | :--- |
+| **`SDV1`** | $\text{RLS}$ | *Remaining Liquid Solidification* | $[0.0, 1.0]$ | $1.0$ (Solid) | $1.0 = \text{Solid State}$; $0.0 = \text{Molten Keyhole Pool}$ ($T \ge T_{\text{liquidus}}$) |
+| **`SDV2`** | $f_{\text{col}}$ | Columnar Grain Fraction | $[0.0, 1.0]$ | $0.0$ | Solidification morphology ($G/R$ ratio under temperature gradient $G$ and velocity $R$) |
+| **`SDV3`** | $d_\gamma$ | Prior Austenite Grain Size | $\ge 0\,\mu\text{m}$ | $0.0\,\mu\text{m}$ | Grain coarsening kinetics during high-temperature thermal cycling |
+| **`SDV4`** | $f_F$ | Ferrite + Pearlite Fraction | $[0.0, 1.0]$ | $1.0$ | Base metal microstructural state prior to weld ($100\%$ Ferrite-Pearlite matrix) |
+| **`SDV5`** | $f_A$ | High-Temperature Austenite | $[0.0, 1.0]$ | $0.0$ | High-temperature parent phase formed during rapid heating above $Ac_1 / Ac_3$ |
+| **`SDV6`** | $f_B$ | Intermediate Bainite Fraction | $[0.0, 1.0]$ | $0.0$ | Continuous cooling product formed in the $[400^\circ\text{C}, 600^\circ\text{C}]$ window |
+| **`SDV7`** | $f_M$ | Hard Martensite Fraction | $[0.0, 1.0]$ | $0.0$ | Diffusionless shear quench phase locked in the fusion zone and HAZ ($M_s = 400^\circ\text{C}$) |
 
 #### Diffusional Phase Transformations (Austenite → Ferrite, Austenite → Bainite)
 Governed by Johnson-Mehl-Avrami (JMA) isothermal transformation kinetics adapted to continuous cooling via the Scheil additivity rule:
@@ -156,50 +152,15 @@ where $L = 280\text{ kJ/kg}$ ($2.80 \times 10^{11}\text{ mJ/tonne}$).
 
 ---
 
-## 3. Sequentially Coupled Architecture
+## 3. Sequentially Coupled Architecture & FEA Pipeline
 
-```
-+-----------------------------------------------------------------------------------------+
-|                                1. THERMAL ANALYSIS DECK                                 |
-|                                                                                         |
-|  Disk_heatsource_TH.inp <---+--- Geometry_TH.inp (DC3D8 Linear Hex Elements)            |
-|                             +--- Material_16MnCr5.inp (k(T), cp(T), rho, Phase Trans)   |
-|                             +--- dflux_disk_conical_gaussian.f (Conical Gaussian TDC)   |
-|                                                                                         |
-|  Step 1: Welding & Solidification (dt = 0.01178 s, DELTMX = 5000, MXDEM = 0.5)          |
-|  Step 2: Cooling to Ambient (DELTMX = 5000, MXDEM = 0.1, max dt = 15.0 s)               |
-+--------------------------------------------+--------------------------------------------+
-                                             |
-                                  Disk_heatsource_TH.odb
-                                 (Nodal Temperatures NT11)
-                                             |
-                                             v
-+--------------------------------------------+--------------------------------------------+
-|                               2. MECHANICAL ANALYSIS DECK                               |
-|                                                                                         |
-|  Disk_heatsource_ME.inp <---+--- Geometry_ME.inp (C3D8H Hybrid Brick Elements, NSET_BASE)|
-|                             +--- Material_16MnCr5.inp (E(T), nu(T), alpha(T), sigma_y)  |
-|                             +--- *TEMPERATURE, FILE=Disk_heatsource_TH.fil              |
-|                             +--- *ANNEAL TEMPERATURE = 1530.0 °C (Resets Molten PEEQ)    |
-|                             +--- *DLOAD, GRAV (Hydrostatic Fluid Stabilization)         |
-|                                                                                         |
-|  Step 1: Transient Thermal Stress & Distortions (NLGEOM=YES, Line Search Controls)      |
-|  Step 2: Post-Weld Cooling & Locked-In Residual Stress Field                            |
-+--------------------------------------------+--------------------------------------------+
-                                             |
-                                  Disk_heatsource_ME.odb
-                                             |
-                                             v
-+--------------------------------------------+--------------------------------------------+
-|                          3. AUTOMATED POST-PROCESSING & REPORT                          |
-|                                                                                         |
-|  odb_to_vtk.py          -->  Extracts NT11, U, S (Von Mises), PEEQ to VTK ASCII         |
-|  laser_*_vtk.zip        -->  Compacts frames for cloud HPC & archive portability        |
-|  compile_vtk_to_gif.py  -->  Multi-viewport 3DEXPERIENCE simulation report GIF          |
-+-----------------------------------------------------------------------------------------+
-```
+<p align="center">
+  <img src="sequentially_coupled_architecture.svg" alt="Abaqus Sequentially Coupled Thermo-Mechanical Laser Welding Architecture and Multi-Physics Data Pipeline" width="100%" />
+</p>
 
-## 3. Industrial Numerical Engineering: Convergence Stabilization, Best Practices & Error Analysis
+---
+
+## 4. Industrial Numerical Engineering: Convergence Stabilization, Best Practices & Error Analysis
 
 Simulating moving concentrated energy sources coupled to non-linear metallurgical phase transformations and high-temperature plasticity is notorious for severe numerical instability, convergence stalls, and artificial solution chattering. The present implementation applies a comprehensive suite of rigorous numerical best practices and convergence engineering principles:
 
@@ -385,7 +346,7 @@ At temperatures near melting ($T > 1200^\circ\text{C}$) and in the plastic regim
 
 ---
 
-## 4. Project File Structure
+## 5. Project File Structure
 
 ```text
 02_dflux_laser_welding/
@@ -400,12 +361,13 @@ At temperatures near melting ($T > 1200^\circ\text{C}$) and in the plastic regim
 ├── odb_to_vtk.py                          # Abaqus Python ODB to VTK ASCII exporter & ZIP packager
 ├── run_pipeline.sh                        # HPC / batch automated execution pipeline
 ├── conical_heat_source_improved_plot.svg  # 4-Panel 3D Conical Heat Source & Trajectory Plot (SVG)
+├── sequentially_coupled_architecture.svg  # Multi-Physics Data Flow & Pipeline Architecture (SVG)
 └── README.md                              # Technical report & documentation
 ```
 
 ---
 
-## 5. Execution Guide (Abaqus / 3DEXPERIENCE)
+## 6. Execution Guide (Abaqus / 3DEXPERIENCE)
 
 ### Automated Pipeline Execution
 
@@ -451,7 +413,7 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ---
 
-## 6. Key Results to Evaluate
+## 7. Key Results to Evaluate
 
 - **Melt Pool Geometry:** Isotherm $T \ge T_{\text{liquidus}} = 1530^\circ\text{C}$ identifies the molten weld bead width and penetration depth ($z_i \approx 3.0\text{ mm}$).
 - **Heat Affected Zone (HAZ):** Region bounded between $Ac_1 \approx 720^\circ\text{C}$ and $T_{\text{solidus}} = 1485^\circ\text{C}$.
@@ -460,7 +422,7 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ---
 
-## 7. Standards & References
+## 8. Standards & References
 
 1. **Farrokhi, F., Endelt, B., & Kristiansen, M. (2019):** *A numerical model for full and partial penetration hybrid laser welding of thick-section steels*, Optics & Laser Technology, 109, 629–642.
 2. **Wu, C. S., Wang, H. G., & Zhang, Y. M. (2006):** *A new heat source model for keyhole plasma arc welding in FEM analysis of the temperature profile*, Welding Journal, 85(12), 284–291.
@@ -472,13 +434,13 @@ python compile_vtk_to_gif.py laser_mech_vtk.zip --fps 15 -o laser_welding_report
 
 ---
 
-## 8. Disclaimer
+## 9. Disclaimer
 
 This repository is published for professional portfolio and academic demonstration purposes. All CAD dimensions, process parameters, and metallurgical kinetics presented herein are synthetic, open-literature benchmarks designed to illustrate advanced FEA and Fortran programming methodologies, and do not represent any confidential automotive powertrain production data.
 
 ---
 
-## 9. Author & Contact
+## 10. Author & Contact
 
 **Victor Maia**  
 - **Email:** [vhfm08@gmail.com](mailto:vhfm08@gmail.com)  
